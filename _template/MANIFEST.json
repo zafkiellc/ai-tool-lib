@@ -1,0 +1,17 @@
+{
+  "name": "<工具名>",
+  "version": "0.1.0",
+  "status": "idea",
+  "created_by": "<AI / 会话标识>",
+  "created_at": "YYYY-MM-DD",
+  "purpose": "<一句话用途>",
+  "entrypoint": "scripts/<主脚本>.py",
+  "lock": null,
+  "changelog": [
+    {
+      "date": "YYYY-MM-DD",
+      "by": "<AI>",
+      "change": "初始创建"
+    }
+  ]
+}

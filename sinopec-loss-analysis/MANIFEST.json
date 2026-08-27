@@ -1,0 +1,18 @@
+{
+  "name": "sinopec-loss-analysis",
+  "version": "1.0.0",
+  "status": "stable",
+  "created_by": "WorkBuddy",
+  "created_at": "2026-08 (迁入AI工具库前由WorkBuddy创建，具体日期见原SKILL)",
+  "purpose": "中石化/加油站进油验收与损耗综合分析。当用户提供加油站进油验收报表(.xls)和损耗排名(.xlsx)，要求分析综合损耗趋势/排名后五站点/损耗与天气或温度(来卸油温差)的关系/高罐位影响，或提出损耗调优建议(季节特性、汽柴油站点特性、进油",
+  "entrypoint": "scripts/analyze_loss.py",
+  "migrated_to_ai_tool_lib": "2026-08-27",
+  "lock": null,
+  "changelog": [
+    {
+      "date": "2026-08-27",
+      "by": "hermes:session-a6dbafdf7285",
+      "change": "从 WorkBuddy私有Skills 迁入 AI工具库，补齐 MANIFEST.json 统一元数据"
+    }
+  ]
+}
