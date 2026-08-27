@@ -1,3 +1,4 @@
-# 共享会话索引是易变协调状态（心跳/锁），由 verysync 同步给各端，
-# 但不进 git 历史（避免心跳刷屏污染 commit）。规范文档仍入 git。
-.sessions/
+# 共享会话索引的协调状态文件（*.json，含心跳/工具锁）是易变态，
+# 由 verysync 在各端同步，但不进 git 历史（避免心跳刷屏污染 commit）。
+# 规范文档(SESSIONS.md)、协调器(sessionctl.py)、接入脚本(dsh_beat.sh) 仍入 git。
+.sessions/*.json
