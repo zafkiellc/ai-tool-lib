@@ -57,6 +57,16 @@ AI工具库/.sessions/
    - 若 `FREE` → `sessionctl.py claim --tool <名> --intent "<目的>"` 申请锁（同时写入 `MANIFEST.json` 的 `lock` 双保险）。
 3. **改完**：`sessionctl.py release --tool <名>` 释放，并清空 `MANIFEST.json.lock`。
 
+## 四.1 各端接入入口
+- **软路由 Hermes（本容器）**：路径 `/workspace/同步文件/verysyncdown/zafkiel个人知识库/工作/项目/资产/AI工具库/`。
+- **DeepSeek Harness（dsh）**：已备一键脚本 `dsh_beat.sh`（按 DSH 视角 vault 路径 `/mnt/nvme0n1-1/同步文件/verysyncdown/zafkiel个人知识库/...`）。DSH 在某次对话中执行：
+  ```bash
+  bash /mnt/nvme0n1-1/同步文件/verysyncdown/zafkiel个人知识库/工作/项目/资产/AI工具库/.sessions/dsh_beat.sh "当前任务"
+  ```
+  即可写出 `dsh__deepseek.json` 并进入共享索引；改造工具前同样用 `python3 .sessions/sessionctl.py who-has/claim/release`。
+- **台式机 Codex / Mac WorkBuddy 等**：其 vault 绝对路径不同，但 verysync 同步后 `.sessions/` 同一份。各自开工时：
+  `python3 <本机vault绝对路径>/工作/项目/资产/AI工具库/.sessions/sessionctl.py beat --endpoint <端> --ai <名>`
+
 ## 五、与 MANIFEST 锁的关系
 - `.sessions` 是「跨端在线视图 + 协调」（轻量、易变、verysync 同步）；
 - `MANIFEST.json.lock` 是「工具内持久锁」（入 git、可追溯）。
