@@ -1,0 +1,27 @@
+{
+  "name": "现场检查条目智能匹配工具",
+  "version": "1.0.0",
+  "status": "stable",
+  "created_by": "WorkBuddy(吕晨) / 收口 Hermes(软路由)",
+  "created_at": "2026-08-20",
+  "purpose": "油气卡异常筛查 Web 工具(规则 A-I)，现场检查条目智能匹配",
+  "entrypoint": "server.py (源码在 D:/巡站724_便携版/, 非本库)",
+  "lock": null,
+  "changelog": [
+    {
+      "date": "2026-08-20",
+      "by": "WorkBuddy(吕晨)",
+      "change": "初始可用：规则 A-I 落地，Python Web(openpyxl)+前端"
+    },
+    {
+      "date": "2026-08-27",
+      "by": "WorkBuddy(吕晨)",
+      "change": "视频督导模式/固定锁定条目/上传GBK防丢/真随机/DeepSeek模型名校验/端口锁说明"
+    },
+    {
+      "date": "2026-08-27",
+      "by": "Hermes(软路由)",
+      "change": "收口进统一工具库：建 SKILL.md+MANIFEST，源码位置说明(不在库)，原笔记转 references"
+    }
+  ]
+}
