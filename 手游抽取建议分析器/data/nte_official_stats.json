@@ -1,0 +1,67 @@
+{
+ "game": "nte",
+ "source": "异环 Fandom 数值数据模块",
+ "date": "2026-08-02",
+ "stats": {
+  "Adler": {
+   "name": "Adler",
+   "rarity": "\"A\"",
+   "base_hp": 1180.0,
+   "base_atk": 55.0,
+   "base_def": 82.0,
+   "full": true,
+   "hp80": 15260.5,
+   "atk80": 502.0,
+   "def80": 1050.5,
+   "note": "Lv80 按 base + 149×每级成长推算（Fandom 数据模块）"
+  },
+  "Baicang": {
+   "name": "Baicang",
+   "rarity": "\"S\"",
+   "base_hp": 1370.0,
+   "base_atk": 81.0,
+   "base_def": 66.0,
+   "full": false,
+   "hp80": 1370.0,
+   "atk80": 81.0,
+   "def80": 66.0,
+   "note": "Lv80 按 base + 149×每级成长推算（Fandom 数据模块）"
+  },
+  "Mint": {
+   "name": "Mint",
+   "rarity": "\"A\"",
+   "base_hp": 1000.0,
+   "base_atk": 75.0,
+   "base_def": 60.0,
+   "full": false,
+   "hp80": 1000.0,
+   "atk80": 75.0,
+   "def80": 60.0,
+   "note": "Lv80 按 base + 149×每级成长推算（Fandom 数据模块）"
+  },
+  "Nanally": {
+   "name": "Nanally",
+   "rarity": "\"S\"",
+   "base_hp": 1320.0,
+   "base_atk": 80.0,
+   "base_def": 75.0,
+   "full": true,
+   "hp80": 17039.5,
+   "atk80": 676.0,
+   "def80": 969.0,
+   "note": "Lv80 按 base + 149×每级成长推算（Fandom 数据模块）"
+  },
+  "Sakiri": {
+   "name": "Sakiri",
+   "rarity": "\"S\"",
+   "base_hp": 1360.0,
+   "base_atk": 78.0,
+   "base_def": 75.0,
+   "full": false,
+   "hp80": 1360.0,
+   "atk80": 78.0,
+   "def80": 75.0,
+   "note": "Lv80 按 base + 149×每级成长推算（Fandom 数据模块）"
+  }
+ }
+}

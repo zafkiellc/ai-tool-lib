@@ -1,0 +1,520 @@
+{
+  "game": "arknights_endfield",
+  "display_name": "明日方舟：终末地",
+  "region_note": "由 moegirl + 官网精编数据于 2026-08-02 重建（截止 v1.4，已公测）。",
+  "characters": [
+    {
+      "id": "endfield_admin",
+      "name": "管理员",
+      "en": "Endministrator",
+      "aliases": [
+        "管理员",
+        "主角"
+      ],
+      "class": "近卫",
+      "branch": "-",
+      "element": "",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "属性待核对",
+      "icon": "https://raw.githubusercontent.com/BoxCatTeam/endfield-cat-metadata/master/images/character/icon/chr_0003_endminf.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "endfield_ember",
+      "name": "余烬",
+      "en": "Ember",
+      "aliases": [
+        "余烬",
+        "公测赠送"
+      ],
+      "class": "重装",
+      "branch": "-",
+      "element": "灼热",
+      "rarity": 6,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://raw.githubusercontent.com/BoxCatTeam/endfield-cat-metadata/master/images/character/icon/chr_0009_azrila.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "endfield_lifeng",
+      "name": "黎风",
+      "en": "Lifeng",
+      "aliases": [
+        "黎风"
+      ],
+      "class": "近卫",
+      "branch": "-",
+      "element": "物理",
+      "rarity": 6,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://raw.githubusercontent.com/BoxCatTeam/endfield-cat-metadata/master/images/character/icon/chr_0015_lifeng.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "endfield_ardelia",
+      "name": "艾尔黛拉",
+      "en": "Ardelia",
+      "aliases": [
+        "艾尔黛拉"
+      ],
+      "class": "辅助",
+      "branch": "-",
+      "element": "自然",
+      "rarity": 6,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://raw.githubusercontent.com/BoxCatTeam/endfield-cat-metadata/master/images/character/icon/chr_0025_ardelia.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "endfield_last_rite",
+      "name": "别礼",
+      "en": "Last Rite",
+      "aliases": [
+        "别礼"
+      ],
+      "class": "突击",
+      "branch": "-",
+      "element": "寒冷",
+      "rarity": 6,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://raw.githubusercontent.com/BoxCatTeam/endfield-cat-metadata/master/images/character/icon/chr_0026_lastrite.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "endfield_pogranichnik",
+      "name": "骏卫",
+      "en": "Pogranichnik",
+      "aliases": [
+        "骏卫"
+      ],
+      "class": "先锋",
+      "branch": "-",
+      "element": "物理",
+      "rarity": 6,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://raw.githubusercontent.com/BoxCatTeam/endfield-cat-metadata/master/images/character/icon/chr_0029_pograni.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "endfield_laevatain",
+      "name": "莱万汀",
+      "en": "Laevatain",
+      "aliases": [
+        "莱万汀"
+      ],
+      "class": "突击",
+      "branch": "-",
+      "element": "灼热",
+      "rarity": 6,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://raw.githubusercontent.com/BoxCatTeam/endfield-cat-metadata/master/images/character/icon/chr_0016_laevat.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "endfield_gilberta",
+      "name": "洁尔佩塔",
+      "en": "Gilberta",
+      "aliases": [
+        "洁尔佩塔"
+      ],
+      "class": "辅助",
+      "branch": "-",
+      "element": "自然",
+      "rarity": 6,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://raw.githubusercontent.com/BoxCatTeam/endfield-cat-metadata/master/images/character/icon/chr_0013_aglina.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "endfield_yvonne",
+      "name": "伊冯",
+      "en": "Yvonne",
+      "aliases": [
+        "伊冯"
+      ],
+      "class": "突击",
+      "branch": "-",
+      "element": "寒冷",
+      "rarity": 6,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://raw.githubusercontent.com/BoxCatTeam/endfield-cat-metadata/master/images/character/icon/chr_0017_yvonne.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "endfield_perlica",
+      "name": "佩丽卡",
+      "en": "Perlica",
+      "aliases": [
+        "佩丽卡",
+        "监督员"
+      ],
+      "class": "术师",
+      "branch": "-",
+      "element": "",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "属性待核对",
+      "icon": "https://raw.githubusercontent.com/BoxCatTeam/endfield-cat-metadata/master/images/character/icon/chr_0004_pelica.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "endfield_chen_qianyu",
+      "name": "陈千语",
+      "en": "Chen Qianyu",
+      "aliases": [
+        "陈千语"
+      ],
+      "class": "近卫",
+      "branch": "-",
+      "element": "物理",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://raw.githubusercontent.com/BoxCatTeam/endfield-cat-metadata/master/images/character/icon/chr_0005_chen.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "endfield_wulfgard",
+      "name": "狼卫",
+      "en": "Wulfgard",
+      "aliases": [
+        "狼卫"
+      ],
+      "class": "近卫",
+      "branch": "-",
+      "element": "",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "属性待核对",
+      "icon": "https://raw.githubusercontent.com/BoxCatTeam/endfield-cat-metadata/master/images/character/icon/chr_0006_wolfgd.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "endfield_arclight",
+      "name": "弧光",
+      "en": "Arclight",
+      "aliases": [
+        "弧光"
+      ],
+      "class": "先锋",
+      "branch": "-",
+      "element": "电磁",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://raw.githubusercontent.com/BoxCatTeam/endfield-cat-metadata/master/images/character/icon/chr_0007_ikut.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "endfield_alesh",
+      "name": "阿列什",
+      "en": "Alesh",
+      "aliases": [
+        "阿列什"
+      ],
+      "class": "先锋",
+      "branch": "-",
+      "element": "",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "属性待核对",
+      "icon": "https://raw.githubusercontent.com/BoxCatTeam/endfield-cat-metadata/master/images/character/icon/chr_0024_deepfin.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "endfield_avywenna",
+      "name": "艾维文娜",
+      "en": "Avywenna",
+      "aliases": [
+        "艾维文娜"
+      ],
+      "class": "突击",
+      "branch": "-",
+      "element": "",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "属性待核对",
+      "icon": "https://raw.githubusercontent.com/BoxCatTeam/endfield-cat-metadata/master/images/character/icon/chr_0012_avywen.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "endfield_da_pan",
+      "name": "大潘",
+      "en": "Da Pan",
+      "aliases": [
+        "大潘"
+      ],
+      "class": "重装",
+      "branch": "-",
+      "element": "",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "属性待核对",
+      "icon": "https://raw.githubusercontent.com/BoxCatTeam/endfield-cat-metadata/master/images/character/icon/chr_0018_dapan.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "endfield_snowshine",
+      "name": "昼雪",
+      "en": "Snowshine",
+      "aliases": [
+        "昼雪"
+      ],
+      "class": "重装",
+      "branch": "-",
+      "element": "",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "属性待核对",
+      "icon": "https://raw.githubusercontent.com/BoxCatTeam/endfield-cat-metadata/master/images/character/icon/chr_0014_aurora.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "endfield_xaihi",
+      "name": "赛希",
+      "en": "Xaihi",
+      "aliases": [
+        "赛希"
+      ],
+      "class": "辅助",
+      "branch": "-",
+      "element": "",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "属性待核对",
+      "icon": "https://raw.githubusercontent.com/BoxCatTeam/endfield-cat-metadata/master/images/character/icon/chr_0011_seraph.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "endfield_estella",
+      "name": "埃特拉",
+      "en": "Estella",
+      "aliases": [
+        "埃特拉"
+      ],
+      "class": "近卫",
+      "branch": "-",
+      "element": "物理",
+      "rarity": 4,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://raw.githubusercontent.com/BoxCatTeam/endfield-cat-metadata/master/images/character/icon/chr_0021_whiten.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "endfield_catcher",
+      "name": "卡契尔",
+      "en": "Catcher",
+      "aliases": [
+        "卡契尔"
+      ],
+      "class": "重装",
+      "branch": "-",
+      "element": "",
+      "rarity": 4,
+      "version": "1.0",
+      "status": "released",
+      "note": "属性待核对",
+      "icon": "https://raw.githubusercontent.com/BoxCatTeam/endfield-cat-metadata/master/images/character/icon/chr_0020_meurs.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "endfield_antal",
+      "name": "安塔尔",
+      "en": "Antal",
+      "aliases": [
+        "安塔尔"
+      ],
+      "class": "辅助",
+      "branch": "-",
+      "element": "",
+      "rarity": 4,
+      "version": "1.0",
+      "status": "released",
+      "note": "属性待核对",
+      "icon": "https://raw.githubusercontent.com/BoxCatTeam/endfield-cat-metadata/master/images/character/icon/chr_0023_antal.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "endfield_akekuri",
+      "name": "秋栗",
+      "en": "Akekuri",
+      "aliases": [
+        "秋栗"
+      ],
+      "class": "先锋",
+      "branch": "-",
+      "element": "",
+      "rarity": 4,
+      "version": "1.0",
+      "status": "released",
+      "note": "属性待核对",
+      "icon": "https://raw.githubusercontent.com/BoxCatTeam/endfield-cat-metadata/master/images/character/icon/chr_0019_karin.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "endfield_fluorite",
+      "name": "萤石",
+      "en": "Fluorite",
+      "aliases": [
+        "萤石"
+      ],
+      "class": "术师",
+      "branch": "-",
+      "element": "自然",
+      "rarity": 4,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://raw.githubusercontent.com/BoxCatTeam/endfield-cat-metadata/master/images/character/icon/chr_0022_bounda.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "endfield_tangtang",
+      "name": "汤汤",
+      "en": "Tangtang",
+      "aliases": [
+        "汤汤"
+      ],
+      "class": "术师",
+      "branch": "-",
+      "element": "寒冷",
+      "rarity": 6,
+      "version": "1.1",
+      "status": "released",
+      "note": "",
+      "icon": "https://raw.githubusercontent.com/BoxCatTeam/endfield-cat-metadata/master/images/character/icon/chr_0027_tangtang.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "endfield_rossi",
+      "name": "洛茜",
+      "en": "Rossi",
+      "aliases": [
+        "洛茜"
+      ],
+      "class": "近卫",
+      "branch": "-",
+      "element": "物理",
+      "rarity": 6,
+      "version": "1.1",
+      "status": "released",
+      "note": "",
+      "icon": "",
+      "icon_fallback": ""
+    },
+    {
+      "id": "endfield_zhuang_fangyi",
+      "name": "庄方宜",
+      "en": "Zhuang Fangyi",
+      "aliases": [
+        "庄方宜"
+      ],
+      "class": "突击",
+      "branch": "-",
+      "element": "电磁",
+      "rarity": 6,
+      "version": "1.2",
+      "status": "released",
+      "note": "",
+      "icon": "",
+      "icon_fallback": ""
+    },
+    {
+      "id": "endfield_mi_fu",
+      "name": "弭弗",
+      "en": "Mi Fu",
+      "aliases": [
+        "弭弗"
+      ],
+      "class": "近卫",
+      "branch": "-",
+      "element": "物理",
+      "rarity": 6,
+      "version": "1.3",
+      "status": "released",
+      "note": "",
+      "icon": "",
+      "icon_fallback": ""
+    },
+    {
+      "id": "endfield_camille",
+      "name": "卡缪",
+      "en": "Camille",
+      "aliases": [
+        "卡缪"
+      ],
+      "class": "先锋",
+      "branch": "-",
+      "element": "灼热",
+      "rarity": 6,
+      "version": "1.3",
+      "status": "released",
+      "note": "",
+      "icon": "",
+      "icon_fallback": ""
+    },
+    {
+      "id": "endfield_arcane",
+      "name": "诀",
+      "en": "Arcane",
+      "aliases": [
+        "诀"
+      ],
+      "class": "术师",
+      "branch": "-",
+      "element": "自然",
+      "rarity": 6,
+      "version": "1.4",
+      "status": "released",
+      "note": "",
+      "icon": "",
+      "icon_fallback": ""
+    },
+    {
+      "id": "endfield_liino",
+      "name": "梨诺",
+      "en": "Liino",
+      "aliases": [
+        "梨诺"
+      ],
+      "class": "辅助",
+      "branch": "-",
+      "element": "电磁",
+      "rarity": 6,
+      "version": "1.4",
+      "status": "released",
+      "note": "",
+      "icon": "",
+      "icon_fallback": ""
+    }
+  ]
+}

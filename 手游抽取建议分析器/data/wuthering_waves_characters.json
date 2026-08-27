@@ -1,0 +1,957 @@
+{
+  "game": "wuthering_waves",
+  "display_name": "鸣潮",
+  "region_note": "由鸣潮 Fandom 英文百科于 2026-08-02 在线拉取合并（56 名角色，新增 0，新角色中文名待核对）。",
+  "characters": [
+    {
+      "id": "wuwa_rover_spectro",
+      "name": "漂泊者·衍射",
+      "en": "Rover",
+      "aliases": [
+        "漂泊者",
+        " Rover"
+      ],
+      "element": "衍射",
+      "weapon": "迅刀",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/7/70/Rover_1.png/revision/latest",
+      "icon_fallback": "/avatars/wuwa_rover_spectro.webp",
+      "role": "Concerto Efficiency;Stagnation;Spectro Frazzle;Main Damage Dealer; Support and Healer; Resonance Skill Damage; Aero Erosion; Concerto Efficiency;Resonance Skill Damage; Electro Flare"
+    },
+    {
+      "id": "wuwa_rover_havoc",
+      "name": "漂泊者·湮灭",
+      "en": "Rover",
+      "aliases": [
+        "漂泊者"
+      ],
+      "element": "湮灭",
+      "weapon": "迅刀",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/7/70/Rover_1.png/revision/latest",
+      "icon_fallback": "/avatars/wuwa_rover_havoc.webp",
+      "role": "Concerto Efficiency;Stagnation;Spectro Frazzle;Main Damage Dealer; Support and Healer; Resonance Skill Damage; Aero Erosion; Concerto Efficiency;Resonance Skill Damage; Electro Flare"
+    },
+    {
+      "id": "wuwa_calcharo",
+      "name": "卡卡罗",
+      "en": "Calcharo",
+      "aliases": [
+        "卡卡罗"
+      ],
+      "element": "湮灭",
+      "weapon": "长刃",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/e/e5/Calcharo_Card.png/revision/latest?cb=20240717222251",
+      "icon_fallback": "/avatars/wuwa_calcharo.webp",
+      "role": "Main Damage Dealer;Resonance Liberation Damage"
+    },
+    {
+      "id": "wuwa_encore",
+      "name": "安可",
+      "en": "Encore",
+      "aliases": [
+        "安可"
+      ],
+      "element": "热熔",
+      "weapon": "音感仪",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/6/6c/Encore_Card.png/revision/latest?cb=20240819195310",
+      "icon_fallback": "/avatars/wuwa_encore.webp",
+      "role": "Main Damage Dealer; Basic Attack Damage"
+    },
+    {
+      "id": "wuwa_jianxin",
+      "name": "鉴心",
+      "en": "Jianxin",
+      "aliases": [
+        "鉴心"
+      ],
+      "element": "气动",
+      "weapon": "臂铠",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/8/8a/Jianxin_Card.jpg/revision/latest",
+      "icon_fallback": "/avatars/wuwa_jianxin.webp",
+      "role": "Support and Healer;Heavy Attack Damage;Traction;Resonance Liberation DMG Amplification"
+    },
+    {
+      "id": "wuwa_lingyang",
+      "name": "凌阳",
+      "en": "Lingyang",
+      "aliases": [
+        "凌阳"
+      ],
+      "element": "冷凝",
+      "weapon": "臂铠",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/9/98/Lingyang_Card.png/revision/latest?cb=20240503051937",
+      "icon_fallback": "/avatars/wuwa_lingyang.webp",
+      "role": "Main Damage Dealer"
+    },
+    {
+      "id": "wuwa_verina",
+      "name": "维里奈",
+      "en": "Verina",
+      "aliases": [
+        "维里奈"
+      ],
+      "element": "衍射",
+      "weapon": "音感仪",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/a/a7/Verina_Card.jpg/revision/latest",
+      "icon_fallback": "/avatars/wuwa_verina.webp",
+      "role": "Support and Healer;Coordinated Attack;DMG Amplification"
+    },
+    {
+      "id": "wuwa_jiyan",
+      "name": "忌炎",
+      "en": "Jiyan",
+      "aliases": [
+        "忌炎"
+      ],
+      "element": "气动",
+      "weapon": "长刃",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/0/0d/Jiyan_Card.png/revision/latest?cb=20240509102627",
+      "icon_fallback": "/avatars/wuwa_jiyan.webp",
+      "role": "Main Damage Dealer;Heavy Attack Damage;Traction"
+    },
+    {
+      "id": "wuwa_yinlin",
+      "name": "吟霖",
+      "en": "Yinlin",
+      "aliases": [
+        "吟霖"
+      ],
+      "element": "导电",
+      "weapon": "音感仪",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/3/33/Yinlin_Card.jpg/revision/latest",
+      "icon_fallback": "/avatars/wuwa_yinlin.webp",
+      "role": "Concerto Efficiency;Resonance Skill Damage;Coordinated Attack;Electro DMG Amplification;Resonance Liberation DMG Amplification"
+    },
+    {
+      "id": "wuwa_aalto",
+      "name": "秋水",
+      "en": "Aalto",
+      "aliases": [
+        "秋水"
+      ],
+      "element": "气动",
+      "weapon": "佩枪",
+      "rarity": 4,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/6/65/Aalto_Card.jpg/revision/latest",
+      "icon_fallback": "/avatars/wuwa_aalto.webp",
+      "role": "Concerto Efficiency;Aero DMG Amplification"
+    },
+    {
+      "id": "wuwa_baizhi",
+      "name": "白芷",
+      "en": "Baizhi",
+      "aliases": [
+        "白芷"
+      ],
+      "element": "冷凝",
+      "weapon": "音感仪",
+      "rarity": 4,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/e/ed/Baizhi_Card.png/revision/latest?cb=20240608100732",
+      "icon_fallback": "/avatars/wuwa_baizhi.webp",
+      "role": "Support and Healer;Coordinated Attack;DMG Amplification"
+    },
+    {
+      "id": "wuwa_chixia",
+      "name": "炽霞",
+      "en": "Chixia",
+      "aliases": [
+        "炽霞"
+      ],
+      "element": "热熔",
+      "weapon": "佩枪",
+      "rarity": 4,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/d/da/Chixia_Card.png/revision/latest?cb=20240703175137",
+      "icon_fallback": "/avatars/wuwa_chixia.webp",
+      "role": "Main Damage Dealer"
+    },
+    {
+      "id": "wuwa_danjin",
+      "name": "丹瑾",
+      "en": "Danjin",
+      "aliases": [
+        "丹瑾"
+      ],
+      "element": "湮灭",
+      "weapon": "迅刀",
+      "rarity": 4,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/3/3e/Danjin_Card.png/revision/latest?cb=20240607110406",
+      "icon_fallback": "/avatars/wuwa_danjin.webp",
+      "role": "Concerto Efficiency;Havoc DMG Amplification"
+    },
+    {
+      "id": "wuwa_mortefi",
+      "name": "莫特斐",
+      "en": "Mortefi",
+      "aliases": [
+        "莫特斐"
+      ],
+      "element": "热熔",
+      "weapon": "佩枪",
+      "rarity": 4,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/8/8e/Mortefi_Card.jpg/revision/latest",
+      "icon_fallback": "/avatars/wuwa_mortefi.webp",
+      "role": "Concerto Efficiency;Resonance Liberation Damage;Coordinated Attack;Heavy Attack DMG Amplification"
+    },
+    {
+      "id": "wuwa_sanhua",
+      "name": "散华",
+      "en": "Sanhua",
+      "aliases": [
+        "散华"
+      ],
+      "element": "冷凝",
+      "weapon": "迅刀",
+      "rarity": 4,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/5/5d/Sanhua_Card.png/revision/latest?cb=20240814180016",
+      "icon_fallback": "/avatars/wuwa_sanhua.webp",
+      "role": "Concerto Efficiency;Basic Attack DMG Amplification"
+    },
+    {
+      "id": "wuwa_taoqi",
+      "name": "桃祈",
+      "en": "Taoqi",
+      "aliases": [
+        "桃祈"
+      ],
+      "element": "湮灭",
+      "weapon": "长刃",
+      "rarity": 4,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/a/ae/Taoqi_Card.jpg/revision/latest",
+      "icon_fallback": "/avatars/wuwa_taoqi.webp",
+      "role": "Support and Healer;Resonance Liberation Damage;Resonance Skill DMG Amplification"
+    },
+    {
+      "id": "wuwa_yangyang",
+      "name": "秧秧",
+      "en": "Yangyang",
+      "aliases": [
+        "秧秧"
+      ],
+      "element": "气动",
+      "weapon": "迅刀",
+      "rarity": 4,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/a/a7/Yangyang_Card.png/revision/latest?cb=20240813182233",
+      "icon_fallback": "/avatars/wuwa_yangyang.webp",
+      "role": "Concerto Efficiency;Traction;Resonance Liberation Regeneration"
+    },
+    {
+      "id": "wuwa_yuanwu",
+      "name": "渊武",
+      "en": "Yuanwu",
+      "aliases": [
+        "渊武"
+      ],
+      "element": "导电",
+      "weapon": "臂铠",
+      "rarity": 4,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/5/53/Yuanwu_Card.jpg/revision/latest",
+      "icon_fallback": "/avatars/wuwa_yuanwu.webp",
+      "role": "Concerto Efficiency;Coordinated Attack;Interruption Resistance Boost;Vibration Strength Reduction"
+    },
+    {
+      "id": "wuwa_jinhsi",
+      "name": "今汐",
+      "en": "Jinhsi",
+      "aliases": [
+        "今汐"
+      ],
+      "element": "衍射",
+      "weapon": "长刃",
+      "rarity": 5,
+      "version": "1.1",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/a/a9/Jinhsi_Card.png/revision/latest?cb=20240517072857",
+      "icon_fallback": "/avatars/wuwa_jinhsi.webp",
+      "role": "Main Damage Dealer;Resonance Skill Damage"
+    },
+    {
+      "id": "wuwa_changli",
+      "name": "长离",
+      "en": "Changli",
+      "aliases": [
+        "长离"
+      ],
+      "element": "热熔",
+      "weapon": "迅刀",
+      "rarity": 5,
+      "version": "1.1",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/e/e9/Changli_Card.png/revision/latest?cb=20240719033449",
+      "icon_fallback": "/avatars/wuwa_changli.webp",
+      "role": "Main Damage Dealer;Resonance Skill Damage;Fusion DMG Amplification;Resonance Liberation DMG Amplification"
+    },
+    {
+      "id": "wuwa_zhezhi",
+      "name": "折枝",
+      "en": "Zhezhi",
+      "aliases": [
+        "折枝"
+      ],
+      "element": "冷凝",
+      "weapon": "音感仪",
+      "rarity": 5,
+      "version": "1.2",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/f/f0/Zhezhi_Card.png/revision/latest?cb=20240708201004",
+      "icon_fallback": "/avatars/wuwa_zhezhi.webp",
+      "role": "Concerto Efficiency;Basic Attack Damage;Coordinated Attack;Glacio DMG Amplification;Resonance Skill DMG Amplification"
+    },
+    {
+      "id": "wuwa_xiangli_yao",
+      "name": "相里要",
+      "en": "Xiangli Yao",
+      "aliases": [
+        "相里要"
+      ],
+      "element": "导电",
+      "weapon": "臂铠",
+      "rarity": 5,
+      "version": "1.2",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/e/e9/Xiangli_Yao_Card.png/revision/latest?cb=20240708200915",
+      "icon_fallback": "/avatars/wuwa_xiangli_yao.webp",
+      "role": "Main Damage Dealer;Resonance Liberation Damage"
+    },
+    {
+      "id": "wuwa_shorekeeper",
+      "name": "守岸人",
+      "en": "Shorekeeper",
+      "aliases": [
+        "守岸人"
+      ],
+      "element": "衍射",
+      "weapon": "音感仪",
+      "rarity": 5,
+      "version": "1.3",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/8/85/Shorekeeper_Card.png/revision/latest?cb=20240813134043",
+      "icon_fallback": "/avatars/wuwa_shorekeeper.webp",
+      "role": "Support and Healer;Traction;DMG Amplification"
+    },
+    {
+      "id": "wuwa_youhu",
+      "name": "釉瑚",
+      "en": "Youhu",
+      "aliases": [
+        "釉瑚"
+      ],
+      "element": "冷凝",
+      "weapon": "臂铠",
+      "rarity": 4,
+      "version": "1.3",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/b/b6/Youhu_Card.png/revision/latest?cb=20240813132555",
+      "icon_fallback": "/avatars/wuwa_youhu.webp",
+      "role": "Support and Healer; Resonance Skill Damage;Vibration Strength Reduction;Coordinated Attack DMG Amplification"
+    },
+    {
+      "id": "wuwa_camellya",
+      "name": "椿",
+      "en": "Camellya",
+      "aliases": [
+        "椿"
+      ],
+      "element": "湮灭",
+      "weapon": "迅刀",
+      "rarity": 5,
+      "version": "1.4",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/8/8f/Camellya_Card.png/revision/latest?cb=20240912101744",
+      "icon_fallback": "/avatars/wuwa_camellya.webp",
+      "role": "Main Damage Dealer;Concerto Efficiency;Basic Attack Damage"
+    },
+    {
+      "id": "wuwa_lumi",
+      "name": "灯灯",
+      "en": "Lumi",
+      "aliases": [
+        "灯灯"
+      ],
+      "element": "导电",
+      "weapon": "长刃",
+      "rarity": 4,
+      "version": "1.4",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/e/ee/Lumi_Card.jpg/revision/latest",
+      "icon_fallback": "/avatars/wuwa_lumi.webp",
+      "role": "Main Damage Dealer; Basic Attack Damage; Resonance Skill DMG Amplification"
+    },
+    {
+      "id": "wuwa_carlotta",
+      "name": "珂莱塔",
+      "en": "Carlotta",
+      "aliases": [
+        "珂莱塔"
+      ],
+      "element": "冷凝",
+      "weapon": "佩枪",
+      "rarity": 5,
+      "version": "2.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/8/8a/Carlotta_Card.png/revision/latest?cb=20241122070709",
+      "icon_fallback": "/avatars/wuwa_carlotta.webp",
+      "role": "Main Damage Dealer; Resonance Skill Damage"
+    },
+    {
+      "id": "wuwa_roccia",
+      "name": "洛可可",
+      "en": "Roccia",
+      "aliases": [
+        "洛可可"
+      ],
+      "element": "湮灭",
+      "weapon": "臂铠",
+      "rarity": 5,
+      "version": "2.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/e/ea/Roccia_Card.png/revision/latest?cb=20241122070750",
+      "icon_fallback": "/avatars/wuwa_roccia.webp",
+      "role": "Concerto Efficiency; Heavy Attack Damage; Traction; Havoc DMG Amplification; Basic Attack DMG Amplification"
+    },
+    {
+      "id": "wuwa_phoebe",
+      "name": "菲比",
+      "en": "Phoebe",
+      "aliases": [
+        "菲比"
+      ],
+      "element": "衍射",
+      "weapon": "音感仪",
+      "rarity": 5,
+      "version": "2.1",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/5/54/Phoebe_Card.png/revision/latest?cb=20251015114458",
+      "icon_fallback": "/avatars/wuwa_phoebe.webp",
+      "role": "Main Damage Dealer; Concerto Efficiency; Spectro Frazzle"
+    },
+    {
+      "id": "wuwa_brant",
+      "name": "布兰特",
+      "en": "Brant",
+      "aliases": [
+        "布兰特"
+      ],
+      "element": "热熔",
+      "weapon": "迅刀",
+      "rarity": 5,
+      "version": "2.1",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/2/2d/Brant_Card.png/revision/latest?cb=20251015115249",
+      "icon_fallback": "/avatars/wuwa_brant.webp",
+      "role": "Support and Healer;Basic Attack Damage;Fusion DMG Amplification;Resonance Skill DMG Amplification"
+    },
+    {
+      "id": "wuwa_cantarella",
+      "name": "坎特蕾拉",
+      "en": "Cantarella",
+      "aliases": [
+        "坎特蕾拉"
+      ],
+      "element": "湮灭",
+      "weapon": "音感仪",
+      "rarity": 5,
+      "version": "2.2",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/0/01/Cantarella_Card.png/revision/latest?cb=20250221143534",
+      "icon_fallback": "/avatars/wuwa_cantarella.webp",
+      "role": "Support and Healer; Concerto Efficiency; Basic Attack Damage; Coordinated Attack; Havoc DMG Amplification; Resonance Skill DMG Amplification"
+    },
+    {
+      "id": "wuwa_rover_aero",
+      "name": "漂泊者·气动",
+      "en": "Rover",
+      "aliases": [
+        "漂泊者"
+      ],
+      "element": "气动",
+      "weapon": "迅刀",
+      "rarity": 5,
+      "version": "2.2",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/7/70/Rover_1.png/revision/latest",
+      "icon_fallback": "/avatars/wuwa_rover_aero.webp",
+      "role": "Concerto Efficiency;Stagnation;Spectro Frazzle;Main Damage Dealer; Support and Healer; Resonance Skill Damage; Aero Erosion; Concerto Efficiency;Resonance Skill Damage; Electro Flare"
+    },
+    {
+      "id": "wuwa_zani",
+      "name": "赞妮",
+      "en": "Zani",
+      "aliases": [
+        "赞妮"
+      ],
+      "element": "衍射",
+      "weapon": "臂铠",
+      "rarity": 5,
+      "version": "2.3",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/d/df/Zani_Card.png/revision/latest?cb=20250419141821",
+      "icon_fallback": "/avatars/wuwa_zani.webp",
+      "role": "Main Damage Dealer; Heavy Attack Damage; Spectro DMG Amplification; Spectro Frazzle"
+    },
+    {
+      "id": "wuwa_ciaconna",
+      "name": "夏空",
+      "en": "Ciaccona",
+      "aliases": [
+        "夏空"
+      ],
+      "element": "气动",
+      "weapon": "佩枪",
+      "rarity": 5,
+      "version": "2.3",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/6/68/Ciaccona_Card.png/revision/latest",
+      "icon_fallback": "/avatars/wuwa_ciaconna.webp"
+    },
+    {
+      "id": "wuwa_cartethyia",
+      "name": "卡提希娅",
+      "en": "Cartethyia",
+      "aliases": [
+        "卡提希娅"
+      ],
+      "element": "气动",
+      "weapon": "迅刀",
+      "rarity": 5,
+      "version": "2.4",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/d/d5/Cartethyia_Card.png/revision/latest?cb=20250509103319",
+      "icon_fallback": "/avatars/wuwa_cartethyia.webp",
+      "role": "Main Damage Dealer; Aero Erosion; Aero DMG Amplification; Traction"
+    },
+    {
+      "id": "wuwa_lupa",
+      "name": "露帕",
+      "en": "Lupa",
+      "aliases": [
+        "露帕"
+      ],
+      "element": "热熔",
+      "weapon": "长刃",
+      "rarity": 5,
+      "version": "2.4",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/e/e4/Lupa_Card.png/revision/latest",
+      "icon_fallback": "/avatars/wuwa_lupa.webp"
+    },
+    {
+      "id": "wuwa_phrolova",
+      "name": "弗洛洛",
+      "en": "Phrolova",
+      "aliases": [
+        "弗洛洛"
+      ],
+      "element": "湮灭",
+      "weapon": "音感仪",
+      "rarity": 5,
+      "version": "2.5",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/0/0b/Phrolova_Card.png/revision/latest",
+      "icon_fallback": "/avatars/wuwa_phrolova.webp"
+    },
+    {
+      "id": "wuwa_augusta",
+      "name": "奥古斯塔",
+      "en": "Augusta",
+      "aliases": [
+        "奥古斯塔"
+      ],
+      "element": "导电",
+      "weapon": "长刃",
+      "rarity": 5,
+      "version": "2.6",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/3/39/Augusta_Card.png/revision/latest?cb=20250730151033",
+      "icon_fallback": "/avatars/wuwa_augusta.webp",
+      "role": "Main Damage Dealer; Heavy Attack Damage; DMG Amplification"
+    },
+    {
+      "id": "wuwa_iuno",
+      "name": "尤诺",
+      "en": "Iuno",
+      "aliases": [
+        "尤诺"
+      ],
+      "element": "气动",
+      "weapon": "臂铠",
+      "rarity": 5,
+      "version": "2.6",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/1/1f/Iuno_Card.png/revision/latest?cb=20250730151112",
+      "icon_fallback": "/avatars/wuwa_iuno.webp",
+      "role": "Support and Healer; Concerto Efficiency; Resonance Liberation Damage; Heavy Attack DMG Amplification"
+    },
+    {
+      "id": "wuwa_galbrena",
+      "name": "嘉贝莉娜",
+      "en": "Galbrena",
+      "aliases": [
+        "嘉贝莉娜"
+      ],
+      "element": "热熔",
+      "weapon": "佩枪",
+      "rarity": 5,
+      "version": "2.7",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/9/9d/Galbrena_Card.jpg/revision/latest",
+      "icon_fallback": "/avatars/wuwa_galbrena.webp",
+      "role": "Main Damage Dealer; Heavy Attack Damage"
+    },
+    {
+      "id": "wuwa_qiuyuan",
+      "name": "仇远",
+      "en": "Qiuyuan",
+      "aliases": [
+        "仇远"
+      ],
+      "element": "气动",
+      "weapon": "迅刀",
+      "rarity": 5,
+      "version": "2.7",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/1/17/Qiuyuan_Card.jpg/revision/latest",
+      "icon_fallback": "/avatars/wuwa_qiuyuan.webp",
+      "role": "Concerto Efficiency; Heavy Attack Damage; Echo Skill DMG Amplification"
+    },
+    {
+      "id": "wuwa_chisa",
+      "name": "千咲",
+      "en": "Chisa",
+      "aliases": [
+        "千咲"
+      ],
+      "element": "湮灭",
+      "weapon": "长刃",
+      "rarity": 5,
+      "version": "2.8",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/c/ca/Chisa_Card.jpg/revision/latest",
+      "icon_fallback": "/avatars/wuwa_chisa.webp"
+    },
+    {
+      "id": "wuwa_buling",
+      "name": "卜灵",
+      "en": "Buling",
+      "aliases": [
+        "卜灵"
+      ],
+      "element": "导电",
+      "weapon": "音感仪",
+      "rarity": 4,
+      "version": "2.8",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/5/58/Buling_Card.jpg/revision/latest",
+      "icon_fallback": "/avatars/wuwa_buling.webp",
+      "role": "Support and Healer; DMG Amplification; Electro Flare"
+    },
+    {
+      "id": "wuwa_lynae",
+      "name": "琳奈",
+      "en": "Lynae",
+      "aliases": [
+        "琳奈"
+      ],
+      "element": "衍射",
+      "weapon": "佩枪",
+      "rarity": 5,
+      "version": "3.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/7/71/Lynae_Card.jpg/revision/latest",
+      "icon_fallback": "/avatars/wuwa_lynae.webp",
+      "role": "Concerto Efficiency;Basic Attack Damage;DMG Amplification;Resonance Liberation DMG Amplification;Tune Rupture Response;Tune Strain Response;Tune Break Boost"
+    },
+    {
+      "id": "wuwa_mornye",
+      "name": "莫宁",
+      "en": "Mornye",
+      "aliases": [
+        "莫宁"
+      ],
+      "element": "热熔",
+      "weapon": "长刃",
+      "rarity": 5,
+      "version": "3.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/e/eb/Mornye_Card.jpg/revision/latest",
+      "icon_fallback": "/avatars/wuwa_mornye.webp",
+      "role": "Support and Healer;DMG Amplification;Tune Rupture Response;Tune Strain Response;Off-Tune Buildup Efficiency"
+    },
+    {
+      "id": "wuwa_aemeath",
+      "name": "爱弥斯",
+      "en": "Aemeath",
+      "aliases": [
+        "爱弥斯"
+      ],
+      "element": "热熔",
+      "weapon": "迅刀",
+      "rarity": 5,
+      "version": "3.1",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/f/fc/Aemeath_Card.jpg/revision/latest",
+      "icon_fallback": "/avatars/wuwa_aemeath.webp",
+      "role": "Main Damage Dealer;Resonance Liberation Damage;Tune Rupture Response;Fusion Burst;DMG Amplification"
+    },
+    {
+      "id": "wuwa_luuk_hersen",
+      "name": "陆·赫斯",
+      "en": "Luuk Herssen",
+      "aliases": [
+        "陆·赫斯"
+      ],
+      "element": "衍射",
+      "weapon": "臂铠",
+      "rarity": 5,
+      "version": "3.1",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/f/fe/Luuk_Herssen_Card.jpg/revision/latest",
+      "icon_fallback": "/avatars/wuwa_luuk_hersen.webp",
+      "role": "Main Damage Dealer;Basic Attack Damage;Tune Strain Response"
+    },
+    {
+      "id": "wuwa_sigrika",
+      "name": "西格莉卡",
+      "en": "Sigrika",
+      "aliases": [
+        "西格莉卡"
+      ],
+      "element": "气动",
+      "weapon": "臂铠",
+      "rarity": 5,
+      "version": "3.2",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/f/f6/Sigrika_Card.jpg/revision/latest",
+      "icon_fallback": "/avatars/wuwa_sigrika.webp",
+      "role": "Main Damage Dealer; Traction; Echo Skill Damage"
+    },
+    {
+      "id": "wuwa_hiyuki",
+      "name": "绯雪",
+      "en": "Hiyuki",
+      "aliases": [
+        "绯雪"
+      ],
+      "element": "冷凝",
+      "weapon": "迅刀",
+      "rarity": 5,
+      "version": "3.3",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/d/dc/Hiyuki_Card.jpg/revision/latest",
+      "icon_fallback": "/avatars/wuwa_hiyuki.webp",
+      "role": "Main Damage Dealer;Resonance Liberation Damage;Glacio Chafe"
+    },
+    {
+      "id": "wuwa_denia",
+      "name": "达妮娅",
+      "en": "Denia",
+      "aliases": [
+        "达妮娅"
+      ],
+      "element": "热熔",
+      "weapon": "音感仪",
+      "rarity": 5,
+      "version": "3.3",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/b/b2/Denia_Card.jpg/revision/latest",
+      "icon_fallback": "/avatars/wuwa_denia.webp",
+      "role": "Concerto Efficiency;Resonance Liberation Damage;Traction;Fusion Burst;Tune Break Boost;Tune Strain Response"
+    },
+    {
+      "id": "wuwa_lucy_wuwa",
+      "name": "露西",
+      "en": "Lucy",
+      "aliases": [
+        "露西",
+        "赛博朋克联动"
+      ],
+      "element": "衍射",
+      "weapon": "佩枪",
+      "rarity": 5,
+      "version": "3.4",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/3/32/Lucy_Card.jpg/revision/latest",
+      "icon_fallback": "/avatars/wuwa_lucy_wuwa.webp"
+    },
+    {
+      "id": "wuwa_rebecca",
+      "name": "丽贝卡",
+      "en": "Rebecca",
+      "aliases": [
+        "丽贝卡",
+        "赛博朋克联动"
+      ],
+      "element": "导电",
+      "weapon": "佩枪",
+      "rarity": 5,
+      "version": "3.4",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/c/c5/Rebecca_Card.jpg/revision/latest",
+      "icon_fallback": "/avatars/wuwa_rebecca.webp",
+      "role": "Concerto Efficiency;Basic Attack Damage;Heavy Attack DMG Amplification;Tune Break Boost;Hack Response"
+    },
+    {
+      "id": "wuwa_lucilla",
+      "name": "洛瑟菈",
+      "en": "Lucilla",
+      "aliases": [
+        "洛瑟菈"
+      ],
+      "element": "冷凝",
+      "weapon": "音感仪",
+      "rarity": 5,
+      "version": "3.4",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/5/51/Lucilla_Card.jpg/revision/latest",
+      "icon_fallback": "/avatars/wuwa_lucilla.webp",
+      "role": "Concerto Efficiency;Basic Attack Damage;Echo Skill Damage;Glacio Chafe;Echo Skill DMG Amplification"
+    },
+    {
+      "id": "wuwa_yangyang_xuanling",
+      "name": "秧秧·玄翎",
+      "en": "Yangyang Xuanling",
+      "aliases": [
+        "秧秧·玄翎"
+      ],
+      "element": "湮灭",
+      "weapon": "迅刀",
+      "rarity": 5,
+      "version": "3.5",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/4/4d/Yangyang_Xuanling_Card.jpg/revision/latest",
+      "icon_fallback": "/avatars/wuwa_yangyang_xuanling.webp",
+      "role": "Main Damage Dealer;Heavy Attack Damage;Havoc Bane;Traction"
+    },
+    {
+      "id": "wuwa_suisui",
+      "name": "穗穗",
+      "en": "Suisui",
+      "aliases": [
+        "穗穗"
+      ],
+      "element": "冷凝",
+      "weapon": "音感仪",
+      "rarity": 5,
+      "version": "3.5",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/8/83/Suisui_Card.jpg/revision/latest",
+      "icon_fallback": "/avatars/wuwa_suisui.webp",
+      "role": "Support and Healer;DMG Amplification;Glacio Chafe"
+    },
+    {
+      "id": "wuwa_rover_electro",
+      "name": "漂泊者·导电",
+      "en": "Rover",
+      "aliases": [
+        "漂泊者"
+      ],
+      "element": "导电",
+      "weapon": "迅刀",
+      "rarity": 5,
+      "version": "3.5",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/wutheringwaves/images/7/70/Rover_1.png/revision/latest",
+      "icon_fallback": "/avatars/wuwa_rover_electro.webp",
+      "role": "Concerto Efficiency;Stagnation;Spectro Frazzle;Main Damage Dealer; Support and Healer; Resonance Skill Damage; Aero Erosion; Concerto Efficiency;Resonance Skill Damage; Electro Flare"
+    }
+  ]
+}

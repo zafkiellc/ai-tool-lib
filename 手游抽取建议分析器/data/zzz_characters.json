@@ -1,0 +1,1091 @@
+{
+  "game": "zzz",
+  "display_name": "绝区零",
+  "region_note": "由 biligame 绝区零百科「角色图鉴」于 2026-08-02 在线拉取合并（58 名角色，新增 0）。",
+  "characters": [
+    {
+      "id": "zzz_ellen",
+      "name": "艾莲·乔",
+      "en": "Ellen Joe",
+      "aliases": [
+        "艾莲",
+        "Ellen"
+      ],
+      "element": "冰",
+      "attribute": "冰",
+      "specialty": "强攻",
+      "weapon": "强攻",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "阵营：狡兔屋·维多利亚家政",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Ellen-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_zhu_yuan",
+      "name": "朱鸢",
+      "en": "Zhu Yuan",
+      "aliases": [
+        "朱鸢"
+      ],
+      "element": "以太",
+      "attribute": "以太",
+      "specialty": "强攻",
+      "weapon": "强攻",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "阵营：对空六课",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/ZhuYuan-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_grace",
+      "name": "格莉丝·霍华德",
+      "en": "Grace Howard",
+      "aliases": [
+        "格莉丝",
+        "Grace"
+      ],
+      "element": "电",
+      "attribute": "电",
+      "specialty": "异常",
+      "weapon": "异常",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "阵营：白祇重工",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Grace-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_koleda",
+      "name": "珂蕾妲·贝洛伯格",
+      "en": "Koleda Belobog",
+      "aliases": [
+        "珂蕾妲",
+        "Koleda"
+      ],
+      "element": "火",
+      "attribute": "火",
+      "specialty": "击破",
+      "weapon": "击破",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "阵营：维多利亚家政",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Koleda-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_lycaon",
+      "name": "冯·莱卡恩",
+      "en": "Von Lycaon",
+      "aliases": [
+        "莱卡恩",
+        "Lycaon"
+      ],
+      "element": "冰",
+      "attribute": "冰",
+      "specialty": "击破",
+      "weapon": "击破",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "阵营：维多利亚家政",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Lycaon-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_rina",
+      "name": "亚历山德丽娜·莎芭丝缇安",
+      "en": "Alexandrina Sebastiane",
+      "aliases": [
+        "莎芭丝缇安",
+        "Rina"
+      ],
+      "element": "电",
+      "attribute": "电",
+      "specialty": "支援",
+      "weapon": "支援",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "阵营：维多利亚家政",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Rina-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_nekomata",
+      "name": "猫宫又奈",
+      "en": "Nekomiya Mana",
+      "aliases": [
+        "猫宫又奈",
+        "Nekomata"
+      ],
+      "element": "物理",
+      "attribute": "物理",
+      "specialty": "强攻",
+      "weapon": "强攻",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "阵营：狡兔屋",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Nekomata-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_soldier_11",
+      "name": "11号",
+      "en": "Soldier 11",
+      "aliases": [
+        "11号",
+        "Soldier 11"
+      ],
+      "element": "火",
+      "attribute": "火",
+      "specialty": "强攻",
+      "weapon": "强攻",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "阵营：狡兔屋",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Soldier11-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_anby",
+      "name": "安比·德玛拉",
+      "en": "Anby Demara",
+      "aliases": [
+        "安比",
+        "Anby"
+      ],
+      "element": "电",
+      "attribute": "电",
+      "specialty": "击破",
+      "weapon": "击破",
+      "rarity": 4,
+      "version": "1.0",
+      "status": "released",
+      "note": "阵营：狡兔屋",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Anby-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_nicole",
+      "name": "妮可·德玛拉",
+      "en": "Nicole Demara",
+      "aliases": [
+        "妮可",
+        "Nicole"
+      ],
+      "element": "以太",
+      "attribute": "以太",
+      "specialty": "支援",
+      "weapon": "支援",
+      "rarity": 4,
+      "version": "1.0",
+      "status": "released",
+      "note": "阵营：狡兔屋",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Nicole-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_billy",
+      "name": "比利·奇德",
+      "en": "Billy Kid",
+      "aliases": [
+        "比利",
+        "Billy"
+      ],
+      "element": "物理",
+      "attribute": "物理",
+      "specialty": "强攻",
+      "weapon": "强攻",
+      "rarity": 4,
+      "version": "1.0",
+      "status": "released",
+      "note": "阵营：狡兔屋",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Billy-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_corin",
+      "name": "可琳·威克斯",
+      "en": "Corin Wickes",
+      "aliases": [
+        "可琳",
+        "Corin"
+      ],
+      "element": "物理",
+      "attribute": "物理",
+      "specialty": "强攻",
+      "weapon": "强攻",
+      "rarity": 4,
+      "version": "1.0",
+      "status": "released",
+      "note": "阵营：狡兔屋",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Corin-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_ben",
+      "name": "本·比格",
+      "en": "Ben Bigger",
+      "aliases": [
+        "本",
+        "Ben"
+      ],
+      "element": "火",
+      "attribute": "火",
+      "specialty": "防护",
+      "weapon": "防护",
+      "rarity": 4,
+      "version": "1.0",
+      "status": "released",
+      "note": "阵营：白祇重工",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Ben-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_anton",
+      "name": "安东·伊万诺夫",
+      "en": "Anton Ivanov",
+      "aliases": [
+        "安东",
+        "Anton"
+      ],
+      "element": "电",
+      "attribute": "电",
+      "specialty": "强攻",
+      "weapon": "强攻",
+      "rarity": 4,
+      "version": "1.0",
+      "status": "released",
+      "note": "阵营：白祇重工",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Anton-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_soukaku",
+      "name": "苍角",
+      "en": "Soukaku",
+      "aliases": [
+        "苍角"
+      ],
+      "element": "冰",
+      "attribute": "冰",
+      "specialty": "支援",
+      "weapon": "支援",
+      "rarity": 4,
+      "version": "1.0",
+      "status": "released",
+      "note": "阵营：白祇重工",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Soukaku-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_lucy",
+      "name": "露西",
+      "en": "Luciana de Montefio",
+      "aliases": [
+        "露西",
+        "Luciana"
+      ],
+      "element": "火",
+      "attribute": "火",
+      "specialty": "支援",
+      "weapon": "支援",
+      "rarity": 4,
+      "version": "1.0",
+      "status": "released",
+      "note": "阵营：刑侦特勤组",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Lucy-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_piper",
+      "name": "派派·韦尔",
+      "en": "Piper Wheel",
+      "aliases": [
+        "派派",
+        "Piper"
+      ],
+      "element": "物理",
+      "attribute": "物理",
+      "specialty": "异常",
+      "weapon": "异常",
+      "rarity": 4,
+      "version": "1.0",
+      "status": "released",
+      "note": "阵营：狡兔屋",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Piper-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_qingyi",
+      "name": "青衣",
+      "en": "Qingyi",
+      "aliases": [
+        "青衣"
+      ],
+      "element": "电",
+      "attribute": "电",
+      "specialty": "击破",
+      "weapon": "击破",
+      "rarity": 5,
+      "version": "1.1",
+      "status": "released",
+      "note": "阵营：对空六课",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Qingyi-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_jane",
+      "name": "简·杜",
+      "en": "Jane Doe",
+      "aliases": [
+        "简",
+        "Jane Doe"
+      ],
+      "element": "物理",
+      "attribute": "物理",
+      "specialty": "异常",
+      "weapon": "异常",
+      "rarity": 5,
+      "version": "1.1",
+      "status": "released",
+      "note": "阵营：刑侦特勤组",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Jane-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_seth",
+      "name": "赛斯·洛威尔",
+      "en": "Seth Lowell",
+      "aliases": [
+        "赛斯",
+        "Seth"
+      ],
+      "element": "电",
+      "attribute": "电",
+      "specialty": "防护",
+      "weapon": "防护",
+      "rarity": 4,
+      "version": "1.1",
+      "status": "released",
+      "note": "阵营：刑侦特勤组",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Seth-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_caesar",
+      "name": "凯撒·金",
+      "en": "Caesar King",
+      "aliases": [
+        "凯撒",
+        "Caesar"
+      ],
+      "element": "物理",
+      "attribute": "物理",
+      "specialty": "防护",
+      "weapon": "防护",
+      "rarity": 5,
+      "version": "1.2",
+      "status": "released",
+      "note": "阵营：刑侦特勤组",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Caesar-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_burnice",
+      "name": "柏妮思·怀特",
+      "en": "Burnice White",
+      "aliases": [
+        "柏妮思",
+        "Burnice"
+      ],
+      "element": "火",
+      "attribute": "火",
+      "specialty": "异常",
+      "weapon": "异常",
+      "rarity": 5,
+      "version": "1.2",
+      "status": "released",
+      "note": "阵营：奥波勒斯小队",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Burnice-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_yanagi",
+      "name": "月城柳",
+      "en": "Hoshimi Yanagi",
+      "aliases": [
+        "月城柳",
+        "Yanagi"
+      ],
+      "element": "电",
+      "attribute": "电",
+      "specialty": "异常",
+      "weapon": "异常",
+      "rarity": 5,
+      "version": "1.3",
+      "status": "released",
+      "note": "阵营：对空六课",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/TsukishiroYanagi-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_lighter",
+      "name": "莱特",
+      "en": "Lighter",
+      "aliases": [
+        "莱特",
+        "Lighter"
+      ],
+      "element": "火",
+      "attribute": "火",
+      "specialty": "击破",
+      "weapon": "击破",
+      "rarity": 5,
+      "version": "1.3",
+      "status": "released",
+      "note": "阵营：卡吕冬之子",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Lighter-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_miyabi",
+      "name": "星见雅",
+      "en": "Hoshimi Miyabi",
+      "aliases": [
+        "星见雅",
+        "Miyabi"
+      ],
+      "element": "烈霜",
+      "attribute": "烈霜",
+      "specialty": "异常",
+      "weapon": "异常",
+      "rarity": 5,
+      "version": "1.4",
+      "status": "released",
+      "note": "阵营：对空六课",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/HoshimiMiyabi-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_harumasa",
+      "name": "浅羽悠真",
+      "en": "Asaba Harumasa",
+      "aliases": [
+        "浅羽悠真",
+        "Harumasa"
+      ],
+      "element": "电",
+      "attribute": "电",
+      "specialty": "强攻",
+      "weapon": "强攻",
+      "rarity": 5,
+      "version": "1.4",
+      "status": "released",
+      "note": "阵营：对空六课",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/AsabaHarumasa-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_astra_yao",
+      "name": "耀嘉音",
+      "en": "Astra Yao",
+      "aliases": [
+        "耀嘉音",
+        "Astra Yao"
+      ],
+      "element": "以太",
+      "attribute": "以太",
+      "specialty": "支援",
+      "weapon": "支援",
+      "rarity": 5,
+      "version": "1.5",
+      "status": "released",
+      "note": "阵营：天琴座",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/AstraYao-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_evelyn",
+      "name": "伊芙琳·舒瓦利耶",
+      "en": "Evelyn Chevalier",
+      "aliases": [
+        "伊芙琳",
+        "Evelyn"
+      ],
+      "element": "火",
+      "attribute": "火",
+      "specialty": "强攻",
+      "weapon": "强攻",
+      "rarity": 5,
+      "version": "1.5",
+      "status": "released",
+      "note": "阵营：天琴座",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Evelyn-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_soldier_0_anby",
+      "name": "零号·安比",
+      "en": "Soldier 0 - Anby",
+      "aliases": [
+        "零号·安比"
+      ],
+      "element": "电",
+      "attribute": "电",
+      "specialty": "强攻",
+      "weapon": "强攻",
+      "rarity": 5,
+      "version": "1.6",
+      "status": "released",
+      "note": "阵营：奥波勒斯小队",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Silver-Soldier-Anby-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_trigger",
+      "name": "扳机",
+      "en": "Trigger",
+      "aliases": [
+        "扳机",
+        "Trigger"
+      ],
+      "element": "电",
+      "attribute": "电",
+      "specialty": "击破",
+      "weapon": "击破",
+      "rarity": 5,
+      "version": "1.6",
+      "status": "released",
+      "note": "阵营：奥波勒斯小队",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Trigger-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_pulchra",
+      "name": "波可娜·费雷尼",
+      "en": "Pulchra Fellini",
+      "aliases": [
+        "普尔契拉",
+        "Pulchra"
+      ],
+      "element": "物理",
+      "attribute": "物理",
+      "specialty": "击破",
+      "weapon": "击破",
+      "rarity": 4,
+      "version": "1.6",
+      "status": "released",
+      "note": "阵营：维多利亚家政",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Pulchra-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_vivian",
+      "name": "薇薇安·班希",
+      "en": "Vivian Banshee",
+      "aliases": [
+        "薇薇安",
+        "Vivian"
+      ],
+      "element": "以太",
+      "attribute": "以太",
+      "specialty": "异常",
+      "weapon": "异常",
+      "rarity": 5,
+      "version": "1.7",
+      "status": "released",
+      "note": "阵营：奥波勒斯小队",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Vivian-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_hugo",
+      "name": "雨果·维拉德",
+      "en": "Hugo Vlad",
+      "aliases": [
+        "雨果",
+        "Hugo"
+      ],
+      "element": "冰",
+      "attribute": "冰",
+      "specialty": "强攻",
+      "weapon": "强攻",
+      "rarity": 5,
+      "version": "1.7",
+      "status": "released",
+      "note": "阵营：反舌鸟",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Hugo-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_yixuan",
+      "name": "仪玄",
+      "en": "Yixuan",
+      "aliases": [
+        "仪玄"
+      ],
+      "element": "玄墨",
+      "attribute": "玄墨",
+      "specialty": "命破",
+      "weapon": "命破",
+      "rarity": 5,
+      "version": "2.0",
+      "status": "released",
+      "note": "阵营：云岿山",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Yixuan-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_ju_fufu",
+      "name": "橘福福",
+      "en": "Ju Fufu",
+      "aliases": [
+        "橘福福"
+      ],
+      "element": "火",
+      "attribute": "火",
+      "specialty": "击破",
+      "weapon": "击破",
+      "rarity": 5,
+      "version": "2.0",
+      "status": "released",
+      "note": "阵营：云岿山",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/JuFufu-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_pan_yinhui",
+      "name": "潘引壶",
+      "en": "Pan Yinhu",
+      "aliases": [
+        "潘引壶"
+      ],
+      "element": "物理",
+      "attribute": "物理",
+      "specialty": "防护",
+      "weapon": "防护",
+      "rarity": 4,
+      "version": "2.0",
+      "status": "released",
+      "note": "阵营：云岿山",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/PanYinhu-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_yuzuha",
+      "name": "浮波柚叶",
+      "en": "Ukinami Yuzuha",
+      "aliases": [
+        "浮波柚叶",
+        "Yuzuha"
+      ],
+      "element": "物理",
+      "attribute": "物理",
+      "specialty": "支援",
+      "weapon": "支援",
+      "rarity": 5,
+      "version": "2.1",
+      "status": "released",
+      "note": "阵营：云岿山",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Ukinami%20Yuzuha-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_alice",
+      "name": "爱丽丝·泰姆菲尔德",
+      "en": "Alice Thymefield",
+      "aliases": [
+        "爱丽丝",
+        "Alice"
+      ],
+      "element": "物理",
+      "attribute": "物理",
+      "specialty": "异常",
+      "weapon": "异常",
+      "rarity": 5,
+      "version": "2.1",
+      "status": "released",
+      "note": "阵营：云岿山",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Alice%20Thymefield-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_orphie",
+      "name": "奥菲丝·马格努森",
+      "en": "Orphie & Magus",
+      "aliases": [
+        "奥菲丝",
+        "Orphie"
+      ],
+      "element": "火",
+      "attribute": "火",
+      "specialty": "强攻",
+      "weapon": "强攻",
+      "rarity": 5,
+      "version": "2.2",
+      "status": "released",
+      "note": "阵营：奥波勒斯小队",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Orphie-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_seed",
+      "name": "席德",
+      "en": "Seed",
+      "aliases": [
+        "希德",
+        "Seed"
+      ],
+      "element": "电",
+      "attribute": "电",
+      "specialty": "强攻",
+      "weapon": "强攻",
+      "rarity": 5,
+      "version": "2.2",
+      "status": "released",
+      "note": "阵营：防卫军·白银小队",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Seed-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_lucia",
+      "name": "卢西娅·艾洛温",
+      "en": "Lucia",
+      "aliases": [
+        "卢西娅",
+        "Lucia"
+      ],
+      "element": "以太",
+      "attribute": "以太",
+      "specialty": "支援",
+      "weapon": "支援",
+      "rarity": 5,
+      "version": "2.3",
+      "status": "released",
+      "note": "",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Lucia-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_yidhari",
+      "name": "伊德海莉·墨菲",
+      "en": "Yidhari",
+      "aliases": [
+        "伊德海莉",
+        "Yidhari"
+      ],
+      "element": "冰",
+      "attribute": "冰",
+      "specialty": "命破",
+      "weapon": "命破",
+      "rarity": 5,
+      "version": "2.3",
+      "status": "released",
+      "note": "",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Yidhari-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_komata",
+      "name": "狛野真斗",
+      "en": "Komata",
+      "aliases": [
+        "狛野真斗",
+        "Komata"
+      ],
+      "element": "火",
+      "attribute": "火",
+      "specialty": "命破",
+      "weapon": "命破",
+      "rarity": 4,
+      "version": "2.3",
+      "status": "released",
+      "note": "",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Komano%20Manato-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_liu_yin",
+      "name": "琉音",
+      "en": "Liu Yin",
+      "aliases": [
+        "琉音"
+      ],
+      "element": "物理",
+      "attribute": "物理",
+      "specialty": "击破",
+      "weapon": "击破",
+      "rarity": 5,
+      "version": "2.4",
+      "status": "released",
+      "note": "",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Dialyn-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_banyue",
+      "name": "般岳",
+      "en": "Banyue",
+      "aliases": [
+        "般岳"
+      ],
+      "element": "火",
+      "attribute": "火",
+      "specialty": "命破",
+      "weapon": "命破",
+      "rarity": 5,
+      "version": "2.4",
+      "status": "released",
+      "note": "",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Banyue-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_ye_shunguang",
+      "name": "叶瞬光",
+      "en": "Ye Shunguang",
+      "aliases": [
+        "叶瞬光"
+      ],
+      "element": "凛刃",
+      "attribute": "凛刃",
+      "specialty": "强攻",
+      "weapon": "强攻",
+      "rarity": 5,
+      "version": "2.5",
+      "status": "released",
+      "note": "",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/YeShunguang-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_zhao",
+      "name": "照",
+      "en": "Zhao",
+      "aliases": [
+        "照"
+      ],
+      "element": "冰",
+      "attribute": "冰",
+      "specialty": "防护",
+      "weapon": "防护",
+      "rarity": 5,
+      "version": "2.5",
+      "status": "released",
+      "note": "",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Zhao-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_qianxia",
+      "name": "千夏",
+      "en": "Qianxia",
+      "aliases": [
+        "千夏"
+      ],
+      "element": "物理",
+      "attribute": "物理",
+      "specialty": "支援",
+      "weapon": "支援",
+      "rarity": 5,
+      "version": "2.6",
+      "status": "released",
+      "note": "",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Sunna-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_aria",
+      "name": "爱芮",
+      "en": "Aria",
+      "aliases": [
+        "爱芮",
+        "Aria"
+      ],
+      "element": "以太",
+      "attribute": "以太",
+      "specialty": "异常",
+      "weapon": "异常",
+      "rarity": 5,
+      "version": "2.6",
+      "status": "released",
+      "note": "",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Aria-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_nangong_yu",
+      "name": "南宫羽",
+      "en": "Nangong Yu",
+      "aliases": [
+        "南宫羽"
+      ],
+      "element": "以太",
+      "attribute": "以太",
+      "specialty": "击破",
+      "weapon": "击破",
+      "rarity": 5,
+      "version": "2.7",
+      "status": "released",
+      "note": "",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Nangong%20Yu-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_cissia",
+      "name": "希希芙",
+      "en": "Cissia",
+      "aliases": [
+        "希希芙"
+      ],
+      "element": "电",
+      "attribute": "电",
+      "specialty": "强攻",
+      "weapon": "强攻",
+      "rarity": 5,
+      "version": "2.7",
+      "status": "released",
+      "note": "",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Cissia-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_promeia",
+      "name": "普罗米亚",
+      "en": "Promeia",
+      "aliases": [
+        "普罗米亚"
+      ],
+      "element": "冰",
+      "attribute": "冰",
+      "specialty": "异常",
+      "weapon": "异常",
+      "rarity": 5,
+      "version": "2.8",
+      "status": "released",
+      "note": "",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Promeia-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_starlight_billy",
+      "name": "星徽·比利",
+      "en": "Starlight-Billy",
+      "aliases": [
+        "星徽·比利"
+      ],
+      "element": "物理",
+      "attribute": "物理",
+      "specialty": "命破",
+      "weapon": "命破",
+      "rarity": 5,
+      "version": "2.8",
+      "status": "released",
+      "note": "",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Starlight-Billy-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_velina",
+      "name": "维琳娜·艾嘉德",
+      "en": "Velina",
+      "aliases": [
+        "维琳娜",
+        "Velina"
+      ],
+      "element": "风",
+      "attribute": "风",
+      "specialty": "异常",
+      "weapon": "异常",
+      "rarity": 5,
+      "version": "3.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Velina-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_norma",
+      "name": "诺姆·霍格维尔",
+      "en": "Norma",
+      "aliases": [
+        "诺姆",
+        "Norma"
+      ],
+      "element": "火",
+      "attribute": "火",
+      "specialty": "击破",
+      "weapon": "击破",
+      "rarity": 5,
+      "version": "3.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Norma-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_pyrois",
+      "name": "佩洛伊斯",
+      "en": "Pyrois",
+      "aliases": [
+        "佩洛伊斯"
+      ],
+      "element": "以太",
+      "attribute": "以太",
+      "specialty": "强攻",
+      "weapon": "强攻",
+      "rarity": 5,
+      "version": "3.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Pyrois-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_remielle",
+      "name": "蕾米埃尔·丹",
+      "en": "Remielle",
+      "aliases": [
+        "蕾米埃尔",
+        "Remielle"
+      ],
+      "element": "流明",
+      "attribute": "流明",
+      "specialty": "异常",
+      "weapon": "异常",
+      "rarity": 5,
+      "version": "3.1",
+      "status": "released",
+      "note": "",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Remielle-Role.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "zzz_sigrid",
+      "name": "希格莉德",
+      "en": "Sigrid",
+      "aliases": [
+        "希格莉德"
+      ],
+      "element": "冰",
+      "attribute": "冰",
+      "specialty": "强攻",
+      "weapon": "强攻",
+      "rarity": 5,
+      "version": "3.1",
+      "status": "released",
+      "note": "",
+      "icon": "https://zh.moegirl.org.cn/Special:FilePath/Sigrid-Role.png",
+      "icon_fallback": ""
+    }
+  ]
+}

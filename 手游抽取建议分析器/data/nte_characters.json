@@ -1,0 +1,383 @@
+{
+  "game": "nte",
+  "display_name": "异环",
+  "region_note": "由异环 Fandom 英文百科于 2026-08-02 在线拉取合并（22 名角色，新增 0，中文名待核对）。",
+  "characters": [
+    {
+      "id": "nte_zero",
+      "name": "零",
+      "en": "Esper Zero",
+      "aliases": [
+        "零",
+        "主角"
+      ],
+      "element": "光",
+      "weapon": "",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/neverness-to-everness/images/6/67/Esper_Zero_Female_Portrait.png/revision/latest?cb=20260629174041",
+      "icon_fallback": "",
+      "espertype": "Cosmos"
+    },
+    {
+      "id": "nte_nanally",
+      "name": "娜娜莉",
+      "en": "Nanally",
+      "aliases": [
+        "娜娜莉"
+      ],
+      "element": "灵",
+      "weapon": "太刀",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/neverness-to-everness/images/8/8b/Nanally_Portrait.png/revision/latest?cb=20260629174651",
+      "icon_fallback": "",
+      "espertype": "Anima"
+    },
+    {
+      "id": "nte_jiuyuan",
+      "name": "九原",
+      "en": "Jiuyuan",
+      "aliases": [
+        "九原"
+      ],
+      "element": "灵",
+      "weapon": "双枪",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/neverness-to-everness/images/b/b3/Jiuyuan_Portrait.png/revision/latest?cb=20260629174536",
+      "icon_fallback": "",
+      "espertype": "Anima"
+    },
+    {
+      "id": "nte_baizang",
+      "name": "白藏",
+      "en": "Baicang",
+      "aliases": [
+        "白藏"
+      ],
+      "element": "咒",
+      "weapon": "言灵书",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/neverness-to-everness/images/8/83/Baicang_Portrait.png/revision/latest?cb=20260629173726",
+      "icon_fallback": "",
+      "espertype": "Incantation"
+    },
+    {
+      "id": "nte_hotori",
+      "name": "穗鸟",
+      "en": "Hotori",
+      "aliases": [
+        "穗鸟"
+      ],
+      "element": "光",
+      "weapon": "时停伞",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/neverness-to-everness/images/b/b6/Hotori_Portrait.png/revision/latest?cb=20260629174306",
+      "icon_fallback": "",
+      "espertype": "Cosmos"
+    },
+    {
+      "id": "nte_xiaozhi",
+      "name": "小吱",
+      "en": "Chiz",
+      "aliases": [
+        "小吱",
+        "免费"
+      ],
+      "element": "光",
+      "weapon": "能量",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/neverness-to-everness/images/4/42/Chiz_Portrait.png/revision/latest?cb=20260629173843",
+      "icon_fallback": "",
+      "espertype": "Cosmos"
+    },
+    {
+      "id": "nte_fadia",
+      "name": "法蒂亚",
+      "en": "Fadia",
+      "aliases": [
+        "法蒂亚"
+      ],
+      "element": "灵",
+      "weapon": "双刃十字盾",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/neverness-to-everness/images/7/7d/Fadia_Portrait.png/revision/latest?cb=20260629174721",
+      "icon_fallback": "",
+      "espertype": "Psyche"
+    },
+    {
+      "id": "nte_daffodil",
+      "name": "达芙蒂尔",
+      "en": "Daffodill",
+      "aliases": [
+        "达芙蒂尔"
+      ],
+      "element": "暗",
+      "weapon": "双刀",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/neverness-to-everness/images/f/f0/Daffodill_Portrait.png/revision/latest?cb=20260629173935",
+      "icon_fallback": "",
+      "espertype": "Chaos (Esper Type)"
+    },
+    {
+      "id": "nte_sagiri",
+      "name": "早雾",
+      "en": "Sagiri",
+      "aliases": [
+        "早雾"
+      ],
+      "element": "咒",
+      "weapon": "巨锤",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://storage.moegirl.org.cn/moegirl/commons/b/b3/%E5%BC%82%E7%8E%AF-%E6%97%A9%E9%9B%BE.jpg",
+      "icon_fallback": ""
+    },
+    {
+      "id": "nte_hathor",
+      "name": "哈索尔",
+      "en": "Hathor",
+      "aliases": [
+        "哈索尔"
+      ],
+      "element": "相",
+      "weapon": "体术摩托",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/neverness-to-everness/images/9/9b/Hathor_Portrait.png/revision/latest?cb=20260629174220",
+      "icon_fallback": "",
+      "espertype": "Lakshana"
+    },
+    {
+      "id": "nte_sakiri",
+      "name": "咲里",
+      "en": "Sakiri",
+      "aliases": [
+        "咲里"
+      ],
+      "element": "咒",
+      "weapon": "法器",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/neverness-to-everness/images/6/61/Sakiri_Portrait.png/revision/latest?cb=20260701202236",
+      "icon_fallback": "",
+      "espertype": "Incantation"
+    },
+    {
+      "id": "nte_xun",
+      "name": "浔",
+      "en": "Xun",
+      "aliases": [
+        "浔",
+        "1.0登场"
+      ],
+      "element": "光",
+      "weapon": "伞太刀",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://storage.moegirl.org.cn/moegirl/commons/8/8c/%E6%B5%94%28%E5%BC%82%E7%8E%AF%29.png",
+      "icon_fallback": ""
+    },
+    {
+      "id": "nte_haniel",
+      "name": "哈尼娅",
+      "en": "Haniel",
+      "aliases": [
+        "哈尼娅",
+        "免费"
+      ],
+      "element": "魂",
+      "weapon": "音响",
+      "rarity": 4,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/neverness-to-everness/images/a/a5/Haniel_Portrait.png/revision/latest?cb=20260701202324",
+      "icon_fallback": ""
+    },
+    {
+      "id": "nte_mint",
+      "name": "薄荷",
+      "en": "Mint",
+      "aliases": [
+        "薄荷"
+      ],
+      "element": "灵",
+      "weapon": "双刀",
+      "rarity": 4,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/neverness-to-everness/images/4/41/Mint_Portrait.png/revision/latest?cb=20260629174611",
+      "icon_fallback": "",
+      "espertype": "Anima"
+    },
+    {
+      "id": "nte_aurelia",
+      "name": "海月",
+      "en": "Aurelia",
+      "aliases": [
+        "海月",
+        "免费"
+      ],
+      "element": "魂",
+      "weapon": "指挥棒",
+      "rarity": 4,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/neverness-to-everness/images/2/22/Aurelia_Portrait.png/revision/latest?cb=20260629174756",
+      "icon_fallback": "",
+      "espertype": "Psyche"
+    },
+    {
+      "id": "nte_adler",
+      "name": "阿德勒",
+      "en": "Adler",
+      "aliases": [
+        "阿德勒"
+      ],
+      "element": "咒",
+      "weapon": "手杖枪",
+      "rarity": 4,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/neverness-to-everness/images/0/0c/Adler_Portrait.png/revision/latest?cb=20260629173120",
+      "icon_fallback": "",
+      "espertype": "Incantation"
+    },
+    {
+      "id": "nte_skia",
+      "name": "翳",
+      "en": "Skia",
+      "aliases": [
+        "翳"
+      ],
+      "element": "相",
+      "weapon": "格斗",
+      "rarity": 4,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/neverness-to-everness/images/0/0d/Skia_Portrait.png/revision/latest?cb=20260629174906",
+      "icon_fallback": "",
+      "espertype": "Lakshana"
+    },
+    {
+      "id": "nte_edgar",
+      "name": "埃德嘉",
+      "en": "Edgar",
+      "aliases": [
+        "埃德嘉"
+      ],
+      "element": "光",
+      "weapon": "",
+      "rarity": 4,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/neverness-to-everness/images/b/b4/Edgar_Portrait.png/revision/latest?cb=20260701201907",
+      "icon_fallback": "",
+      "espertype": "Cosmos"
+    },
+    {
+      "id": "nte_requiem",
+      "name": "安魂曲",
+      "en": "Lacrimosa",
+      "aliases": [
+        "安魂曲"
+      ],
+      "element": "暗",
+      "weapon": "拟态",
+      "rarity": 5,
+      "version": "1.1",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/neverness-to-everness/images/c/c1/Lacrimosa_Portrait.png/revision/latest?cb=20260701202053",
+      "icon_fallback": "",
+      "espertype": "Chaos (Esper Type)"
+    },
+    {
+      "id": "nte_kaos",
+      "name": "卡厄斯",
+      "en": "Chaos",
+      "aliases": [
+        "卡厄斯"
+      ],
+      "element": "相",
+      "weapon": "手甲",
+      "rarity": 5,
+      "version": "1.1",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/neverness-to-everness/images/8/87/Chaos_Portrait.png/revision/latest?cb=20260629173809",
+      "icon_fallback": "",
+      "espertype": "Lakshana"
+    },
+    {
+      "id": "nte_zhenhong",
+      "name": "真红",
+      "en": "Shinku",
+      "aliases": [
+        "真红"
+      ],
+      "element": "光",
+      "weapon": "龙爪",
+      "rarity": 5,
+      "version": "1.2",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/neverness-to-everness/images/a/a8/Shinku_Portrait.png/revision/latest?cb=20260708083848",
+      "icon_fallback": "",
+      "espertype": "Cosmos"
+    },
+    {
+      "id": "nte_iroi",
+      "name": "伊洛伊",
+      "en": "Iroi",
+      "aliases": [
+        "伊洛伊"
+      ],
+      "element": "灵",
+      "weapon": "梦境",
+      "rarity": 5,
+      "version": "1.2",
+      "status": "released",
+      "note": "",
+      "icon": "https://static.wikia.nocookie.net/neverness-to-everness/images/8/85/Iroi_Portrait.png/revision/latest?cb=20260723021205",
+      "icon_fallback": "",
+      "espertype": "Anima"
+    }
+  ]
+}

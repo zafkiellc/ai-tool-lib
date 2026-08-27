@@ -1,0 +1,185 @@
+{
+  "demo_mode": false,
+  "recency_days": 365,
+  "analysis_mode": "rule",
+  "cookie": {
+    "SESSDATA": "<FILL_IN_YOUR_BILIBILI_SESSDATA_COOKIE>",
+    "NGA_COOKIE": "<FILL_IN_YOUR_NGA_COOKIE_IF_USED>"
+  },
+  "ai": {
+    "enabled": true,
+    "provider": "online",
+    "prompt_lang": "zh",
+    "online": {
+      "base_url": "https://api.deepseek.com/v1",
+      "api_key": "<FILL_IN_YOUR_DEEPSEEK_API_KEY>",
+      "model": "deepseek-v4-flash"
+    },
+    "local": {
+      "base_url": "http://localhost:11434/v1",
+      "api_key": "",
+      "model": "qwen2.5:7b"
+    }
+  },
+  "content": {
+    "source": "metadata",
+    "prefer_audio_only": true,
+    "asr_provider": ""
+  },
+  "weights": {
+    "trusted": 3.0,
+    "official": 2.0,
+    "normal": 1.0,
+    "recency_half_life_days": 120
+  },
+  "games": {
+    "genshin": {
+      "display_name": "原神",
+      "category_field": "element",
+      "category_label": "元素",
+      "category_order": [
+        "火",
+        "水",
+        "雷",
+        "冰",
+        "风",
+        "草",
+        "岩"
+      ],
+      "current_version": "7.0（无神怜爱的雪国 · Everwinter Without Mercy）在跑 · 2026-08-12 已上线",
+      "streamers": [
+        {
+          "uid": "31922771",
+          "name": "Leah莉娅又迟到啦",
+          "trusted": false,
+          "role": "cross_check",
+          "resolved": true
+        },
+        {
+          "uid": "13552255",
+          "name": "莉法sama",
+          "trusted": true,
+          "role": "main",
+          "resolved": true
+        },
+        {
+          "uid": "1438375628",
+          "name": "粥粥的终极理解",
+          "trusted": false,
+          "role": "cross_check",
+          "resolved": true
+        },
+        {
+          "uid": "43222001",
+          "name": "卡特亚",
+          "trusted": false,
+          "role": "cross_check",
+          "resolved": true
+        },
+        {
+          "uid": "27717502",
+          "name": "时雨ioo",
+          "trusted": false,
+          "role": "cross_check",
+          "resolved": true
+        },
+        {
+          "uid": "307353874",
+          "name": "龙四爷攻略组",
+          "trusted": false,
+          "role": "cross_check",
+          "resolved": true
+        }
+      ],
+      "official": []
+    },
+    "hsr": {
+      "display_name": "崩坏：星穹铁道",
+      "category_field": "path",
+      "category_label": "命途",
+      "category_order": [
+        "毁灭",
+        "巡猎",
+        "智识",
+        "同谐",
+        "虚无",
+        "存护",
+        "丰饶",
+        "记忆",
+        "欢愉"
+      ],
+      "current_version": "4.4（鸣笛于归寂之时）",
+      "streamers": [],
+      "official": []
+    },
+    "zzz": {
+      "display_name": "绝区零",
+      "category_field": "attribute",
+      "category_label": "属性",
+      "category_order": [
+        "火",
+        "电",
+        "冰",
+        "以太",
+        "物理",
+        "烈霜",
+        "玄墨",
+        "凛刃",
+        "风",
+        "流明"
+      ],
+      "current_version": "3.1（漫长的告别）",
+      "streamers": [],
+      "official": []
+    },
+    "arknights_endfield": {
+      "display_name": "明日方舟：终末地",
+      "category_field": "class",
+      "category_label": "职业",
+      "category_order": [
+        "近卫",
+        "术师",
+        "突击",
+        "先锋",
+        "重装",
+        "辅助"
+      ],
+      "current_version": "1.4（向渊行）",
+      "streamers": [],
+      "official": []
+    },
+    "wuthering_waves": {
+      "display_name": "鸣潮",
+      "category_field": "element",
+      "category_label": "元素",
+      "category_order": [
+        "衍射",
+        "导电",
+        "冷凝",
+        "热熔",
+        "气动",
+        "湮灭"
+      ],
+      "current_version": "3.5（曲光归元）",
+      "streamers": [],
+      "official": []
+    },
+    "nte": {
+      "display_name": "异环 (Neverness To Everness)",
+      "category_field": "element",
+      "category_label": "属性",
+      "category_order": [
+        "光",
+        "灵",
+        "咒",
+        "暗",
+        "魂",
+        "相"
+      ],
+      "current_version": "1.2（九百九十九夜）",
+      "streamers": [],
+      "official": []
+    }
+  },
+  "current_game": "genshin"
+}

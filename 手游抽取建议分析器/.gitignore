@@ -1,0 +1,20 @@
+# 个人配置与密钥（含 B 站 Cookie / AI API Key，绝不入库）
+config.json
+
+# 运行时日志、缓存与临时目录
+*.log
+.server_*
+server.*.log
+.cache/
+.workbuddy/
+__pycache__/
+*.pyc
+data/.ai_cache/
+data/.loadout_cache/
+data/gacha_history_*.json
+
+# 构建产物与本地下载的展示头像
+dist/
+data/avatars/
+*.bak*
+tools/_py_runtime/

@@ -1,0 +1,2076 @@
+{
+  "game": "genshin",
+  "display_name": "原神",
+  "region_note": "由 genshin-db 官方镜像（GenshinData 数据发行版 v5.2.12） + Fandom 7.0 上线页（Everwinter Without Mercy） 于 2026-08-12 在线拉取合并（122 名角色，新增 2）。",
+  "characters": [
+    {
+      "id": "jean",
+      "name": "琴",
+      "en": "Jean",
+      "aliases": [
+        "琴",
+        "琴团长",
+        "代理团长"
+      ],
+      "element": "风",
+      "weapon": "单手剑",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Qin.png",
+      "icon_fallback": "/avatars/jean.webp"
+    },
+    {
+      "id": "diluc",
+      "name": "迪卢克",
+      "en": "Diluc",
+      "aliases": [
+        "迪卢克",
+        "卢姥爷"
+      ],
+      "element": "火",
+      "weapon": "双手剑",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Diluc.png",
+      "icon_fallback": "/avatars/diluc.png"
+    },
+    {
+      "id": "klee",
+      "name": "可莉",
+      "en": "Klee",
+      "aliases": [
+        "可莉",
+        "蹦蹦"
+      ],
+      "element": "火",
+      "weapon": "法器",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Klee.png",
+      "icon_fallback": "/avatars/klee.png"
+    },
+    {
+      "id": "venti",
+      "name": "温迪",
+      "en": "Venti",
+      "aliases": [
+        "温迪",
+        "风神",
+        "巴巴托斯"
+      ],
+      "element": "风",
+      "weapon": "弓",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Venti.png",
+      "icon_fallback": "/avatars/venti.png"
+    },
+    {
+      "id": "keqing",
+      "name": "刻晴",
+      "en": "Keqing",
+      "aliases": [
+        "刻晴",
+        "刻皇"
+      ],
+      "element": "雷",
+      "weapon": "单手剑",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Keqing.png",
+      "icon_fallback": "/avatars/keqing.png"
+    },
+    {
+      "id": "mona",
+      "name": "莫娜",
+      "en": "Mona",
+      "aliases": [
+        "莫娜",
+        "莫娜老师"
+      ],
+      "element": "水",
+      "weapon": "法器",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Mona.png",
+      "icon_fallback": "/avatars/mona.png"
+    },
+    {
+      "id": "qiqi",
+      "name": "七七",
+      "en": "Qiqi",
+      "aliases": [
+        "七七"
+      ],
+      "element": "冰",
+      "weapon": "单手剑",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Qiqi.png",
+      "icon_fallback": "/avatars/qiqi.png"
+    },
+    {
+      "id": "amber",
+      "name": "安柏",
+      "en": "Amber",
+      "aliases": [
+        "安柏"
+      ],
+      "element": "火",
+      "weapon": "弓",
+      "rarity": 4,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Ambor.png",
+      "icon_fallback": "/avatars/amber.webp"
+    },
+    {
+      "id": "kaeya",
+      "name": "凯亚",
+      "en": "Kaeya",
+      "aliases": [
+        "凯亚"
+      ],
+      "element": "冰",
+      "weapon": "单手剑",
+      "rarity": 4,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Kaeya.png",
+      "icon_fallback": "/avatars/kaeya.png"
+    },
+    {
+      "id": "lisa",
+      "name": "丽莎",
+      "en": "Lisa",
+      "aliases": [
+        "丽莎"
+      ],
+      "element": "雷",
+      "weapon": "法器",
+      "rarity": 4,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Lisa.png",
+      "icon_fallback": "/avatars/lisa.png"
+    },
+    {
+      "id": "barbara",
+      "name": "芭芭拉",
+      "en": "Barbara",
+      "aliases": [
+        "芭芭拉",
+        "偶像"
+      ],
+      "element": "水",
+      "weapon": "法器",
+      "rarity": 4,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Barbara.png",
+      "icon_fallback": "/avatars/barbara.png"
+    },
+    {
+      "id": "bennett",
+      "name": "班尼特",
+      "en": "Bennett",
+      "aliases": [
+        "班尼特",
+        "点赞哥",
+        "六星火神"
+      ],
+      "element": "火",
+      "weapon": "单手剑",
+      "rarity": 4,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Bennett.png",
+      "icon_fallback": "/avatars/bennett.png"
+    },
+    {
+      "id": "noelle",
+      "name": "诺艾尔",
+      "en": "Noelle",
+      "aliases": [
+        "诺艾尔",
+        "女仆"
+      ],
+      "element": "岩",
+      "weapon": "双手剑",
+      "rarity": 4,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Noel.png",
+      "icon_fallback": "/avatars/noelle.webp"
+    },
+    {
+      "id": "fischl",
+      "name": "菲谢尔",
+      "en": "Fischl",
+      "aliases": [
+        "菲谢尔",
+        "皇女"
+      ],
+      "element": "雷",
+      "weapon": "弓",
+      "rarity": 4,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Fischl.png",
+      "icon_fallback": "/avatars/fischl.png"
+    },
+    {
+      "id": "beidou",
+      "name": "北斗",
+      "en": "Beidou",
+      "aliases": [
+        "北斗"
+      ],
+      "element": "雷",
+      "weapon": "双手剑",
+      "rarity": 4,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Beidou.png",
+      "icon_fallback": "/avatars/beidou.png"
+    },
+    {
+      "id": "razor",
+      "name": "雷泽",
+      "en": "Razor",
+      "aliases": [
+        "雷泽"
+      ],
+      "element": "雷",
+      "weapon": "双手剑",
+      "rarity": 4,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Razor.png",
+      "icon_fallback": "/avatars/razor.png"
+    },
+    {
+      "id": "sucrose",
+      "name": "砂糖",
+      "en": "Sucrose",
+      "aliases": [
+        "砂糖"
+      ],
+      "element": "风",
+      "weapon": "法器",
+      "rarity": 4,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Sucrose.png",
+      "icon_fallback": "/avatars/sucrose.png"
+    },
+    {
+      "id": "xingqiu",
+      "name": "行秋",
+      "en": "Xingqiu",
+      "aliases": [
+        "行秋",
+        "六星水神"
+      ],
+      "element": "水",
+      "weapon": "单手剑",
+      "rarity": 4,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Xingqiu.png",
+      "icon_fallback": "/avatars/xingqiu.png"
+    },
+    {
+      "id": "xiangling",
+      "name": "香菱",
+      "en": "Xiangling",
+      "aliases": [
+        "香菱",
+        "万民堂"
+      ],
+      "element": "火",
+      "weapon": "长柄武器",
+      "rarity": 4,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Xiangling.png",
+      "icon_fallback": "/avatars/xiangling.png"
+    },
+    {
+      "id": "ningguang",
+      "name": "凝光",
+      "en": "Ningguang",
+      "aliases": [
+        "凝光",
+        "天权"
+      ],
+      "element": "岩",
+      "weapon": "法器",
+      "rarity": 4,
+      "version": "1.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Ningguang.png",
+      "icon_fallback": "/avatars/ningguang.png"
+    },
+    {
+      "id": "zhongli",
+      "name": "钟离",
+      "en": "Zhongli",
+      "aliases": [
+        "钟离",
+        "岩王帝君",
+        "钟师傅",
+        "老爷子"
+      ],
+      "element": "岩",
+      "weapon": "长柄武器",
+      "rarity": 5,
+      "version": "1.1",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Zhongli.png",
+      "icon_fallback": "/avatars/zhongli.png"
+    },
+    {
+      "id": "diona",
+      "name": "迪奥娜",
+      "en": "Diona",
+      "aliases": [
+        "迪奥娜",
+        "猫尾酒保"
+      ],
+      "element": "冰",
+      "weapon": "弓",
+      "rarity": 4,
+      "version": "1.1",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Diona.png",
+      "icon_fallback": "/avatars/diona.png"
+    },
+    {
+      "id": "chongyun",
+      "name": "重云",
+      "en": "Chongyun",
+      "aliases": [
+        "重云"
+      ],
+      "element": "冰",
+      "weapon": "双手剑",
+      "rarity": 4,
+      "version": "1.1",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Chongyun.png",
+      "icon_fallback": "/avatars/chongyun.png"
+    },
+    {
+      "id": "xinyan",
+      "name": "辛焱",
+      "en": "Xinyan",
+      "aliases": [
+        "辛焱"
+      ],
+      "element": "火",
+      "weapon": "双手剑",
+      "rarity": 4,
+      "version": "1.1",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Xinyan.png",
+      "icon_fallback": "/avatars/xinyan.png"
+    },
+    {
+      "id": "albedo",
+      "name": "阿贝多",
+      "en": "Albedo",
+      "aliases": [
+        "阿贝多",
+        "教授"
+      ],
+      "element": "岩",
+      "weapon": "单手剑",
+      "rarity": 5,
+      "version": "1.2",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Albedo.png",
+      "icon_fallback": "/avatars/albedo.png"
+    },
+    {
+      "id": "ganyu",
+      "name": "甘雨",
+      "en": "Ganyu",
+      "aliases": [
+        "甘雨",
+        "椰羊"
+      ],
+      "element": "冰",
+      "weapon": "弓",
+      "rarity": 5,
+      "version": "1.2",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Ganyu.png",
+      "icon_fallback": "/avatars/ganyu.png"
+    },
+    {
+      "id": "xiao",
+      "name": "魈",
+      "en": "Xiao",
+      "aliases": [
+        "魈",
+        "降魔大圣",
+        "小哥"
+      ],
+      "element": "风",
+      "weapon": "长柄武器",
+      "rarity": 5,
+      "version": "1.3",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Xiao.png",
+      "icon_fallback": "/avatars/xiao.png"
+    },
+    {
+      "id": "hu-tao",
+      "name": "胡桃",
+      "en": "HuTao",
+      "aliases": [
+        "胡桃",
+        "往生堂主"
+      ],
+      "element": "火",
+      "weapon": "长柄武器",
+      "rarity": 5,
+      "version": "1.3",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Hutao.png",
+      "icon_fallback": "/avatars/hu-tao.webp"
+    },
+    {
+      "id": "kokomi",
+      "name": "珊瑚宫心海",
+      "en": "Kokomi",
+      "aliases": [
+        "珊瑚宫心海",
+        "心海",
+        "舰长"
+      ],
+      "element": "水",
+      "weapon": "法器",
+      "rarity": 5,
+      "version": "1.4",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Kokomi.png",
+      "icon_fallback": "/avatars/kokomi.png"
+    },
+    {
+      "id": "rosaria",
+      "name": "罗莎莉亚",
+      "en": "Rosaria",
+      "aliases": [
+        "罗莎莉亚",
+        "修女"
+      ],
+      "element": "冰",
+      "weapon": "长柄武器",
+      "rarity": 4,
+      "version": "1.4",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Rosaria.png",
+      "icon_fallback": "/avatars/rosaria.png"
+    },
+    {
+      "id": "eula",
+      "name": "优菈",
+      "en": "Eula",
+      "aliases": [
+        "优菈",
+        "狼末"
+      ],
+      "element": "冰",
+      "weapon": "双手剑",
+      "rarity": 5,
+      "version": "1.5",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Eula.png",
+      "icon_fallback": "/avatars/eula.png"
+    },
+    {
+      "id": "yanfei",
+      "name": "烟绯",
+      "en": "Yanfei",
+      "aliases": [
+        "烟绯"
+      ],
+      "element": "火",
+      "weapon": "法器",
+      "rarity": 4,
+      "version": "1.5",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Feiyan.png",
+      "icon_fallback": "/avatars/yanfei.webp"
+    },
+    {
+      "id": "arataki-itto",
+      "name": "荒泷一斗",
+      "en": "AratakiItto",
+      "aliases": [
+        "荒泷一斗",
+        "一斗",
+        "阿丑"
+      ],
+      "element": "岩",
+      "weapon": "双手剑",
+      "rarity": 5,
+      "version": "1.6",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Itto.png",
+      "icon_fallback": "/avatars/arataki-itto.webp"
+    },
+    {
+      "id": "kazuha",
+      "name": "枫原万叶",
+      "en": "Kazuha",
+      "aliases": [
+        "枫原万叶",
+        "万叶",
+        "叶天帝"
+      ],
+      "element": "风",
+      "weapon": "单手剑",
+      "rarity": 5,
+      "version": "1.6",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Kazuha.png",
+      "icon_fallback": "/avatars/kazuha.png"
+    },
+    {
+      "id": "ayaka",
+      "name": "神里绫华",
+      "en": "Ayaka",
+      "aliases": [
+        "神里绫华",
+        "绫华",
+        "白鹭公主"
+      ],
+      "element": "冰",
+      "weapon": "单手剑",
+      "rarity": 5,
+      "version": "2.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Ayaka.png",
+      "icon_fallback": "/avatars/ayaka.png"
+    },
+    {
+      "id": "yoimiya",
+      "name": "宵宫",
+      "en": "Yoimiya",
+      "aliases": [
+        "宵宫",
+        "烟花妹"
+      ],
+      "element": "火",
+      "weapon": "弓",
+      "rarity": 5,
+      "version": "2.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Yoimiya.png",
+      "icon_fallback": "/avatars/yoimiya.png"
+    },
+    {
+      "id": "raiden",
+      "name": "雷电将军",
+      "en": "Raiden",
+      "aliases": [
+        "雷电将军",
+        "雷神",
+        "影",
+        "巴尔泽布"
+      ],
+      "element": "雷",
+      "weapon": "长柄武器",
+      "rarity": 5,
+      "version": "2.1",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Shougun.png",
+      "icon_fallback": "/avatars/raiden.webp"
+    },
+    {
+      "id": "kujou-sara",
+      "name": "九条裟罗",
+      "en": "KujouSara",
+      "aliases": [
+        "九条裟罗",
+        "九条"
+      ],
+      "element": "雷",
+      "weapon": "弓",
+      "rarity": 4,
+      "version": "2.1",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Sara.png",
+      "icon_fallback": "https://static.wikia.nocookie.net/gensin-impact/images/d/df/Kujou_Sara_Icon.png/revision/latest?cb=20220210040844"
+    },
+    {
+      "id": "aloy",
+      "name": "埃洛伊",
+      "en": "Aloy",
+      "aliases": [
+        "埃洛伊"
+      ],
+      "element": "冰",
+      "weapon": "弓",
+      "rarity": 5,
+      "version": "2.1",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Aloy.png",
+      "icon_fallback": "/avatars/aloy.png"
+    },
+    {
+      "id": "tartaglia",
+      "name": "达达利亚",
+      "en": "Tartaglia",
+      "aliases": [
+        "达达利亚",
+        "公子",
+        "巧克力"
+      ],
+      "element": "水",
+      "weapon": "弓",
+      "rarity": 5,
+      "version": "2.2",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Tartaglia.png",
+      "icon_fallback": "/avatars/tartaglia.png"
+    },
+    {
+      "id": "thoma",
+      "name": "托马",
+      "en": "Thoma",
+      "aliases": [
+        "托马"
+      ],
+      "element": "火",
+      "weapon": "长柄武器",
+      "rarity": 4,
+      "version": "2.2",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Tohma.png",
+      "icon_fallback": "/avatars/thoma.webp"
+    },
+    {
+      "id": "gorou",
+      "name": "五郎",
+      "en": "Gorou",
+      "aliases": [
+        "五郎",
+        "海祇岛"
+      ],
+      "element": "岩",
+      "weapon": "弓",
+      "rarity": 4,
+      "version": "2.3",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Gorou.png",
+      "icon_fallback": "/avatars/gorou.png"
+    },
+    {
+      "id": "shenhe",
+      "name": "申鹤",
+      "en": "Shenhe",
+      "aliases": [
+        "申鹤",
+        "冻鳐"
+      ],
+      "element": "冰",
+      "weapon": "长柄武器",
+      "rarity": 5,
+      "version": "2.4",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Shenhe.png",
+      "icon_fallback": "/avatars/shenhe.png"
+    },
+    {
+      "id": "yunjin",
+      "name": "云堇",
+      "en": "Yunjin",
+      "aliases": [
+        "云堇",
+        "戏班"
+      ],
+      "element": "岩",
+      "weapon": "长柄武器",
+      "rarity": 4,
+      "version": "2.4",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Yunjin.png",
+      "icon_fallback": "/avatars/yunjin.png"
+    },
+    {
+      "id": "yae-miko",
+      "name": "八重神子",
+      "en": "YaeMiko",
+      "aliases": [
+        "八重神子",
+        "神子",
+        "宫司"
+      ],
+      "element": "雷",
+      "weapon": "法器",
+      "rarity": 5,
+      "version": "2.5",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Yae.png",
+      "icon_fallback": "/avatars/yae-miko.webp"
+    },
+    {
+      "id": "ayato",
+      "name": "神里绫人",
+      "en": "Ayato",
+      "aliases": [
+        "神里绫人",
+        "绫人",
+        "社奉行"
+      ],
+      "element": "水",
+      "weapon": "单手剑",
+      "rarity": 5,
+      "version": "2.6",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Ayato.png",
+      "icon_fallback": "/avatars/ayato.png"
+    },
+    {
+      "id": "kuki-shinobu",
+      "name": "久岐忍",
+      "en": "KukiShinobu",
+      "aliases": [
+        "久岐忍"
+      ],
+      "element": "雷",
+      "weapon": "单手剑",
+      "rarity": 4,
+      "version": "2.6",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Shinobu.png",
+      "icon_fallback": "/avatars/kuki-shinobu.webp"
+    },
+    {
+      "id": "yelan",
+      "name": "夜兰",
+      "en": "Yelan",
+      "aliases": [
+        "夜兰",
+        "兰姐",
+        "夜天后"
+      ],
+      "element": "水",
+      "weapon": "弓",
+      "rarity": 5,
+      "version": "2.7",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Yelan.png",
+      "icon_fallback": "/avatars/yelan.png"
+    },
+    {
+      "id": "sayu",
+      "name": "早柚",
+      "en": "Sayu",
+      "aliases": [
+        "早柚",
+        "忍者"
+      ],
+      "element": "风",
+      "weapon": "双手剑",
+      "rarity": 4,
+      "version": "2.7",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Sayu.png",
+      "icon_fallback": "/avatars/sayu.png"
+    },
+    {
+      "id": "shikanoin-heizou",
+      "name": "鹿野院平藏",
+      "en": "ShikanoinHeizou",
+      "aliases": [
+        "鹿野院平藏",
+        "平藏"
+      ],
+      "element": "风",
+      "weapon": "法器",
+      "rarity": 4,
+      "version": "2.8",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Heizo.png",
+      "icon_fallback": "/avatars/shikanoin-heizou.webp"
+    },
+    {
+      "id": "tighnari",
+      "name": "提纳里",
+      "en": "Tighnari",
+      "aliases": [
+        "提纳里",
+        "提老师"
+      ],
+      "element": "草",
+      "weapon": "弓",
+      "rarity": 5,
+      "version": "3.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Tighnari.png",
+      "icon_fallback": "/avatars/tighnari.png"
+    },
+    {
+      "id": "collei",
+      "name": "柯莱",
+      "en": "Collei",
+      "aliases": [
+        "柯莱"
+      ],
+      "element": "草",
+      "weapon": "弓",
+      "rarity": 4,
+      "version": "3.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Collei.png",
+      "icon_fallback": "/avatars/collei.png"
+    },
+    {
+      "id": "dori",
+      "name": "多莉",
+      "en": "Dori",
+      "aliases": [
+        "多莉"
+      ],
+      "element": "雷",
+      "weapon": "双手剑",
+      "rarity": 4,
+      "version": "3.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Dori.png",
+      "icon_fallback": "/avatars/dori.png"
+    },
+    {
+      "id": "cyno",
+      "name": "赛诺",
+      "en": "Cyno",
+      "aliases": [
+        "赛诺",
+        "大风纪官"
+      ],
+      "element": "雷",
+      "weapon": "长柄武器",
+      "rarity": 5,
+      "version": "3.1",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Cyno.png",
+      "icon_fallback": "/avatars/cyno.png"
+    },
+    {
+      "id": "nilou",
+      "name": "妮露",
+      "en": "Nilou",
+      "aliases": [
+        "妮露",
+        "祖拜尔"
+      ],
+      "element": "水",
+      "weapon": "单手剑",
+      "rarity": 5,
+      "version": "3.1",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Nilou.png",
+      "icon_fallback": "/avatars/nilou.png"
+    },
+    {
+      "id": "candace",
+      "name": "坎蒂丝",
+      "en": "Candace",
+      "aliases": [
+        "坎蒂丝"
+      ],
+      "element": "水",
+      "weapon": "长柄武器",
+      "rarity": 4,
+      "version": "3.1",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Candace.png",
+      "icon_fallback": "/avatars/candace.png"
+    },
+    {
+      "id": "layla",
+      "name": "莱依拉",
+      "en": "Layla",
+      "aliases": [
+        "莱依拉"
+      ],
+      "element": "冰",
+      "weapon": "单手剑",
+      "rarity": 4,
+      "version": "3.1",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Layla.png",
+      "icon_fallback": "/avatars/layla.png"
+    },
+    {
+      "id": "nahida",
+      "name": "纳西妲",
+      "en": "Nahida",
+      "aliases": [
+        "纳西妲",
+        "草神",
+        "布耶尔",
+        "兰那罗"
+      ],
+      "element": "草",
+      "weapon": "法器",
+      "rarity": 5,
+      "version": "3.2",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Nahida.png",
+      "icon_fallback": "/avatars/nahida.png"
+    },
+    {
+      "id": "wanderer",
+      "name": "流浪者",
+      "en": "Wanderer",
+      "aliases": [
+        "流浪者",
+        "散兵",
+        "国崩",
+        "倾奇者"
+      ],
+      "element": "风",
+      "weapon": "法器",
+      "rarity": 5,
+      "version": "3.3",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Wanderer.png",
+      "icon_fallback": "/avatars/wanderer.png"
+    },
+    {
+      "id": "faruzan",
+      "name": "珐露珊",
+      "en": "Faruzan",
+      "aliases": [
+        "珐露珊",
+        "学院"
+      ],
+      "element": "风",
+      "weapon": "弓",
+      "rarity": 4,
+      "version": "3.3",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Faruzan.png",
+      "icon_fallback": "/avatars/faruzan.png"
+    },
+    {
+      "id": "alhaitham",
+      "name": "艾尔海森",
+      "en": "Alhaitham",
+      "aliases": [
+        "艾尔海森",
+        "海哥",
+        "书记官"
+      ],
+      "element": "草",
+      "weapon": "单手剑",
+      "rarity": 5,
+      "version": "3.4",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Alhatham.png",
+      "icon_fallback": "/avatars/alhaitham.webp"
+    },
+    {
+      "id": "yaoyao",
+      "name": "瑶瑶",
+      "en": "Yaoyao",
+      "aliases": [
+        "瑶瑶"
+      ],
+      "element": "草",
+      "weapon": "长柄武器",
+      "rarity": 4,
+      "version": "3.4",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Yaoyao.png",
+      "icon_fallback": "/avatars/yaoyao.png"
+    },
+    {
+      "id": "dehya",
+      "name": "迪希雅",
+      "en": "Dehya",
+      "aliases": [
+        "迪希雅",
+        "炽鬃之狮"
+      ],
+      "element": "火",
+      "weapon": "双手剑",
+      "rarity": 5,
+      "version": "3.5",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Dehya.png",
+      "icon_fallback": "/avatars/dehya.png"
+    },
+    {
+      "id": "mika",
+      "name": "米卡",
+      "en": "Mika",
+      "aliases": [
+        "米卡",
+        "侦查骑士"
+      ],
+      "element": "冰",
+      "weapon": "长柄武器",
+      "rarity": 4,
+      "version": "3.5",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Mika.png",
+      "icon_fallback": "/avatars/mika.png"
+    },
+    {
+      "id": "baizhu",
+      "name": "白术",
+      "en": "Baizhu",
+      "aliases": [
+        "白术",
+        "白大夫"
+      ],
+      "element": "草",
+      "weapon": "法器",
+      "rarity": 5,
+      "version": "3.6",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Baizhuer.png",
+      "icon_fallback": "/avatars/baizhu.webp"
+    },
+    {
+      "id": "kaveh",
+      "name": "卡维",
+      "en": "Kaveh",
+      "aliases": [
+        "卡维"
+      ],
+      "element": "草",
+      "weapon": "双手剑",
+      "rarity": 4,
+      "version": "3.6",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Kaveh.png",
+      "icon_fallback": "/avatars/kaveh.png"
+    },
+    {
+      "id": "lyney",
+      "name": "林尼",
+      "en": "Lyney",
+      "aliases": [
+        "林尼"
+      ],
+      "element": "火",
+      "weapon": "弓",
+      "rarity": 5,
+      "version": "4.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Liney.png",
+      "icon_fallback": "/avatars/lyney.webp"
+    },
+    {
+      "id": "lynette",
+      "name": "琳妮特",
+      "en": "Lynette",
+      "aliases": [
+        "琳妮特"
+      ],
+      "element": "风",
+      "weapon": "单手剑",
+      "rarity": 4,
+      "version": "4.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Linette.png",
+      "icon_fallback": "/avatars/lynette.webp"
+    },
+    {
+      "id": "freminet",
+      "name": "菲米尼",
+      "en": "Freminet",
+      "aliases": [
+        "菲米尼"
+      ],
+      "element": "冰",
+      "weapon": "双手剑",
+      "rarity": 4,
+      "version": "4.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Freminet.png",
+      "icon_fallback": "/avatars/freminet.png"
+    },
+    {
+      "id": "neuvillette",
+      "name": "那维莱特",
+      "en": "Neuvillette",
+      "aliases": [
+        "那维莱特",
+        "龙王",
+        "水龙王"
+      ],
+      "element": "水",
+      "weapon": "法器",
+      "rarity": 5,
+      "version": "4.1",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Neuvillette.png",
+      "icon_fallback": "/avatars/neuvillette.png"
+    },
+    {
+      "id": "wriothesley",
+      "name": "莱欧斯利",
+      "en": "Wriothesley",
+      "aliases": [
+        "莱欧斯利",
+        "公爵"
+      ],
+      "element": "冰",
+      "weapon": "法器",
+      "rarity": 5,
+      "version": "4.1",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Wriothesley.png",
+      "icon_fallback": "/avatars/wriothesley.png"
+    },
+    {
+      "id": "furina",
+      "name": "芙宁娜",
+      "en": "Furina",
+      "aliases": [
+        "芙宁娜",
+        "水神",
+        "芙芙",
+        "枫丹女神"
+      ],
+      "element": "水",
+      "weapon": "单手剑",
+      "rarity": 5,
+      "version": "4.2",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Furina.png",
+      "icon_fallback": "/avatars/furina.png"
+    },
+    {
+      "id": "charlotte",
+      "name": "夏洛蒂",
+      "en": "Charlotte",
+      "aliases": [
+        "夏洛蒂",
+        "记者"
+      ],
+      "element": "冰",
+      "weapon": "法器",
+      "rarity": 4,
+      "version": "4.2",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Charlotte.png",
+      "icon_fallback": "/avatars/charlotte.png"
+    },
+    {
+      "id": "navia",
+      "name": "娜维娅",
+      "en": "Navia",
+      "aliases": [
+        "娜维娅",
+        "枫丹剑"
+      ],
+      "element": "岩",
+      "weapon": "双手剑",
+      "rarity": 5,
+      "version": "4.3",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Navia.png",
+      "icon_fallback": "/avatars/navia.png"
+    },
+    {
+      "id": "chevreuse",
+      "name": "夏沃蕾",
+      "en": "Chevreuse",
+      "aliases": [
+        "夏沃蕾"
+      ],
+      "element": "火",
+      "weapon": "长柄武器",
+      "rarity": 4,
+      "version": "4.3",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Chevreuse.png",
+      "icon_fallback": "/avatars/chevreuse.png"
+    },
+    {
+      "id": "chiori",
+      "name": "千织",
+      "en": "Chiori",
+      "aliases": [
+        "千织"
+      ],
+      "element": "岩",
+      "weapon": "单手剑",
+      "rarity": 5,
+      "version": "4.4",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Chiori.png",
+      "icon_fallback": "/avatars/chiori.png"
+    },
+    {
+      "id": "xianyun",
+      "name": "闲云",
+      "en": "Xianyun",
+      "aliases": [
+        "闲云",
+        "留云借风真君"
+      ],
+      "element": "风",
+      "weapon": "法器",
+      "rarity": 5,
+      "version": "4.4",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Liuyun.png",
+      "icon_fallback": "/avatars/xianyun.webp"
+    },
+    {
+      "id": "kirara",
+      "name": "绮良良",
+      "en": "Kirara",
+      "aliases": [
+        "绮良良",
+        "猫猫",
+        "箱箱"
+      ],
+      "element": "草",
+      "weapon": "单手剑",
+      "rarity": 4,
+      "version": "4.5",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Momoka.png",
+      "icon_fallback": "/avatars/kirara.webp"
+    },
+    {
+      "id": "arlecchino",
+      "name": "阿蕾奇诺",
+      "en": "Arlecchino",
+      "aliases": [
+        "阿蕾奇诺",
+        "仆人",
+        "父亲"
+      ],
+      "element": "火",
+      "weapon": "长柄武器",
+      "rarity": 5,
+      "version": "4.6",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Arlecchino.png",
+      "icon_fallback": "/avatars/arlecchino.png"
+    },
+    {
+      "id": "gaming",
+      "name": "嘉明",
+      "en": "Gaming",
+      "aliases": [
+        "嘉明",
+        "舞狮"
+      ],
+      "element": "火",
+      "weapon": "双手剑",
+      "rarity": 4,
+      "version": "4.6",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Gaming.png",
+      "icon_fallback": "/avatars/gaming.png"
+    },
+    {
+      "id": "clorinde",
+      "name": "克洛琳德",
+      "en": "Clorinde",
+      "aliases": [
+        "克洛琳德"
+      ],
+      "element": "雷",
+      "weapon": "单手剑",
+      "rarity": 5,
+      "version": "4.7",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Clorinde.png",
+      "icon_fallback": "/avatars/clorinde.png"
+    },
+    {
+      "id": "sigewinne",
+      "name": "希格雯",
+      "en": "Sigewinne",
+      "aliases": [
+        "希格雯",
+        "护士长"
+      ],
+      "element": "水",
+      "weapon": "弓",
+      "rarity": 5,
+      "version": "4.7",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Sigewinne.png",
+      "icon_fallback": "/avatars/sigewinne.png"
+    },
+    {
+      "id": "sethos",
+      "name": "赛索斯",
+      "en": "Sethos",
+      "aliases": [
+        "赛索斯"
+      ],
+      "element": "雷",
+      "weapon": "弓",
+      "rarity": 4,
+      "version": "4.7",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Sethos.png",
+      "icon_fallback": "/avatars/sethos.png"
+    },
+    {
+      "id": "emilie",
+      "name": "艾梅莉埃",
+      "en": "Emilie",
+      "aliases": [
+        "艾梅莉埃",
+        "调香师"
+      ],
+      "element": "草",
+      "weapon": "长柄武器",
+      "rarity": 5,
+      "version": "4.8",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Emilie.png",
+      "icon_fallback": "/avatars/emilie.png"
+    },
+    {
+      "id": "mualani",
+      "name": "玛拉妮",
+      "en": "Mualani",
+      "aliases": [
+        "玛拉妮"
+      ],
+      "element": "水",
+      "weapon": "法器",
+      "rarity": 5,
+      "version": "5.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Mualani.png",
+      "icon_fallback": "/avatars/mualani.png"
+    },
+    {
+      "id": "kinich",
+      "name": "基尼奇",
+      "en": "Kinich",
+      "aliases": [
+        "基尼奇"
+      ],
+      "element": "草",
+      "weapon": "双手剑",
+      "rarity": 5,
+      "version": "5.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Kinich.png",
+      "icon_fallback": "/avatars/kinich.png"
+    },
+    {
+      "id": "kachina",
+      "name": "卡齐娜",
+      "en": "Kachina",
+      "aliases": [
+        "卡齐娜",
+        "纳塔"
+      ],
+      "element": "岩",
+      "weapon": "长柄武器",
+      "rarity": 4,
+      "version": "5.0",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Kachina.png",
+      "icon_fallback": "/avatars/kachina.png"
+    },
+    {
+      "id": "xilonen",
+      "name": "希诺宁",
+      "en": "Xilonen",
+      "aliases": [
+        "希诺宁",
+        "希诺伦"
+      ],
+      "element": "岩",
+      "weapon": "单手剑",
+      "rarity": 5,
+      "version": "5.1",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Xilonen.png",
+      "icon_fallback": "/avatars/xilonen.png"
+    },
+    {
+      "id": "ororon",
+      "name": "欧洛伦",
+      "en": "Ororon",
+      "aliases": [
+        "欧洛伦"
+      ],
+      "element": "雷",
+      "weapon": "弓",
+      "rarity": 4,
+      "version": "5.1",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Olorun.png",
+      "icon_fallback": "https://static.wikia.nocookie.net/gensin-impact/images/5/5e/Ororon_Icon.png/revision/latest?cb=20241014100711"
+    },
+    {
+      "id": "chasca",
+      "name": "恰斯卡",
+      "en": "Chasca",
+      "aliases": [
+        "恰斯卡"
+      ],
+      "element": "风",
+      "weapon": "弓",
+      "rarity": 5,
+      "version": "5.2",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Chasca.png",
+      "icon_fallback": "/avatars/chasca.png"
+    },
+    {
+      "id": "lanyan",
+      "name": "蓝砚",
+      "en": "Lanyan",
+      "aliases": [
+        "蓝砚",
+        "枫丹"
+      ],
+      "element": "风",
+      "weapon": "法器",
+      "rarity": 4,
+      "version": "5.2",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Lanyan.png",
+      "icon_fallback": "/avatars/lanyan.png"
+    },
+    {
+      "id": "mavuika",
+      "name": "玛薇卡",
+      "en": "Mavuika",
+      "aliases": [
+        "玛薇卡",
+        "火神",
+        "队长"
+      ],
+      "element": "火",
+      "weapon": "双手剑",
+      "rarity": 5,
+      "version": "5.3",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Mavuika.png",
+      "icon_fallback": "/avatars/mavuika.png"
+    },
+    {
+      "id": "yumemizuki",
+      "name": "梦见月瑞希",
+      "en": "YumemizukiMizuki",
+      "aliases": [
+        "梦见月瑞希",
+        "瑞希"
+      ],
+      "element": "风",
+      "weapon": "法器",
+      "rarity": 5,
+      "version": "5.4",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Mizuki.png",
+      "icon_fallback": "https://static.wikia.nocookie.net/gensin-impact/images/f/f6/Yumemizuki_Mizuki_Icon.png/revision/latest?cb=20250212014631"
+    },
+    {
+      "id": "varesa",
+      "name": "瓦雷莎",
+      "en": "Varesa",
+      "aliases": [
+        "瓦雷莎"
+      ],
+      "element": "雷",
+      "weapon": "法器",
+      "rarity": 5,
+      "version": "5.5",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Varesa.png",
+      "icon_fallback": "/avatars/varesa.png"
+    },
+    {
+      "id": "iansan",
+      "name": "伊安珊",
+      "en": "Iansan",
+      "aliases": [
+        "伊安珊"
+      ],
+      "element": "雷",
+      "weapon": "长柄武器",
+      "rarity": 4,
+      "version": "5.5",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Iansan.png",
+      "icon_fallback": "/avatars/iansan.png"
+    },
+    {
+      "id": "escoffier",
+      "name": "爱可菲",
+      "en": "Escoffier",
+      "aliases": [
+        "爱可菲",
+        "冰系辅助"
+      ],
+      "element": "冰",
+      "weapon": "长柄武器",
+      "rarity": 5,
+      "version": "5.6",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Escoffier.png",
+      "icon_fallback": "/avatars/escoffier.png"
+    },
+    {
+      "id": "talia",
+      "name": "塔利雅",
+      "en": "Talia",
+      "aliases": [
+        "塔利雅"
+      ],
+      "element": "水",
+      "weapon": "单手剑",
+      "rarity": 4,
+      "version": "5.6",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Dahlia.png",
+      "icon_fallback": "https://gi.yatta.moe/assets/UI/UI_AvatarIcon_Dahlia.png"
+    },
+    {
+      "id": "ifa",
+      "name": "伊法",
+      "en": "Ifa",
+      "aliases": [
+        "伊法"
+      ],
+      "element": "风",
+      "weapon": "法器",
+      "rarity": 4,
+      "version": "5.6",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Ifa.png",
+      "icon_fallback": "/avatars/ifa.png"
+    },
+    {
+      "id": "skirk",
+      "name": "丝柯克",
+      "en": "Skirk",
+      "aliases": [
+        "丝柯克",
+        "公子师傅"
+      ],
+      "element": "冰",
+      "weapon": "单手剑",
+      "rarity": 5,
+      "version": "5.7",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_SkirkNew.png",
+      "icon_fallback": "https://static.wikia.nocookie.net/gensin-impact/images/0/03/Skirk_Icon.png/revision/latest?cb=20250618025127"
+    },
+    {
+      "id": "citlali",
+      "name": "茜特菈莉",
+      "en": "Citlali",
+      "aliases": [
+        "茜特菈莉",
+        "茜特菈利",
+        "龙妈"
+      ],
+      "element": "冰",
+      "weapon": "法器",
+      "rarity": 5,
+      "version": "5.8",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Citlali.png",
+      "icon_fallback": "/avatars/citlali.png"
+    },
+    {
+      "id": "ineffa",
+      "name": "伊涅芙",
+      "en": "Ineffa",
+      "aliases": [
+        "伊涅芙",
+        "机械少女"
+      ],
+      "element": "雷",
+      "weapon": "长柄武器",
+      "rarity": 5,
+      "version": "5.8",
+      "status": "released",
+      "note": "",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Ineffa.png",
+      "icon_fallback": "/avatars/ineffa.png"
+    },
+    {
+      "id": "lauma",
+      "name": "菈乌玛",
+      "en": "Lauma",
+      "aliases": [
+        "菈乌玛",
+        "月反馈"
+      ],
+      "element": "草",
+      "weapon": "法器",
+      "rarity": 5,
+      "version": "6.0",
+      "status": "released",
+      "note": "挪德卡莱 6.0 新角色",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Lauma.png",
+      "icon_fallback": "/avatars/lauma.png"
+    },
+    {
+      "id": "flins",
+      "name": "菲林斯",
+      "en": "Flins",
+      "aliases": [
+        "菲林斯",
+        "执灯人"
+      ],
+      "element": "雷",
+      "weapon": "长柄武器",
+      "rarity": 5,
+      "version": "6.0",
+      "status": "released",
+      "note": "挪德卡莱 6.0 新角色",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Flins.png",
+      "icon_fallback": "/avatars/flins.png"
+    },
+    {
+      "id": "aino",
+      "name": "爱诺",
+      "en": "Aino",
+      "aliases": [
+        "爱诺",
+        "蛋卷工坊"
+      ],
+      "element": "水",
+      "weapon": "双手剑",
+      "rarity": 4,
+      "version": "6.0",
+      "status": "released",
+      "note": "挪德卡莱 6.0 新角色",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Aino.png",
+      "icon_fallback": "/avatars/aino.png"
+    },
+    {
+      "id": "nefer",
+      "name": "奈芙尔",
+      "en": "Nefer",
+      "aliases": [
+        "奈芙尔",
+        "秘闻馆"
+      ],
+      "element": "草",
+      "weapon": "法器",
+      "rarity": 5,
+      "version": "6.1",
+      "status": "released",
+      "note": "挪德卡莱 6.1 新角色",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Nefer.png",
+      "icon_fallback": "/avatars/nefer.png"
+    },
+    {
+      "id": "durinn",
+      "name": "杜林",
+      "en": "Durin",
+      "aliases": [
+        "杜林",
+        "小杜林"
+      ],
+      "element": "火",
+      "weapon": "单手剑",
+      "rarity": 5,
+      "version": "6.2",
+      "status": "released",
+      "note": "挪德卡莱 6.2 新角色",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Durin.png",
+      "icon_fallback": "/avatars/durin.png"
+    },
+    {
+      "id": "jahoda",
+      "name": "雅珂达",
+      "en": "Jahoda",
+      "aliases": [
+        "雅珂达",
+        "蛋卷工坊"
+      ],
+      "element": "风",
+      "weapon": "弓",
+      "rarity": 4,
+      "version": "6.2",
+      "status": "released",
+      "note": "挪德卡莱 6.2 新角色",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Jahoda.png",
+      "icon_fallback": "/avatars/jahoda.png"
+    },
+    {
+      "id": "columbina",
+      "name": "哥伦比娅",
+      "en": "Columbina",
+      "aliases": [
+        "哥伦比娅",
+        "少女",
+        "第三席",
+        "月之少女"
+      ],
+      "element": "水",
+      "weapon": "法器",
+      "rarity": 5,
+      "version": "6.3",
+      "status": "released",
+      "note": "挪德卡莱 6.3 新角色",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Columbina.png",
+      "icon_fallback": "/avatars/columbina.png"
+    },
+    {
+      "id": "yeloya",
+      "name": "叶洛亚",
+      "en": "Yeloya",
+      "aliases": [
+        "叶洛亚"
+      ],
+      "element": "岩",
+      "weapon": "长柄武器",
+      "rarity": 4,
+      "version": "6.3",
+      "status": "released",
+      "note": "挪德卡莱 6.3 新角色",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Illuga.png",
+      "icon_fallback": "https://gi.yatta.moe/assets/UI/UI_AvatarIcon_Illuga.png"
+    },
+    {
+      "id": "zibai",
+      "name": "兹白",
+      "en": "Zibai",
+      "aliases": [
+        "兹白",
+        "月结晶"
+      ],
+      "element": "岩",
+      "weapon": "单手剑",
+      "rarity": 5,
+      "version": "6.3",
+      "status": "released",
+      "note": "挪德卡莱 6.3 新角色",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Zibai.png",
+      "icon_fallback": "/avatars/zibai.png"
+    },
+    {
+      "id": "varka",
+      "name": "法尔伽",
+      "en": "Varka",
+      "aliases": [
+        "法尔伽",
+        "大团长",
+        "西风骑士团"
+      ],
+      "element": "风",
+      "weapon": "双手剑",
+      "rarity": 5,
+      "version": "6.4",
+      "status": "released",
+      "note": "挪德卡莱 6.4 新角色",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Varka.png",
+      "icon_fallback": "/avatars/varka.png"
+    },
+    {
+      "id": "linea",
+      "name": "莉奈娅",
+      "en": "Linea",
+      "aliases": [
+        "莉奈娅",
+        "冒险家协会"
+      ],
+      "element": "岩",
+      "weapon": "弓",
+      "rarity": 5,
+      "version": "6.5",
+      "status": "released",
+      "note": "挪德卡莱 6.5 新角色",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Linnea.png",
+      "icon_fallback": "https://static.wikia.nocookie.net/gensin-impact/images/a/a9/Linnea_Icon.png/revision/latest?cb=20260408075838"
+    },
+    {
+      "id": "nicole",
+      "name": "尼可·莱恩",
+      "en": "Nicole",
+      "aliases": [
+        "尼可",
+        "魔女会N"
+      ],
+      "element": "火",
+      "weapon": "法器",
+      "rarity": 5,
+      "version": "6.6",
+      "status": "released",
+      "note": "挪德卡莱 6.6 新角色",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Nicole.png",
+      "icon_fallback": "/avatars/nicole.png"
+    },
+    {
+      "id": "lune",
+      "name": "洛恩",
+      "en": "Lune",
+      "aliases": [
+        "洛恩",
+        "西风副队长"
+      ],
+      "element": "冰",
+      "weapon": "长柄武器",
+      "rarity": 4,
+      "version": "6.6",
+      "status": "released",
+      "note": "挪德卡莱 6.6 新角色",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Lohen.png",
+      "icon_fallback": "https://gi.yatta.moe/assets/UI/UI_AvatarIcon_Lohen.png"
+    },
+    {
+      "id": "sandrone",
+      "name": "木偶·桑多涅",
+      "en": "Sandrone",
+      "aliases": [
+        "桑多涅",
+        "木偶",
+        "第七席"
+      ],
+      "element": "冰",
+      "weapon": "双手剑",
+      "rarity": 5,
+      "version": "6.7",
+      "status": "released",
+      "note": "挪德卡莱 6.7 新角色",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_MarionetteNew.png",
+      "icon_fallback": "https://static.wikia.nocookie.net/gensin-impact/images/c/c8/Sandrone_Icon.png/revision/latest?cb=20260701024112"
+    },
+    {
+      "id": "brunni",
+      "name": "布伦妮",
+      "en": "Brunni",
+      "aliases": [
+        "布伦妮"
+      ],
+      "element": "风",
+      "weapon": "法器",
+      "rarity": 4,
+      "version": "6.7",
+      "status": "released",
+      "note": "挪德卡莱 6.7 新角色",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Prune.png",
+      "icon_fallback": "https://gi.yatta.moe/assets/UI/UI_AvatarIcon_Prune.png"
+    },
+    {
+      "id": "alice",
+      "name": "艾莉丝",
+      "en": "Alice",
+      "aliases": [
+        "艾莉丝",
+        "魔女会",
+        "可莉妈妈"
+      ],
+      "element": "火",
+      "weapon": "法器",
+      "rarity": 5,
+      "version": "6.8",
+      "status": "upcoming",
+      "note": "挪德卡莱 6.8 前瞻角色，尚未上线",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Alice.png",
+      "icon_fallback": "/avatars/alice.png"
+    },
+    {
+      "id": "traveler",
+      "name": "旅行者",
+      "en": "Traveler",
+      "aliases": [
+        "旅行者",
+        "空",
+        "荧",
+        "主角"
+      ],
+      "element": "风",
+      "weapon": "单手剑",
+      "rarity": 5,
+      "version": "1.0",
+      "status": "released",
+      "note": "可切换 风/岩/雷/草/水/火/冰 七元素",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_PlayerBoy.png",
+      "icon_fallback": "https://static.wikia.nocookie.net/gensin-impact/images/5/59/Traveler_Icon.png/revision/latest?cb=20211220013610"
+    },
+    {
+      "id": "manekin",
+      "name": "奇偶·男性",
+      "en": "Manekin",
+      "aliases": [
+        "奇偶·男性"
+      ],
+      "element": "无",
+      "weapon": "单手剑",
+      "rarity": 5,
+      "version": "",
+      "status": "released",
+      "note": "由 genshin-db 官方镜像自动拉取（版本待核对）",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_MannequinBoy.png",
+      "icon_fallback": "/avatars/manekin.webp"
+    },
+    {
+      "id": "manekina",
+      "name": "奇偶·女性",
+      "en": "Manekina",
+      "aliases": [
+        "奇偶·女性"
+      ],
+      "element": "无",
+      "weapon": "单手剑",
+      "rarity": 5,
+      "version": "",
+      "status": "released",
+      "note": "由 genshin-db 官方镜像自动拉取（版本待核对）",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_MannequinGirl.png",
+      "icon_fallback": "/avatars/manekina.webp"
+    },
+    {
+      "id": "odette",
+      "name": "奥黛塔",
+      "en": "Odette",
+      "aliases": [
+        "奥黛塔"
+      ],
+      "element": "冰",
+      "weapon": "单手剑",
+      "rarity": 5,
+      "version": "7.0",
+      "status": "released",
+      "note": "由 Fandom 7.0 上线页自动拉取（中文名来自 Fandom 角色页）",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Odette.png",
+      "icon_fallback": "https://gi.yatta.moe/assets/UI/UI_AvatarIcon_Odette.png"
+    },
+    {
+      "id": "alyosha",
+      "name": "阿罗夏",
+      "en": "Alyosha",
+      "aliases": [
+        "阿罗夏"
+      ],
+      "element": "雷",
+      "weapon": "长柄武器",
+      "rarity": 4,
+      "version": "7.0",
+      "status": "released",
+      "note": "由 Fandom 7.0 上线页自动拉取（中文名来自 Fandom 角色页）",
+      "icon": "https://enka.network/ui/UI_AvatarIcon_Alyosha.png",
+      "icon_fallback": "https://gi.yatta.moe/assets/UI/UI_AvatarIcon_Alyosha.png"
+    }
+  ]
+}

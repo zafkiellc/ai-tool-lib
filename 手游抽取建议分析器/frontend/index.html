@@ -1,0 +1,2495 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>抽卡建议分析器 · 原神</title>
+<style>
+  :root {
+    --bg: #0f1320; --panel: #171c2e; --panel2: #1f2638; --line: #2a3350;
+    --text: #e6e9f2; --muted: #9aa3bf; --accent: #6ea8fe;
+    --green: #2fbf71; --green-d: #1c7a47; --amber: #e0a83a;
+    --red: #e5534b; --gray: #6b7390;
+    --gold: #e6c34a; --pink: #f06fb0; --wait-blue: #3b82f6;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    background: var(--bg); color: var(--text); }
+  header { padding: 12px 20px; border-bottom: 1px solid var(--line); background: var(--panel);
+    display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+  header h1 { font-size: 17px; margin: 0; }
+  .meta { font-size: 12px; color: var(--muted); }
+  .badge { font-size: 11px; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); background: var(--panel2); }
+  .badge.demo { color: #ffd28a; border-color: #5a4a2a; background: #2a2415; cursor: pointer; }
+  .badge.demo:hover { background: #3a3018; }
+  .btn { font-size: 12px; padding: 6px 12px; border-radius: 9px; border: 1px solid var(--accent);
+    background: transparent; color: var(--accent); cursor: pointer; }
+  .btn:hover { background: rgba(110,168,254,.12); }
+  .btn:disabled { opacity: .5; cursor: default; }
+  .btn.sm { padding: 3px 8px; font-size: 11px; }
+  .btn.danger { border-color: var(--red); color: var(--red); }
+  .btn.danger:hover { background: rgba(229,83,75,.12); }
+  .btn.primary { background: var(--accent); color: #0f1320; font-weight: 600; }
+  .btn.primary:hover { background: #8bbcff; }
+  .layout { display: grid; grid-template-columns: 400px 1fr; gap: 0; min-height: calc(100vh - 60px); }
+  .sidebar { border-right: 1px solid var(--line); padding: 12px; overflow-y: auto; max-height: calc(100vh - 60px); }
+  .sub-panel { background: var(--panel2); border: 1px solid var(--line); border-radius: 12px; padding: 10px; margin-bottom: 12px; }
+  .sub-panel h3 { margin: 0 0 8px; font-size: 13px; color: var(--text); }
+  .sub-add { display: flex; gap: 6px; margin-bottom: 8px; }
+  .sub-add input, .sub-add select { flex: 1; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--line);
+    background: var(--bg); color: var(--text); font-size: 12px; min-width: 0; }
+  .sub-list { display: flex; flex-direction: column; gap: 6px; }
+  .sub-item { min-width: 0; display: flex; align-items: center; gap: 6px; padding: 6px 8px; background: var(--panel);
+    border: 1px solid var(--line); border-radius: 9px; font-size: 12px; }
+  .sub-item .nm { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sub-item .tag { font-size: 10px; padding: 1px 6px; border-radius: 6px; flex: 0 0 auto; }
+  .tag.main { color: #ffd28a; border: 1px solid #5a4a2a; }
+  .tag.cross { color: #9aa3bf; border: 1px solid var(--line); }
+  .tag.official { color: #8ad; border: 1px solid #2a4a6a; }
+  .tag.unres { color: var(--red); border: 1px solid #5a2a2a; }
+  .search { width: 100%; padding: 8px 12px; border-radius: 10px; border: 1px solid var(--line);
+    background: var(--panel2); color: var(--text); margin-bottom: 8px; font-size: 13px; }
+  .sortbar { display: flex; gap: 6px; margin-bottom: 10px; }
+  .sortbar .sb { flex: 1; font-size: 12px; padding: 6px; border-radius: 8px; text-align: center; cursor: pointer;
+    border: 1px solid var(--line); color: var(--muted); background: var(--panel2); }
+  .sortbar .sb.active { color: var(--text); border-color: var(--accent); }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+  .legend .lg { display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--muted);
+    cursor: pointer; user-select: none; padding: 2px 6px; border-radius: 7px; border: 1px solid var(--line); background: var(--panel2); }
+  .legend .lg:hover { color: var(--text); }
+  .legend .lg .sw { width: 11px; height: 11px; border-radius: 3px; border: 2px solid; box-sizing: border-box; }
+  .legend .lg.off { opacity: .38; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .char { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 10px;
+    background: var(--panel2); border: 1px solid var(--line); cursor: pointer; transition: .15s; }
+  .char:hover { border-color: var(--accent); transform: translateY(-1px); }
+  .char.active { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(110,168,254,.25); }
+  .ava { width: 42px; height: 42px; border-radius: 12px; object-fit: cover; flex: 0 0 auto;
+    border: 1px solid var(--line); background: #222; }
+  .ava-fb { width: 42px; height: 42px; border-radius: 12px; flex: 0 0 auto; display: none;
+    align-items: center; justify-content: center; font-weight: 700; color: #fff; font-size: 12px;
+    text-align: center; line-height: 1.1; padding: 2px; border: 1px solid var(--line);
+    word-break: break-word; overflow: hidden; text-shadow: 0 1px 2px rgba(0,0,0,.45); }
+  .char .nm { font-weight: 600; font-size: 13px; display: flex; align-items: center; gap: 5px; }
+  .char .sub { font-size: 11px; color: var(--muted); margin-top: 2px; overflow: hidden;
+    text-overflow: ellipsis; white-space: nowrap; }
+  .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; }
+  .up { font-size: 9px; padding: 0 4px; border-radius: 4px; background: #3a2d52; color: #c9a6ff; border: 1px solid #4a3a66; }
+  .v-strong_pull { background: var(--gold); }
+  .v-pull { background: var(--green-d); }
+  .v-wait { background: var(--wait-blue); }
+  .v-skip { background: var(--red); }
+  .v-pure_xp { background: var(--pink); }
+  .v-insufficient { background: var(--gray); }
+  /* 角色卡边框色：按抽取结论提示 */
+  .char.b-strong_pull { border-color: var(--gold); border-width: 2px; }
+  .char.b-pull { border-color: var(--green-d); border-width: 2px; }
+  .char.b-wait { border-color: var(--wait-blue); border-width: 2px; }
+  .char.b-skip { border-color: var(--red); border-width: 2px; }
+  .char.b-pure_xp { border-color: var(--pink); border-width: 2px; }
+  .char.b-insufficient { border-color: var(--gray); border-width: 2px; }
+  .main { padding: 20px; overflow-y: auto; max-height: calc(100vh - 60px); }
+  .placeholder { color: var(--muted); margin-top: 40px; text-align: center; }
+  .banner { background: #2a2415; border: 1px solid #5a4a2a; color: #ffd28a; font-size: 12px;
+    padding: 8px 12px; border-radius: 10px; margin-bottom: 14px; line-height: 1.6; }
+  .banner.info { background: #15233a; border-color: #2a4a6a; color: #acd2ff; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 20px; }
+  .verdict { font-size: 22px; font-weight: 800; padding: 8px 14px; border-radius: 12px; display: inline-block; }
+  .verdict.strong_pull { color: #1a1300; background: var(--gold); }
+  .verdict.pull { color: #fff; background: var(--green-d); }
+  .verdict.wait { color: #fff; background: var(--wait-blue); }
+  .verdict.skip { color: #fff; background: var(--red); }
+  .verdict.pure_xp { color: #fff; background: var(--pink); }
+  .verdict.insufficient { color: #fff; background: var(--gray); }
+  /* 报告卡边框：与结论同色呼应 */
+  .card.card-strong_pull { border-color: var(--gold); border-width: 2px; }
+  .card.card-pull { border-color: var(--green-d); border-width: 2px; }
+  .card.card-wait { border-color: var(--wait-blue); border-width: 2px; }
+  .card.card-skip { border-color: var(--red); border-width: 2px; }
+  .card.card-pure_xp { border-color: var(--pink); border-width: 2px; }
+  .card.card-insufficient { border-color: var(--gray); border-width: 2px; }
+  .kv { display: flex; gap: 18px; flex-wrap: wrap; margin: 14px 0; font-size: 13px; color: var(--muted); }
+  .kv b { color: var(--text); }
+  .kv.char-meta { gap: 10px; font-size: 13px; align-items: center; }
+  .kv.char-meta > span { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px;
+    border-radius: 8px; background: var(--panel2); border: 1px solid var(--line); white-space: nowrap; }
+  .sec-title { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px;
+    margin: 18px 0 8px; border-top: 1px solid var(--line); padding-top: 14px; }
+  .src-row { display: flex; align-items: center; gap: 10px; padding: 8px 10px; background: var(--panel2);
+    border-radius: 9px; margin-bottom: 6px; font-size: 13px; }
+  .src-row .nm { font-weight: 600; min-width: 120px; }
+  .tag2 { font-size: 11px; padding: 1px 7px; border-radius: 6px; }
+  .tag2.trust { color: #ffd28a; border: 1px solid #5a4a2a; }
+  .tag2.official { color: #8ad; border: 1px solid #2a4a6a; }
+  .stance-pos { color: var(--green); } .stance-neg { color: var(--red); } .stance-mid { color: var(--amber); }
+  .evi { padding: 10px 12px; background: var(--panel2); border-radius: 10px; margin-bottom: 8px; font-size: 13px; }
+  .evi a { color: var(--accent); text-decoration: none; }
+  .evi a:hover { text-decoration: underline; }
+  .evi .ctx { color: var(--muted); font-size: 12px; margin-top: 4px; }
+  .evi .pol-1 { color: var(--green); } .evi .pol--1 { color: var(--red); } .evi .pol-0 { color: var(--amber); }
+  .sb-badge { font-size: 10px; padding: 1px 6px; border-radius: 6px; background: #2a2415; color: #ffd28a; border: 1px solid #5a4a2a; }
+  .note { font-size: 12px; color: var(--muted); line-height: 1.6; background: var(--panel2);
+    border-left: 3px solid var(--accent); padding: 10px 12px; border-radius: 8px; margin-top: 6px; }
+  .toast { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); background: var(--panel2);
+    border: 1px solid var(--accent); color: var(--text); padding: 8px 16px; border-radius: 10px; font-size: 13px;
+    opacity: 0; transition: .25s; pointer-events: none; z-index: 60; max-width: 90vw; }
+  .toast.show { opacity: 1; }
+  .tabs { display: flex; gap: 8px; margin: 14px 0; flex-wrap: wrap; }
+  .tab { font-size: 13px; padding: 7px 14px; border-radius: 9px; cursor: pointer; border: 1px solid var(--line);
+    color: var(--muted); background: var(--panel2); }
+  .tab.active { color: var(--text); border-color: var(--accent); background: rgba(110,168,254,.12); }
+  .eff-note { font-size: 11px; color: var(--muted); }
+  .eff-manual { color: #ffd28a; } .eff-ai { color: #9be3b0; } .eff-rule { color: var(--accent); }
+  .ai-box { background: var(--panel2); border: 1px solid var(--line); border-radius: 10px; padding: 14px; }
+  .ai-quote { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .enh-label { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); cursor: pointer; user-select: none; padding: 6px 0; }
+  .enh-label input[type="checkbox"] { accent-color: var(--accent); width: 15px; height: 15px; }
+  .enh-list { display: flex; flex-direction: column; gap: 5px; max-height: 280px; overflow-y: auto; }
+  .enh-src { display: flex; align-items: center; gap: 8px; padding: 7px 10px; background: var(--panel); border-radius: 8px; font-size: 12px; }
+  .enh-src a { color: var(--accent); text-decoration: none; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .enh-src a:hover { text-decoration: underline; }
+  .enh-stats { font-size: 10px; color: var(--muted); white-space: nowrap; flex-shrink: 0; }
+  .enh-rel { font-size:10px; padding:1px 6px; border-radius:4px; white-space:nowrap; flex-shrink:0 }
+  .enh-rel.high { background:rgba(46,184,71,0.15); color:#2ebf47; }
+  .enh-rel.mid { background:rgba(224,168,58,0.15); color:#e0a83a; }
+  .enh-rel.low { background:rgba(107,115,144,0.15); color:#6b7390; }
+
+  /* 雷达图 */
+  .radar-wrap { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px; margin: 10px 0; }
+  .radar-src { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 10px; border: 1px solid var(--line); color: var(--muted); vertical-align: middle; }
+  .radar-src.official { color: #8ad; border-color: #2a4a6a; background: rgba(120,170,220,.1); }
+  .radar-src.derived { color: #b9a7ff; border-color: #4a3f6a; background: rgba(160,140,255,.1); }
+  .radar-src.review { color: #e0a85a; border-color: #5a4a2a; background: rgba(224,168,90,.1); }
+  .editor { background: var(--panel2); border: 1px solid var(--line); border-radius: 12px; padding: 14px; }
+  .editor label { display: block; font-size: 12px; color: var(--muted); margin: 10px 0 4px; }
+  .editor select, .editor textarea, .editor input { width: 100%; padding: 8px; border-radius: 8px;
+    border: 1px solid var(--line); background: var(--bg); color: var(--text); font-size: 13px; }
+  .editor textarea { min-height: 58px; resize: vertical; }
+  .msrc-row { display: grid; grid-template-columns: 1.4fr 1.6fr 0.7fr 1.4fr auto; gap: 6px; margin-bottom: 6px; align-items: start; }
+  .msrc-row input { padding: 6px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--text); font-size: 12px; }
+  .msrc { padding: 10px 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; margin-bottom: 8px; font-size: 13px; }
+  .msrc .tp { font-size: 11px; color: #ffd28a; }
+  .reasons li { margin-bottom: 4px; }
+  .mode-sel { font-size: 11px; padding: 4px 8px; border-radius: 8px; border: 1px solid var(--line);
+    background: var(--panel2); color: var(--text); }
+  /* ---------- 设置弹窗 ---------- */
+  .modal { position: fixed; inset: 0; background: rgba(0,0,0,.6); display: none;
+    align-items: flex-start; justify-content: center; z-index: 50; overflow-y: auto; padding: 30px 10px; }
+  .modal.show { display: flex; }
+  .modal-box { background: var(--panel); border: 1px solid var(--line); border-radius: 14px;
+    width: min(740px, 96vw); max-height: 92vh; display: flex; flex-direction: column; }
+  .modal-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--line); }
+  .modal-head h2 { margin: 0; font-size: 16px; }
+  .modal-body { padding: 16px 18px; overflow-y: auto; }
+  .modal-foot { padding: 12px 18px; border-top: 1px solid var(--line); display: flex; gap: 10px; justify-content: flex-end; }
+  .modal-body section { margin-bottom: 18px; border-bottom: 1px solid var(--line); padding-bottom: 14px; }
+  .modal-body section:last-child { border-bottom: none; }
+  .modal-body h3 { font-size: 13px; color: var(--accent); margin: 0 0 10px; }
+  .modal-body label { display: block; font-size: 12px; color: var(--muted); margin: 10px 0 4px; }
+  .modal-body input[type=text], .modal-body input[type=password], .modal-body input[type=number], .modal-body select {
+    width: 100%; padding: 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--text); font-size: 13px; }
+  .radio-row { display: flex; flex-wrap: wrap; gap: 14px; margin: 6px 0; font-size: 13px; color: var(--text); }
+  .radio-row label { display: flex; align-items: center; gap: 6px; margin: 0; color: var(--text); }
+  .test-out { font-size: 12px; margin-top: 8px; padding: 8px 10px; border-radius: 8px; background: var(--panel2);
+    border: 1px solid var(--line); white-space: pre-wrap; }
+  .ai-sub { display: none; }
+  .ai-sub.show { display: block; }
+  /* 抽卡规划弹窗 */
+  .plan-tabs { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
+  .plan-tabs .pt { cursor: pointer; padding: 7px 13px; border-radius: 9px; border: 1px solid var(--line);
+    background: var(--panel2); color: var(--muted); font-size: 13px; }
+  .plan-tabs .pt.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .form-row { display: flex; align-items: center; gap: 10px; margin: 10px 0; font-size: 13px; color: var(--text); flex-wrap: wrap; }
+  .form-row label { color: var(--muted); }
+  .form-row select, .form-row input[type=number] { padding: 6px 8px; border-radius: 8px; border: 1px solid var(--line);
+    background: var(--bg); color: var(--text); font-size: 13px; }
+  .rank-list { display: flex; flex-direction: column; gap: 8px; margin: 10px 0; }
+  .rank-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 9px; border: 1px solid var(--line); background: var(--panel2); }
+  .rank-item .rk { font-weight: 700; color: var(--accent); width: 22px; }
+  .rank-item .sc { margin-left: auto; font-weight: 700; }
+  .rank-item .x { cursor: pointer; color: var(--red); padding: 0 4px; }
+  .cmp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-top: 12px; }
+  .cmp-card { border: 1px solid var(--line); border-radius: 12px; padding: 12px; background: var(--panel2); }
+  .cmp-card h4 { margin: 8px 0 4px; font-size: 14px; }
+  .cmp-row { font-size: 12px; color: var(--muted); margin: 3px 0; }
+  .chip { display: inline-block; padding: 1px 7px; border-radius: 6px; font-size: 11px; margin-left: 4px; }
+  .pity-stat { display: flex; gap: 18px; flex-wrap: wrap; margin: 8px 0; }
+  .pity-stat b { font-size: 17px; color: var(--accent); }
+  .tier-badge { display:inline-block; margin-left:5px; padding:0 6px; border-radius:6px; font-size:10px; font-weight:700;
+    background:var(--gold); color:#1b1d24; vertical-align:middle; }
+  .tier-group { margin-bottom:14px; }
+  .tier-group h3 { font-size:13px; margin:0 0 8px; color:var(--gold); }
+  .tier-chips { display:flex; flex-wrap:wrap; gap:8px; }
+  .tier-chip { display:flex; align-items:center; gap:7px; padding:5px 9px; border-radius:9px; border:1px solid var(--line);
+    background:var(--panel2); font-size:13px; }
+  /* 配装推荐 */
+  .ld-wrap { display:flex; flex-direction:column; gap:16px; }
+  .ld-hero { display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap;
+    padding:16px 18px; background:linear-gradient(135deg, rgba(110,168,254,.12), rgba(47,191,113,.05) 55%, rgba(15,19,32,0));
+    border:1px solid var(--line); border-radius:12px; }
+  .ld-left { display:flex; align-items:center; gap:14px; min-width:0; flex:1 1 auto; }
+  .ld-emblem { width:56px; height:56px; flex:0 0 auto; border-radius:14px; overflow:hidden;
+    display:flex; align-items:center; justify-content:center; border:1px solid var(--line);
+    font-size:24px; font-weight:800; color:#fff; text-shadow:0 1px 3px rgba(0,0,0,.5); }
+  .ld-emblem .ld-emblem-img { width:100%; height:100%; object-fit:cover; display:block; }
+  .ld-emblem:not(.fb) span { display:none; }
+  .ld-title { min-width:0; }
+  .ld-title h2 { margin:0; font-size:20px; font-weight:800; }
+  .ld-title .sub { font-size:12px; color:var(--muted); margin-top:4px; }
+  .ld-src { display:flex; align-items:center; gap:8px; flex-wrap:wrap; flex:0 0 auto; }
+  .ld-src-meta { font-size:12px; color:var(--muted); }
+  .ld-badge { display:inline-flex; align-items:center; gap:5px; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:700; }
+  .ld-badge.wiki { background:rgba(63,174,140,.15); color:#57d9b8; border:1px solid rgba(63,174,140,.4); }
+  .ld-badge.rules { background:rgba(217,160,91,.15); color:var(--gold); border:1px solid rgba(217,160,91,.4); }
+  .ld-badge.ai { background:rgba(110,168,254,.15); color:#8bb8ff; border:1px solid rgba(110,168,254,.4); }
+  .ld-section { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:14px 16px; }
+  .ld-sec-head { display:flex; align-items:center; gap:9px; margin-bottom:12px; }
+  .ld-sec-head .ic { width:30px; height:30px; flex:0 0 auto; display:flex; align-items:center; justify-content:center;
+    border-radius:8px; background:var(--panel2); border:1px solid var(--line); font-size:15px; }
+  .ld-sec-head h3 { margin:0; font-size:14px; font-weight:700; }
+  .ld-sec-head .cnt { margin-left:auto; font-size:11px; color:var(--muted); flex:0 0 auto; }
+  .ld-weapons { display:grid; grid-template-columns:repeat(auto-fill,minmax(172px,1fr)); gap:10px; }
+  .ld-weapon { display:flex; align-items:center; gap:8px; min-width:0; padding:9px 11px; border-radius:9px;
+    border:1px solid var(--line); background:var(--panel2); font-size:12px;
+    transition:border-color .15s, background .15s, transform .15s; }
+  .ld-weapon:hover { border-color:var(--accent); background:rgba(110,168,254,.08); transform:translateY(-1px); }
+  .ld-weapon .idx { width:22px; height:22px; flex:0 0 auto; display:flex; align-items:center; justify-content:center;
+    border-radius:6px; background:rgba(110,168,254,.22); border:1px solid rgba(110,168,254,.5); color:#d9e8ff; font-size:11px; font-weight:800; }
+  .ld-weapon .wicon { width:28px; height:28px; flex:0 0 auto; object-fit:cover; border-radius:6px;
+    background:var(--bg); border:1px solid var(--line); }
+  .ld-weapon .wname { min-width:0; flex:1 1 auto; font-weight:600; overflow:hidden; line-height:1.35; word-break:break-word;
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
+  .ld-weapon .wtag { flex:0 0 auto; font-size:10px; font-weight:700; }
+  .ld-weapon .wtag.grad { color:var(--gold); }
+  .ld-weapon .wtag.alt { color:var(--muted); }
+  .ld-weapon .prio { flex:0 0 auto; font-size:9px; font-weight:800; padding:1px 6px; border-radius:6px;
+    background:rgba(110,168,254,.35); color:#dcebff; letter-spacing:0; }
+  .ld-weapon.top { border-color:var(--accent); background:linear-gradient(135deg, rgba(110,168,254,.17), rgba(110,168,254,.05)); }
+  .ld-weapon.top .idx { background:var(--accent); border-color:var(--accent); color:#0f1320; }
+  .ld-weapon.top .prio { background:var(--accent); color:#0f1320; }
+  .ld-weapon.top1 { border-color:rgba(230,195,74,.75); background:linear-gradient(135deg, rgba(230,195,74,.16), rgba(230,195,74,.03)); }
+  .ld-weapon.top1 .idx { background:var(--gold); border-color:var(--gold); color:#1b1d24; }
+  .ld-weapon.top1 .prio { background:var(--gold); color:#1b1d24; }
+  .ld-plans { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:10px; }
+  .ld-plan { display:flex; flex-direction:column; gap:9px; border:1px solid var(--line); border-radius:10px;
+    padding:12px 14px; background:var(--panel2); }
+  .ld-plan h4 { display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin:0; font-size:13px; color:var(--accent); }
+  .ld-plan h4 .no { width:20px; height:20px; flex:0 0 auto; display:flex; align-items:center; justify-content:center;
+    border-radius:6px; background:var(--bg); border:1px solid var(--line); font-size:11px; color:var(--muted); }
+  .ld-plan h4 .kind { font-size:10px; font-weight:700; color:var(--muted); background:var(--bg);
+    border:1px solid var(--line); padding:2px 7px; border-radius:7px; }
+  .ld-plan h4 .sub { font-size:13px; color:var(--accent); font-weight:700; line-height:1.35; }
+  .ld-plan .items { display:flex; flex-direction:column; gap:6px; }
+  .ld-item { display:flex; align-items:center; gap:7px; padding:6px 9px; border-radius:8px; border:1px solid var(--line);
+    background:var(--bg); font-size:12px; line-height:1.5; }
+  .ld-item::before { content:""; width:5px; height:5px; flex:0 0 auto; border-radius:50%; background:var(--accent); }
+  .ld-item.has-icon::before { display:none; }
+  .ld-item .licon { width:26px; height:26px; flex:0 0 auto; object-fit:cover; border-radius:6px;
+    background:var(--panel2); border:1px solid var(--line); }
+  .ld-main { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:8px; }
+  .ld-main .stat { display:flex; flex-direction:column; gap:3px; padding:10px 12px; border-radius:9px;
+    border:1px solid var(--line); background:var(--panel2); }
+  .ld-main .stat .slot { font-size:11px; color:var(--muted); }
+  .ld-main .stat .val { font-size:13px; font-weight:700; color:var(--text); }
+  .ld-skill { display:flex; flex-wrap:wrap; gap:8px; }
+  .ld-skill .step { display:inline-flex; align-items:center; gap:7px; padding:7px 11px; border-radius:8px;
+    background:var(--panel2); border:1px solid var(--line); font-size:12px; }
+  .ld-skill .step i { width:19px; height:19px; flex:0 0 auto; display:flex; align-items:center; justify-content:center;
+    border-radius:5px; background:var(--accent); color:#0f1320; font-size:11px; font-weight:800; font-style:normal; }
+  .ld-teams { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:10px; }
+  .ld-team { border:1px solid var(--line); border-radius:10px; padding:12px 14px; background:var(--panel2); }
+  .ld-team h4 { margin:0 0 8px; font-size:13px; color:var(--gold); }
+  .ld-team .members { display:flex; flex-wrap:wrap; gap:6px; }
+  .ld-member { padding:4px 9px; border-radius:8px; border:1px solid var(--line); background:var(--bg); font-size:12px; }
+  .ld-member.lm { display:inline-flex; align-items:center; gap:6px; padding:3px 8px 3px 3px; }
+  .ld-member.lm .lm-ava { width:24px; height:24px; flex:0 0 auto; }
+  .ld-member.lm .lm-ava img { width:100%; height:100%; object-fit:cover; border-radius:6px; display:block; }
+  .ld-member.lm .lm-fb { display:none; width:100%; height:100%; border-radius:6px; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:#fff; }
+  .ld-member.lm .lm-ava.fb .lm-fb { display:flex; }
+  .ld-member.lm .lm-role { font-size:10px; color:var(--muted); border-left:1px solid var(--line); padding-left:6px; }
+  .ld-panel { display:grid; grid-template-columns:repeat(auto-fit,minmax(110px,1fr)); gap:8px; }
+  .ld-panel .pv { padding:10px 12px; border-radius:9px; border:1px solid var(--line); background:var(--panel2); }
+  .ld-panel .pv .k { font-size:11px; color:var(--muted); }
+  .ld-panel .pv .v { display:block; font-size:15px; font-weight:800; color:var(--accent); margin-top:3px; word-break:break-word; }
+  .ld-panel-note { margin-top:10px; font-size:11px; color:var(--muted); }
+  .ld-note { font-size:12px; color:var(--muted); line-height:1.8; white-space:pre-line; }
+  .ld-note b.k { color:var(--text); font-weight:700; margin-right:6px; }
+  .ld-note.accent { color:var(--text); background:rgba(110,168,254,.07); border-left:3px solid var(--accent); padding:10px 12px; border-radius:8px; }
+  .ld-note.amber { color:var(--text); background:rgba(224,168,58,.07); border-left:3px solid var(--amber); padding:10px 12px; border-radius:8px; }
+  .ld-details { border:1px solid var(--line); border-radius:10px; background:var(--panel2); margin-top:10px; overflow:hidden; }
+  .ld-details summary { display:flex; align-items:center; gap:8px; padding:10px 12px; cursor:pointer; font-size:12px;
+    color:var(--muted); list-style:none; user-select:none; transition:color .15s; }
+  .ld-details summary:hover { color:var(--text); }
+  .ld-details summary::-webkit-details-marker { display:none; }
+  .ld-details summary::after { content:"＋"; margin-left:auto; color:var(--accent); font-size:13px; font-weight:700; }
+  .ld-details[open] summary::after { content:"－"; }
+  .ld-details .ld-note { padding:0 12px 12px; }
+  .ld-foot { font-size:11px; color:var(--muted); line-height:1.7; padding:2px 4px; }
+  @media (max-width: 880px) {
+    .layout { grid-template-columns: 1fr; min-height: auto; }
+    .sidebar { max-height: 38vh; border-right: 0; border-bottom: 1px solid var(--line); }
+    .main { max-height: none; overflow-y: visible; padding: 14px; }
+    .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .ld-weapons { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+    .ld-hero { flex-direction: column; align-items: flex-start; }
+    .ld-src { width: 100%; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>🎯 抽卡建议分析器</h1>
+  <span class="meta" id="gameMeta"></span>
+  <span class="badge" id="verMeta"></span>
+  <span class="badge demo" id="demoBadge" style="display:none" title="点击打开设置切换真实/示例模式">示例模式</span>
+  <select class="mode-sel" id="gameSel" title="切换游戏"></select>
+  <span class="badge" id="aiBadge">AI：—</span>
+  <button class="btn" id="refreshBtn">⟳ 更新分析</button>
+  <button class="btn" id="openPlan">🎯 抽卡规划</button>
+  <button class="btn" id="openTier">🏆 梯队榜</button>
+  <button class="btn primary" id="openSettings">⚙ 设置</button>
+</header>
+<div class="layout">
+  <div class="sidebar">
+    <div class="sub-panel">
+      <h3>📡 主播订阅（交叉验证来源）</h3>
+      <div class="sub-add">
+        <input id="subInput" placeholder="输入 UID 或 B 站空间链接" />
+        <select id="subRole">
+          <option value="main">主意见</option>
+          <option value="cross_check" selected>交叉验证</option>
+          <option value="official">官方</option>
+        </select>
+      </div>
+      <button class="btn" id="subAdd" style="width:100%;margin-bottom:8px">+ 添加订阅</button>
+      <div class="sub-list" id="subList"></div>
+    </div>
+    <input class="search" id="search" placeholder="搜索角色 / 别名…" />
+    <div class="sortbar">
+      <div class="sb active" id="sortVer" data-mode="version">按版本 ↓</div>
+      <div class="sb" id="sortEle" data-mode="element">按元素</div>
+    </div>
+    <div class="legend" id="legend" title="点击按结论筛选"></div>
+    <div class="grid" id="grid"></div>
+  </div>
+  <div class="main" id="main">
+    <div class="placeholder">← 从左侧选择一个角色，开始分析当前版本的抽取建议</div>
+  </div>
+</div>
+<!-- 梯队榜弹窗 -->
+<div class="modal" id="tierModal">
+  <div class="modal-box" style="max-width:680px;width:92%">
+    <div class="modal-head">
+      <h2>🏆 强度梯队榜（T0~T3，仅参考 · 不参与抽取主结论）</h2>
+      <button class="btn" id="closeTier">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="note" style="border-left-color:var(--muted);font-size:11px;margin-bottom:12px">
+        梯队<b>自动</b>来自 AI 分析结果中的 tier（角色详情「🤖 AI 分析」运行后自动归类），也可在「✍️ 我的标注」手动覆盖；
+        未分级者为尚未 AI 分析或 AI 未给出梯级的角色。无需手动维护，运行 AI 分析即自动上榜。
+        这是主观总览维度，请勿与「抽取建议结论（必抽/推荐…）」混淆。
+      </div>
+      <div id="tierOut"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 抽卡规划弹窗 -->
+<div class="modal" id="planModal">
+  <div class="modal-box" style="max-width:760px;width:92%">
+    <div class="modal-head">
+      <h2>🎯 抽卡规划（保底计算 · 优先级 · 对比 · 导出）</h2>
+      <button class="btn" id="closePlan">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="plan-tabs">
+        <div class="pt active" data-tab="pity">🎲 保底/概率计算</div>
+        <div class="pt" data-tab="rank">📊 抽取优先级排序</div>
+        <div class="pt" data-tab="cmp">🔬 多角色对比</div>
+        <div class="pt" data-tab="gacha">🎫 抽卡记录</div>
+        <div class="pt" data-tab="exp">📤 导出/分享</div>
+      </div>
+
+      <!-- 保底计算 -->
+      <div class="plan-pane" id="planPity">
+        <div class="form-row"><label>游戏</label><select id="pityGame"></select>
+          <label style="margin-left:10px">卡池</label>
+          <select id="pityBanner">
+            <option value="char">角色/限定（90 保底 · 50/50）</option>
+            <option value="weapon">武器/装备（80 保底 · 75% 定向）</option>
+          </select>
+        </div>
+        <div class="form-row"><label>当前已垫抽数</label>
+          <input id="pityCur" type="number" min="0" max="200" value="0" style="width:90px">
+          <label style="margin-left:10px"><input type="checkbox" id="pityGuaranteed"> 已吃大保底（本次必出 UP）</label>
+        </div>
+        <button class="btn primary" id="pityCalc">计算概率与收手建议</button>
+        <div id="pityOut" class="note" style="margin-top:12px"></div>
+        <div class="note" style="font-size:11px;margin-top:8px;border-left-color:var(--muted)">
+          概率模型：角色池基础 0.6%/抽，第 74 抽起线性软保底（每抽 +6%），第 90 抽必出；
+          武器池基础 0.7%/抽，第 63 抽起 +7%，第 80 抽必出。参数为各游戏通用官方公示值，结果仅供规划参考。
+        </div>
+      </div>
+
+      <!-- 优先级排序 -->
+      <div class="plan-pane" id="planRank" style="display:none">
+        <div class="form-row"><label>添加角色</label>
+          <select id="rankPick" style="min-width:160px"></select>
+          <button class="btn" id="rankAdd">+ 加入</button>
+          <button class="btn" id="rankClear">清空</button>
+        </div>
+        <div class="rank-list" id="rankList"></div>
+        <div id="rankOut"></div>
+        <div class="note" style="font-size:11px;margin-top:8px;border-left-color:var(--muted)">
+          优先级分 = 结论权重（必抽100 / 推荐70 / 纯XP30 / 观望40 / 不推荐15 / 数据不足10）
+          + 置信度(0~1)×20（若有 AI）。按分数降序，辅助跨角色预算分配。
+        </div>
+      </div>
+
+      <!-- 对比视图 -->
+      <div class="plan-pane" id="planCmp" style="display:none">
+        <div class="form-row"><label>选择角色（最多 3）</label>
+          <select id="cmpPick" style="min-width:160px"></select>
+          <button class="btn" id="cmpAdd">+ 加入对比</button>
+          <button class="btn" id="cmpClear">清空</button>
+        </div>
+        <div id="cmpOut" class="cmp-grid"></div>
+      </div>
+
+      <!-- 抽卡记录（自动导入） -->
+      <div class="plan-pane" id="planGacha" style="display:none">
+        <div class="note" style="border-left-color:var(--accent);font-size:11px;margin-bottom:10px">
+          一键导入：先在游戏内打开一次「抽卡记录」页面（原神 / 星穹铁道 / 绝区零 支持），复制浏览器地址栏的完整链接（含
+          <code>getGachaLog&authkey=…</code>），粘贴到下面点「导入」即可自动分页拉取。
+          <b>authkey 有时效，过期后需重新打开一次游戏内抽卡记录页复制新链接</b>；需在可访问米哈游接口的网络（家庭宽带）下运行。
+          鸣潮 / 终末地 / 异环 暂无官方抽卡记录接口，不支持导入。
+        </div>
+        <div class="form-row">
+          <input id="gachaUrl" type="text" placeholder="粘贴游戏内抽卡记录页的完整链接（https://…/getGachaLog?authkey=…）" style="flex:1;min-width:260px" />
+          <button class="btn primary" id="gachaImport">⬇ 导入抽卡记录</button>
+          <button class="btn" id="gachaClear">🗑 清空本地记录</button>
+        </div>
+        <div class="test-out" id="gachaOut" style="display:none"></div>
+        <div id="gachaResult"></div>
+      </div>
+
+      <!-- 导出 -->
+      <div class="plan-pane" id="planExp" style="display:none">
+        <div class="form-row"><label>导出对象</label>
+          <select id="expTarget">
+            <option value="current">当前角色分析报告</option>
+            <option value="compare">对比列表</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <button class="btn" id="expText">📋 生成/复制文本</button>
+          <button class="btn primary" id="expImg">🖼 导出图片(PNG)</button>
+        </div>
+        <pre id="expTextOut" class="test-out" style="white-space:pre-wrap;margin-top:10px"></pre>
+        <canvas id="expCanvas" style="display:none;max-width:100%"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+      <div class="toast" id="toast"></div>
+      <div id="aiProgressOverlay" style="display:none;position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:999;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 18px;min-width:320px;max-width:82vw;box-shadow:0 8px 30px rgba(0,0,0,.45)">
+        <div id="aiProgressText" style="font-size:13px;color:var(--text);margin-bottom:6px">分析中…</div>
+        <div style="height:6px;background:var(--line);border-radius:3px;overflow:hidden">
+          <div id="aiProgressBar" style="height:100%;width:2%;background:linear-gradient(90deg,#6ea8fe,#8be08b);border-radius:3px;transition:width .45s"></div>
+        </div>
+      </div>
+
+<!-- 设置弹窗 -->
+<div class="modal" id="settingsModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h2>⚙ 设置（无需手动改配置文件）</h2>
+      <button class="btn" id="closeSettings">✕</button>
+    </div>
+    <div class="modal-body">
+      <section>
+        <h3>基础</h3>
+        <label>游戏展示名</label><input id="sDisplayName" type="text" />
+        <label>当前版本</label><input id="sCurrentVersion" type="text" />
+        <label>有效信息天数（时效窗口，建议 365）</label><input id="sRecencyDays" type="number" />
+      </section>
+      <section>
+        <h3>数据来源（关键：决定能否分析真实数据）</h3>
+        <div class="radio-row">
+          <label><input type="radio" name="sDemo" value="true" /> 示例模式（演示数据，无需联网，开箱即用）</label>
+          <label><input type="radio" name="sDemo" value="false" /> 真实模式（抓取 B 站真实视频）</label>
+        </div>
+        <div class="note" id="demoHint"></div>
+        <label>SESSDATA（真实模式必填：登录 B 站网页版后，从浏览器 Cookie 中取 SESSDATA 值）</label>
+        <input id="sSessdata" type="password" placeholder="粘贴 SESSDATA" autocomplete="off" />
+        <div style="margin-top:10px"><button class="btn" id="testConn">🔌 测试 B 站连接</button></div>
+        <div class="test-out" id="connOut" style="display:none"></div>
+        <div style="margin-top:14px;border-top:1px dashed var(--line);padding-top:10px">
+          <label style="color:var(--text);font-weight:600">NGA 社区 Cookie（社区论证数据源）</label>
+          <div class="note">勾选「🔍 增强证据」后，除 B 站外还会检索 <b>NGA 对应游戏版块</b>的主题与热帖作为文字论证来源
+            （标题/正文直接进入 AI 分析，文字内容更多更友好）。支持版块：原神 / 星穹铁道 / 绝区零 / 鸣潮 / 终末地（异环暂未开版）。
+            在浏览器登录 <b>bbs.nga.cn</b> 后复制全部 Cookie 粘贴到此（仅存本机 config.json，接口响应一律掩码，不回传原文）。</div>
+          <div class="form-row" style="margin:8px 0 0">
+            <input id="sNgaCookie" type="password" placeholder="粘贴 NGA 登录 Cookie（含 ngaPassportUid / ngaPassportCid 等）" autocomplete="off" style="flex:1;min-width:220px" />
+            <button class="btn" id="testNga">🧪 测试 NGA 连接</button>
+            <button class="btn" id="sNgaClear">🗑 清除</button>
+          </div>
+          <div class="test-out" id="ngaOut" style="display:none"></div>
+        </div>
+        <div style="margin-top:14px;border-top:1px dashed var(--line);padding-top:10px">
+          <label style="color:var(--text);font-weight:600">官方角色数值（雷达图真值源）</label>
+          <div class="note">雷达图评分由官方面板数值<b>确定性计算</b>（不依赖 AI，避免幻觉）。数据获取：
+            六游戏均支持雷达图：<b>原神 → ambr.top + api.lunaris.moe</b>（在线拉取）、<b>星穹铁道 → StarRailRes</b>（白值+技能倍率）、
+            <b>绝区零 → biligame 百科</b>（白值+特性）、<b>鸣潮 → biligame 百科</b>（Lv90 白值）、
+            <b>终末地 → EndfieldGameData 数据仓库</b>、<b>异环 → Fandom 数值模块</b>（建设中，部分覆盖）为「官方数值确定性推导」；
+            各游戏其余维度由官方 Wiki 定位标签/职业/武器推导（标注「非官方数值」）。
+            在「在线拉取最新角色名单」时一并写入，角色 AI 分析页展示雷达图。</div>
+          <div style="margin-top:12px;border-top:1px dashed var(--line);padding-top:10px">
+            <label style="color:var(--text);font-weight:600">角色名单库（hsr / zzz）</label>
+            <div class="note">崩坏：星穹铁道 / 绝区零 的角色名单从 <b>米游社官方 Wiki</b> 精编数据重建（真实国服中文名单 + 元素/命途/职业/稀有度）。<br>⚠️ <b>hakush.in 已于 2026-02 永久关闭</b>，本功能改用离线精编模式，点击即写，无需联网。
+              若当前名单出现非本游戏角色或缺失，点此一键重建（会自动备份旧文件）。原神名单由 build_chars.py 精编维护，新版本角色通过下方「在线拉取」自动补齐。<br>
+              新版本上线后想直接拉取升级（只增不改、自动备份）：
+              <b>hsr → StarRailRes</b>（官方资源镜像）、<b>原神 → genshin-db</b>（GenshinData 官方镜像 + api.lunaris.moe 最新角色数值，数据包滞后时自动补 Fandom 当前版本上线页）、
+              <b>绝区零 → biligame 百科</b>（中文图鉴，含基础数值）、<b>鸣潮 → Fandom</b>（英文）、
+              <b>终末地 → BoxCatTeam 官方元数据</b>、<b>异环 → Fandom</b>（英文）。</div>
+            <div style="margin-top:8px"><button class="btn" id="refreshCharacters">🔃 重建当前游戏角色库（精编数据）</button></div>
+            <div class="test-out" id="charRefreshOut" style="display:none"></div>
+            <div style="margin-top:8px"><button class="btn" id="updateDb">🌐 在线拉取最新角色名单（六游戏官方镜像/百科源）</button></div>
+            <div class="test-out" id="updateDbOut" style="display:none"></div>
+          </div>
+          <div style="margin-top:12px;border-top:1px dashed var(--line);padding-top:10px">
+            <label style="color:var(--text);font-weight:600">真实头像（联网拉取）</label>
+            <div class="note">原神头像映射来自 <b>api.lunaris.moe</b> 官方角色卡图（含最新版本新角色），资源使用 <b>Enka Network</b>，逐张验证后写入；星穹铁道（HSR）头像源自 <b>Enka Network</b> 官方资源，按角色 AvatarId 精准匹配、逐张验证后写入。<br>当前游戏为 <b>原神 / hsr</b> 时可点此联网刷新真实头像（仅验证通过的 URL 被写入，网络不可用时保留现有数据）。其余游戏暂无确定性映射源，维持官方属性色卡。</div>
+            <div style="margin-top:8px"><button class="btn" id="fetchAvatars">🖼 联网拉取真实头像（适配当前游戏）</button></div>
+            <div class="test-out" id="fetchAvatarsOut" style="display:none"></div>
+          </div>
+        </div>
+      </section>
+      <section>
+        <h3>分析模式</h3>
+        <div class="note" style="border-left-color:var(--green)">
+          <b>点击角色默认只跑「规则」（快速、无 AI、零外部依赖）</b>，避免误点后漫长等待。<br>
+          需要 AI 辅助时，在角色报告页点 <b>「🤖 AI 分析」</b> 按钮即可。AI 配置见下方。
+        </div>
+      </section>
+      <section>
+        <h3>AI 分析（线上 / 本地大模型双接口）</h3>
+        <label style="display:flex;align-items:center;gap:6px;color:var(--text)"><input type="checkbox" id="sAiEnabled" /> 启用 AI 分析</label>
+        <div class="radio-row">
+          <label><input type="radio" name="sAiProv" value="online" /> 线上 API（DeepSeek/Moonshot/通义/OpenAI 等 OpenAI 兼容）</label>
+          <label><input type="radio" name="sAiProv" value="local" /> 本地大模型（Ollama / LM Studio）</label>
+        </div>
+        <div class="ai-sub" id="aiOnline">
+          <label>线上 base_url</label><input id="sAiOnUrl" type="text" placeholder="https://api.deepseek.com/v1" />
+          <label>API Key</label><input id="sAiOnKey" type="password" placeholder="sk-..." autocomplete="off" />
+          <label>模型名</label><input id="sAiOnModel" type="text" placeholder="deepseek-chat" />
+        </div>
+        <div class="ai-sub" id="aiLocal">
+          <label>本地 base_url</label><input id="sAiLoUrl" type="text" placeholder="http://localhost:11434/v1" />
+          <label>API Key（本地通常留空）</label><input id="sAiLoKey" type="password" autocomplete="off" />
+          <label>本地模型名</label><input id="sAiLoModel" type="text" placeholder="qwen2.5:7b" />
+        </div>
+        <div style="margin-top:10px"><button class="btn" id="testAi">🤖 测试 AI 连接</button></div>
+        <div class="test-out" id="aiOut" style="display:none"></div>
+        <div style="margin-top:12px;border-top:1px dashed var(--line);padding-top:10px">
+          <label style="color:var(--text);font-weight:600">AI 结果缓存（本地 · 省 token）</label>
+          <div class="note">已分析角色复用本地缓存结果，只有手动点「🤖 AI 分析」才刷新。缓存按 游戏+角色+增强开关 区分，无需联网。</div>
+          <div id="aiCacheInfo" class="note" style="border-left-color:var(--accent)">加载中…</div>
+          <div style="margin-top:8px"><button class="btn" id="clearAiCache">🗑 清空全部 AI 缓存</button></div>
+        </div>
+      </section>
+      <section>
+        <h3>内容源（视频处理哲学：下载整视频是下策）</h3>
+        <label>内容源</label>
+        <select id="sContentSrc">
+          <option value="metadata">metadata（仅标题/简介/标签，最省，推荐）</option>
+          <option value="audio">audio（抽音频做 ASR 识别，比整视频省 1–2 个数量级）</option>
+        </select>
+        <label style="display:flex;align-items:center;gap:6px;color:var(--text)"><input type="checkbox" id="sPreferAudio" /> 若必须下载，仅抽取音频（绝不开整视频）</label>
+        <label>ASR 服务商（预留，留空=未配置）</label><input id="sAsr" type="text" placeholder="例如 whisper / 某云服务" />
+      </section>
+      <section>
+        <h3>权重（交叉验证采信）</h3>
+        <label>主意见主播权重</label><input id="sWTrust" type="number" step="0.1" />
+        <label>官方权重</label><input id="sWOfficial" type="number" step="0.1" />
+        <label>普通/交叉来源权重</label><input id="sWNormal" type="number" step="0.1" />
+        <label>时效半衰期（天，越短越看重近期）</label><input id="sWHalf" type="number" />
+      </section>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="resetDemoBtn">恢复示例模式</button>
+      <button class="btn primary" id="saveSettings">💾 保存设置</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const ELEMENT_COLOR = { "火":"#e5534b", "水":"#4aa3ff", "雷":"#b06bff", "冰":"#5fd0e0",
+  "风":"#42d77d", "草":"#7ed957", "岩":"#d9a05b" };
+// 各游戏官方属性/命途/职业配色（来源：萌娘百科各游戏官方配色模板，提取自游戏内 UI；置信度高）
+// 用于头像兜底卡与类别标签染色，做到「属性染色参考官方」。
+const GAME_ATTR_COLOR = {
+  genshin: {"火":"#EC4923","水":"#498FCC","雷":"#6957C2","冰":"#35AACC","风":"#359697","草":"#66AD16","岩":"#CC9046"},
+  hsr: {"物理":"#808080","火":"#B82008","冰":"#48C0F8","雷":"#D850F8","风":"#189078","量子":"#5850B8","虚数":"#A88820"},
+  zzz: {"电":"#2EB6FF","火":"#FF5522","冰":"#3FE0E3","以太":"#FE427E","物理":"#F0D12A","烈霜":"#98EFF0","玄墨":"#BB7D33","凛刃":"#889EFF","风":"#A4C0F4","流明":"#FFE9B0"},
+  wuthering_waves: {"衍射":"#EECC22","导电":"#B46BFF","冷凝":"#41AEFB","热熔":"#F0744E","气动":"#55FFB5","湮灭":"#E549A5"},
+  arknights_endfield: {"物理":"#A88460","灼热":"#F65413","电磁":"#FDCD00","寒冷":"#30D7E0","自然":"#B5D846"},
+  nte: {"光":"#98C8E8","灵":"#33CCB3","咒":"#E2311D","暗":"#D376F0","魂":"#1C72FD","相":"#CFA726"}
+};
+const GAME_PATH_COLOR = { hsr: {"毁灭":"#C4402C","巡猎":"#B68A45","智识":"#4A93B0","同谐":"#D8A93B","虚无":"#7E5AA8","存护":"#5C8A4A","丰饶":"#3FAE8C","记忆":"#9B7BD4","欢愉":"#E0568F"} };
+const GAME_CLASS_COLOR = { arknights_endfield: {"近卫":"#C0504D","术师":"#4A93B0","突击":"#C0883A","先锋":"#5C8A4A","重装":"#7E6AA8","辅助":"#3FAE8C"} };
+// 取某属性/命途/职业的官方色（按当前游戏优先，回退到原神元素色，再回退灰）
+function officialColor(v){
+  const g = _currentGameId || 'genshin';
+  if(v && GAME_ATTR_COLOR[g] && GAME_ATTR_COLOR[g][v]) return GAME_ATTR_COLOR[g][v];
+  if(v && GAME_PATH_COLOR[g] && GAME_PATH_COLOR[g][v]) return GAME_PATH_COLOR[g][v];
+  if(v && GAME_CLASS_COLOR[g] && GAME_CLASS_COLOR[g][v]) return GAME_CLASS_COLOR[g][v];
+  if(v && ELEMENT_COLOR[v]) return ELEMENT_COLOR[v];
+  return "#888";
+}
+// 角色代表色（头像染色）：优先 element，终末地无 element 时回退 class，再回退 path/attribute/specialty
+function charColor(c){
+  let a = c.element;
+  if((!a || a==='') && c.class) a = c.class;
+  if(!a) a = c.path || c.attribute || c.specialty || '';
+  return officialColor(a);
+}
+function shade(hex, f){ // f<1 变暗，>1 变亮
+  hex = (hex||"#888").replace('#','');
+  if(hex.length===3) hex = hex.split('').map(x=>x+x).join('');
+  let r=parseInt(hex.slice(0,2),16), g=parseInt(hex.slice(2,4),16), b=parseInt(hex.slice(4,6),16);
+  r=Math.max(0,Math.min(255,Math.round(r*f))); g=Math.max(0,Math.min(255,Math.round(g*f))); b=Math.max(0,Math.min(255,Math.round(b*f)));
+  return '#'+[r,g,b].map(x=>x.toString(16).padStart(2,'0')).join('');
+}
+function elemSpan(e){ return '<span style="color:' + officialColor(e) + ';font-weight:600">' + escHtml(e) + '</span>'; }
+const ELEMENT_ORDER = ["火","水","雷","冰","风","草","岩"];
+// 类别字段着色：按当前游戏官方配色（元素/命途/属性/职业）统一染色
+function catSpan(v){
+  if(!v || v==='-') return '';
+  return '<span style="color:' + officialColor(v) + ';font-weight:600">' + escHtml(v) + '</span>';
+}
+// 武器/职能展示：绝区零无 weapon 字段用 specialty 替代；终末地用 branch 替代；缺失则留空（避免显示 undefined）
+function weaponOrAlt(c){
+  if(c.weapon) return c.weapon;
+  if(c.specialty) return c.specialty;   // 绝区零
+  if(c.branch) return c.branch;          // 终末地（职业分支）
+  return '';
+}
+// 版本标签：未公测/未上线角色（status=upcoming 或无版本）显示「待上线」，避免显示 v0.0
+function verLabel(c){
+  if(c.status === 'upcoming' || !c.version) return '待上线';
+  return 'v' + c.version;
+}
+const VERDICT_COLOR = {
+  strong_pull: "var(--gold)", pull: "var(--green-d)", wait: "var(--wait-blue)",
+  skip: "var(--red)", pure_xp: "var(--pink)", insufficient: "var(--gray)"
+};
+const VERDICT_TEXT = {
+  strong_pull: "必抽", pull: "推荐", wait: "观望",
+  skip: "不推荐", pure_xp: "纯XP", insufficient: "数据不足"
+};
+const VERDICT_LABEL = VERDICT_TEXT;  // 别名，便于统一引用
+let ALL = [], CHAR_MAP = {}, SUBS = {streamers:[], official:[]}, curSort = "version", curChar = null;
+let CUR = null, CUR_MANUAL = null, activeTab = "rule", AI_INFO = null;
+// 当前游戏的「类别」字段（用于排序栏第二按钮）：原神=元素，星铁=命途，绝区零=属性…
+let CAT_FIELD = "element", CAT_LABEL = "元素", CAT_ORDER = [], GAMES = [];
+let legendFilter = new Set();
+
+function elColor(e){ return officialColor(e); }
+function elShade(e){ return shade(officialColor(e), 0.7); }
+function verdictClass(v){ return 'v-' + v; }
+function verdictCode(c){ return (c && c.verdict) || 'insufficient'; }
+
+// 真实头像：原神用 api.lunaris.moe 映射 + Enka 官方资源（含最新版本新角色），HSR 用 Enka AvatarId；
+// 其余游戏暂无稳定官方图标 CDN，统一用「官方属性色渐变卡 + 全名」兜底，杜绝灰块/缩略字。
+function avatarHTML(c, big){
+  const col = charColor(c);
+  const grad = "linear-gradient(135deg," + col + "," + shade(col,0.6) + ")";
+  const sz = big ? 'width:56px;height:56px;font-size:15px;' : '';
+  const src = c.icon || c.icon_fallback || "";
+  if(src){
+    const fb = (c.icon && c.icon_fallback && c.icon !== c.icon_fallback) ? c.icon_fallback : "";
+    const onerr = fb
+      ? `if(this.dataset.fb!=='1'){this.dataset.fb='1';this.src='${fb}';}else{this.style.display='none';this.nextElementSibling.style.display='flex';}`
+      : `this.style.display='none';this.nextElementSibling.style.display='flex';`;
+    return `<img class="ava" src="${src}" alt="${escHtml(c.name)}" onerror="${onerr}">`+
+      `<div class="ava-fb" style="background:${grad};${sz}"><span>${escHtml(c.name)}</span></div>`;
+  }
+  // 无真实图标：直接显示官方色渐变卡（始终可见）
+  return `<div class="ava-fb" style="display:flex;background:${grad};${sz}"><span>${escHtml(c.name)}</span></div>`;
+}
+
+function sortChars(list, mode){
+  const arr = list.slice();
+  if(mode === CAT_FIELD){
+    arr.sort((a,b) => {
+      const va = a[CAT_FIELD] || '', vb = b[CAT_FIELD] || '';
+      const ea = CAT_ORDER.indexOf(va), eb = CAT_ORDER.indexOf(vb);
+      // 两者都在预设顺序内：按预设顺序
+      if(ea >= 0 && eb >= 0) return ea - eb;
+      // 一个有顺序一个有顺序外：有顺序的优先
+      if(ea >= 0 && eb < 0) return -1;
+      if(ea < 0 && eb >= 0) return 1;
+      // 都不在预设顺序（如终末地/异环 category_order 为空）：按字段值中文排序
+      const cmp = va.localeCompare(vb, 'zh');
+      if(cmp !== 0) return cmp;
+      return parseFloat(b.version||0) - parseFloat(a.version||0);
+    });
+  } else {
+    arr.sort((a,b) => parseFloat(b.version||0) - parseFloat(a.version||0)
+      || a.name.localeCompare(b.name));
+  }
+  return arr;
+}
+
+async function loadCharacters(gameOverride){
+  const url = gameOverride ? ('/api/characters?game=' + encodeURIComponent(gameOverride)) : '/api/characters';
+  const res = await fetch(url);
+  const data = await res.json();
+  ALL = data.characters;
+  renderHeader(data);
+  renderSubs(data.config);
+  renderLegend();
+  renderGrid();
+}
+
+function renderLegend(){
+  const el = $('#legend'); if(!el) return;
+  const order = ['strong_pull','pull','wait','skip','pure_xp','insufficient'];
+  el.innerHTML = order.map(v => {
+    const off = (legendFilter.size && !legendFilter.has(v)) ? ' off' : '';
+    return `<span class="lg${off}" data-v="${v}"><span class="sw" style="border-color:${VERDICT_COLOR[v]}"></span>${VERDICT_TEXT[v]}</span>`;
+  }).join('');
+  el.querySelectorAll('.lg').forEach(s => s.onclick = () => {
+    const v = s.dataset.v;
+    if(legendFilter.has(v)) legendFilter.delete(v); else legendFilter.add(v);
+    renderLegend(); renderGrid();
+  });
+}
+
+function renderHeader(data){
+  const gm = data.game_meta || {};
+  $('#gameMeta').textContent = '游戏：' + (gm.display_name || data.game || '');
+  $('#verMeta').textContent = '当前版本：' + (gm.current_version || '—') +
+    ' ｜ 时效：近 ' + (data.config.recency_days || '?') + ' 天 ｜ 角色数：' + ALL.length;
+  const demo = data.config.demo_mode;
+  $('#demoBadge').style.display = demo ? 'inline-block' : 'none';
+  // 类别排序字段（按游戏特性：元素/命途/属性/职业…）
+  CAT_FIELD = gm.category_field || 'element';
+  CAT_LABEL = gm.category_label || '元素';
+  CAT_ORDER = gm.category_order || [];
+  GAMES = data.games || [];
+  populateGameSel();
+  updateSortLabel();
+  AI_INFO = data.config.ai || {enabled:false, provider:'online'};
+  const aiTxt = !AI_INFO.enabled ? 'AI：未启用'
+    : ('AI：' + (AI_INFO.provider === 'local' ? '本地' : '线上') + (AI_INFO.configured ? '' : '（未配置）'));
+  $('#aiBadge').textContent = aiTxt;
+}
+
+// 填充游戏切换下拉
+function populateGameSel(){
+  const sel = $('#gameSel'); if(!sel) return;
+  const cur = (GAMES.find(g => g.current) || {}).id || (GAMES[0] && GAMES[0].id);
+  sel.innerHTML = GAMES.map(g =>
+    `<option value="${g.id}">${escHtml(g.display_name)}</option>`).join('');
+  sel.value = cur || '';
+  // 记录当前选中的游戏 ID（用于 loadCharacters 传参）
+  _currentGameId = cur || '';
+}
+let _currentGameId = 'genshin'; // 当前前端选中的游戏（与服务端 current_game 同步）
+
+// 切换游戏：写入后端 current_game 后重载
+async function switchGame(id){
+  if(!id) return;
+  try {
+    const res = await fetch('/api/switch', {method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({game: id})});
+    const d = await res.json();
+    if(!d.ok){ showToast('切换失败：'+(d.error||'未知错误')); return; }
+  } catch(e){ showToast('切换失败：'+e.message); return; }
+  await loadCharacters(id);
+  // 切换游戏后清空当前角色详情
+  curChar = null; CUR = null;
+  $('#main').innerHTML = '<div class="placeholder">← 从左侧选择一个角色，开始分析当前版本的抽取建议</div>';
+}
+
+// 动态更新排序栏第二按钮（按游戏类别）
+function updateSortLabel(){
+  const el = $('#sortEle'); if(!el) return;
+  el.dataset.mode = CAT_FIELD;
+  el.textContent = '按' + CAT_LABEL;
+  // 若当前排序不是版本且类别字段非法，回退到版本
+  if(curSort && curSort !== 'version' && curSort !== CAT_FIELD) curSort = 'version';
+}
+
+function renderSubs(cfg){
+  SUBS = {streamers: cfg.streamers||[], official: cfg.official||[]};
+  const list = $('#subList'); list.innerHTML = '';
+  const all = [...SUBS.streamers.map(s=>({...s,kind:'streamer'})),
+               ...SUBS.official.map(s=>({...s,kind:'official'}))];
+  if(!all.length){ list.innerHTML = '<div style="font-size:11px;color:var(--muted)">暂无订阅</div>'; return; }
+  all.forEach(s => {
+    const tagcls = s.role==='main'?'main':(s.role==='official'?'official':'cross');
+    const tagtxt = s.role==='main'?'主意见':(s.role==='official'?'官方':'交叉');
+    const unresolved = s.resolved===false ? '<span class="tag unres">未解析</span>' : '';
+    const el = document.createElement('div');
+    el.className = 'sub-item';
+    el.innerHTML = `<span class="nm" title="${s.name}">${s.name}</span>
+      <span class="tag ${tagcls}">${tagtxt}</span>${unresolved}
+      <button class="btn sm danger" data-uid="${s.uid}" data-kind="${s.kind}">✕</button>`;
+    el.querySelector('button').onclick = () => removeSub(s.uid, s.kind);
+    list.appendChild(el);
+  });
+}
+
+function renderGrid(){
+  const q = ($('#search').value || '').trim().toLowerCase();
+  const grid = $('#grid');
+  grid.innerHTML = '';
+  const filtered = ALL.filter(c => {
+    if(legendFilter.size && !legendFilter.has(verdictCode(c))) return false;
+    if(!q) return true;
+    return (c.name + ' ' + (c.aliases||[]).join(' ')).toLowerCase().includes(q);
+  });
+  sortChars(filtered, curSort).forEach(c => {
+    CHAR_MAP[c.id] = c;
+    const vcode = verdictCode(c);
+    const el = document.createElement('div');
+    el.className = 'char b-' + vcode + (c.id === curChar ? ' active' : '');
+    el.dataset.id = c.id;
+    const up = c.status === 'upcoming' ? '<span class="up">即将上线</span>' : '';
+    const tierLv = tierLevel(c);
+    const tierBadge = tierLv ? `<span class="tier-badge">${tierLv}</span>` : '';
+    const aiTag = c.ai_cached ? '<span class="tag2" style="border-color:var(--accent);color:var(--accent);margin-left:4px;font-size:10px">AI</span>' : '';
+    el.innerHTML = `${avatarHTML(c, false)}
+      <div style="min-width:0">
+        <div class="nm"><span class="dot ${verdictClass(vcode)}"></span>${c.name}${up}${tierBadge}</div>
+        <div class="sub">${catSpan(c[CAT_FIELD])} · ${c.rarity}★ · ${verLabel(c)} · ${c.verdict_label}${aiTag}</div>
+      </div>`;
+    el.onclick = () => selectChar(c.id);
+    grid.appendChild(el);
+  });
+}
+
+function selectChar(id){
+  curChar = id;
+  document.querySelectorAll('.char').forEach(el => el.classList.toggle('active', el.dataset.id === id));
+  // 点击角色默认只跑规则（快速、无 AI）；AI 需点「🤖 AI 分析」按钮
+  analyze(id, 'rule');
+}
+
+// 增强证据开关：全局唯一状态，跨标签页/角色保持勾选（用户要求：勾上后分析完也不取消）
+let enhanceEnabled = false;
+try { enhanceEnabled = (localStorage.getItem('gacha_enhance') === '1'); } catch(e){}
+function persistEnhance(){ try { localStorage.setItem('gacha_enhance', enhanceEnabled ? '1' : '0'); } catch(e){} }
+function setEnhance(v){ enhanceEnabled = !!v; persistEnhance(); }
+
+async function analyze(id, mode){
+  const main = $('#main');
+  main.innerHTML = '<div class="placeholder">分析中…</div>';
+  try {
+    const res = await fetch('/api/analyze?character=' + encodeURIComponent(id) + '&game=' + encodeURIComponent(_currentGameId) + '&mode=' + encodeURIComponent(mode||'rule') + '&enhanced=' + (enhanceEnabled ? '1' : '0'));
+    const r = await res.json();
+    if(!r.ok){ main.innerHTML = '<div class="placeholder">分析失败：' + (r.error||'未知错误') + '</div>'; return; }
+    CUR = r;
+    activeTab = 'rule';
+    renderReport(r);
+  } catch(e){ main.innerHTML = '<div class="placeholder">分析失败：' + e.message + '</div>'; }
+}
+
+function effectiveVerdict(r){
+  if(r.effective === 'manual' && r.manual){ return {v:r.manual.verdict, l:r.manual.verdict_label, src:'手动标注'}; }
+  if(r.effective === 'ai' && r.ai && r.ai.ok){ return {v:r.ai.verdict, l:r.ai.verdict_label, src:'AI 分析'}; }
+  return {v:r.verdict, l:r.verdict_label, src:'规则基线'};
+}
+
+function renderReport(r){
+  const c = r.character;
+  const ev = effectiveVerdict(r);
+  let banner = '';
+  if(r.data_mode === 'sample'){
+    banner = '<div class="banner">⚠️ 当前为<b>示例模式</b>：下方证据为演示用示例数据（非真实视频）。'+
+      '打开右上「⚙ 设置 → 数据来源」关闭示例模式并填入 SESSDATA，即可在本机抓取真实 B 站视频分析。</div>';
+  } else if(r.data_mode === 'none'){
+    banner = '<div class="banner">该角色在当前订阅来源与时效窗口内<b>暂无视频数据</b>。'+
+      '请订阅相关主播并在本机运行以拉取真实分析（数据中心 IP 无法访问 B 站，需在家庭宽带环境运行）。</div>';
+  } else {
+    banner = '<div class="banner" style="background:#15281c;border-color:#2a5a3a;color:#9be3b0">✅ 数据来源：真实抓取的 B 站视频。</div>';
+  }
+  const effCls = r.effective === 'manual' ? 'eff-manual' : (r.effective === 'ai' ? 'eff-ai' : 'eff-rule');
+
+  $('#main').innerHTML = `
+    ${banner}
+    <div class="card card-${ev.v}">
+      <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
+        ${avatarHTML(c, true)}
+        <div style="min-width:0">
+          <div style="font-size:20px; font-weight:700;">${c.name}
+            <span style="font-size:13px;color:var(--muted);font-weight:400;">${catSpan(c[CAT_FIELD])}${weaponOrAlt(c)?' · '+escHtml(weaponOrAlt(c)):''} · ${c.rarity}★ · ${verLabel(c)}</span></div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px;">别名：${(c.aliases||[]).join('、')}${c.note?' ｜ '+c.note:''}</div>
+        </div>
+        <div class="verdict ${ev.v}">${ev.l}</div>
+        <button class="btn primary" id="aiBtn" style="margin-left:auto">🤖 AI 分析</button>
+        <button class="btn" id="sentBtn" title="聚合 B站 相关视频/专栏的播放·点赞量（需在线+SESSDATA+非示例模式）">📣 舆情声量</button>
+      </div>
+      <div class="kv char-meta">
+        <span>规则得分 <b>${r.net_score>0?'+':''}${r.net_score}</b></span>
+        <span>规则置信度 <b>${(r.confidence*100).toFixed(0)}%</b></span>
+        <span>有效证据 <b>${r.evidence_count}</b> 条</span>
+        <span>数据时效 <b>近 ${r.newest_age_days}–${r.oldest_age_days} 天</b></span>
+        <span>采信来源 <b class="${effCls}">${ev.src}</b></span>
+      </div>
+
+      <div id="officialDataBox"></div>
+
+      <div class="tabs">
+        <div class="tab active" data-tab="rule">📊 规则建议</div>
+        <div class="tab" data-tab="ai">🤖 AI 分析</div>
+        <div class="tab" data-tab="manual">✍️ 我的标注</div>
+        <div class="tab" data-tab="loadout">🎽 配装推荐</div>
+      </div>
+      <div id="tabContent"></div>
+    </div>`;
+  renderOfficialData(c.id);
+
+  document.querySelectorAll('.tab').forEach(t => {
+    t.onclick = () => { activeTab = t.dataset.tab;
+      document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x===t));
+      renderTab(); };
+  });
+  const aiBtn = $('#aiBtn');
+  if(aiBtn) aiBtn.onclick = runAiAndShow;
+  const sentBtn = $('#sentBtn');
+  if(sentBtn) sentBtn.onclick = showSentiment;
+  renderTab();
+}
+
+// 官方基础数值 / 技能（hsr=StarRailRes 白值+技能、zzz=biligame 数值）
+async function renderOfficialData(cid){
+  const box = $('#officialDataBox');
+  if(!box) return;
+  const g = _currentGameId || 'genshin';
+  if(g !== 'hsr' && g !== 'zzz'){ box.innerHTML = ''; return; }
+  let d;
+  try{
+    const res = await fetch('/api/official-data?game=' + encodeURIComponent(g) + '&character=' + encodeURIComponent(cid));
+    d = await res.json();
+  }catch(e){ box.innerHTML = ''; return; }
+  if(!d.ok){ box.innerHTML = ''; return; }
+
+  const st = d.stats || {};
+  const fmt = v => (v==null || v==='' ? '—' : (Number(v) % 1 === 0 ? String(Number(v)) : Number(v).toFixed(1)));
+  const pct = v => (v==null ? '—' : (Math.round(Number(v)*100) + '%'));
+  const cell = (k, v, sub) => '<span><b>'+k+'</b> '+v+(sub?' <span style="color:var(--muted)">('+sub+')</span>':'')+'</span>';
+  let inner = '';
+
+  if(g === 'hsr'){
+    const arrow = (a, b) => (a==null || b==null) ? fmt(a==null ? b : a) : (fmt(a) + ' → ' + fmt(b));
+    inner = '<div class="kv" style="margin-top:8px">'
+      + cell('生命值', arrow(st.base_hp, st.hp80), 'Lv1→80')
+      + cell('攻击力', arrow(st.base_atk, st.atk80), 'Lv1→80')
+      + cell('防御力', arrow(st.base_def, st.def80), 'Lv1→80')
+      + cell('速度', fmt(st.spd))
+      + cell('暴击率', pct(st.crit_rate))
+      + cell('暴击伤害', pct(st.crit_dmg))
+      + '</div>';
+    const skills = d.skills || [];
+    if(skills.length){
+      const list = skills.map(s =>
+        '<li><b>'+escHtml(s.name||'')+'</b>'
+        + (s.type_text ? ' <span class="tag2" style="border-color:var(--line);color:var(--muted)">'+escHtml(s.type_text)+'</span>' : '')
+        + (s.effect_text ? ' <span style="color:var(--muted);font-size:12px">'+escHtml(s.effect_text)+'</span>' : '')
+        + '<div style="font-size:12px;color:var(--muted);margin-top:2px;white-space:pre-wrap">'+escHtml((s.desc||'').slice(0,220))+'</div></li>').join('');
+      inner += '<details style="margin-top:8px"><summary style="cursor:pointer;font-size:12px;color:var(--accent)">🗡 技能明细（'+skills.length+'）</summary>'
+        + '<ul class="reasons" style="margin-top:6px">'+list+'</ul></details>';
+    }
+  } else {
+    const arrow = (a, b) => (a==null || b==null) ? fmt(a==null ? b : a) : (fmt(a) + ' → ' + fmt(b));
+    inner = '<div class="kv" style="margin-top:8px">'
+      + cell('生命值', arrow(st.hp1, st.hp60), 'Lv1→60')
+      + cell('攻击力', arrow(st.atk1, st.atk60), 'Lv1→60')
+      + cell('防御力', arrow(st.def1, st.def60), 'Lv1→60')
+      + cell('冲击力', fmt(st.impact))
+      + cell('异常掌控', fmt(st.anomaly_mastery))
+      + cell('异常精通', fmt(st.anomaly_proficiency))
+      + cell('能量回复', fmt(st.energy_regen))
+      + '</div>';
+  }
+
+  box.innerHTML = '<div class="radar-wrap" style="margin:10px 0 2px">'
+    + '<div class="sec-title">📐 官方基础数据'
+    + (d.source ? ' <span class="radar-src official">'+escHtml(d.source)+'</span>' : '')
+    + (d.date ? ' <span style="font-size:11px;color:var(--muted)">'+escHtml(d.date)+'</span>' : '')
+    + '</div>' + inner + '</div>';
+}
+
+// 社区舆情声量：复用增强证据（B站搜索聚合），统计相关视频/专栏的播放·点赞量
+async function showSentiment(){
+  if(!curChar) return;
+  showToast('正在聚合 B站 舆情（增强搜索）…');
+  try {
+    const res = await fetch('/api/analyze?character=' + encodeURIComponent(curChar) + '&game=' + encodeURIComponent(_currentGameId) + '&mode=rule&enhanced=1');
+    const r = await res.json();
+    const srcs = (r && r.enhanced_sources) || [];
+    if(!srcs.length){ showToast('未检索到相关视频/专栏（需在线+SESSDATA+非示例模式，且角色名有搜索结果）'); return; }
+    let plays=0, likes=0, fav=0;
+    srcs.forEach(s => { plays += (s.play||0); likes += (s.like||0); fav += (s.favorite||0); });
+    const top = srcs.slice().sort((a,b)=> (b.play||0)-(a.play||0))[0];
+    const fmt = n => n>=10000 ? (n/10000).toFixed(1)+'万' : (''+n);
+    showToast('📣 舆情：' + srcs.length + ' 条相关（视频' + srcs.filter(s=>s.type==='video').length + '/专栏' + srcs.filter(s=>s.type==='article').length + '）'
+      + ' ｜ 总播放 ' + fmt(plays) + ' ｜ 总赞 ' + fmt(likes)
+      + ' ｜ 最高播放：' + (top.title||'').slice(0,18) + '（' + fmt(top.play||0) + '）');
+  } catch(e){ showToast('舆情聚合失败：' + e.message); }
+}
+
+function renderTab(){
+  if(activeTab === 'ai'){ renderAiTab(); }
+  else if(activeTab === 'manual'){ renderManualTab(); }
+  else if(activeTab === 'loadout'){ renderLoadoutTab(); }
+  else { renderRuleTab(CUR); }
+}
+
+// ===== 配装推荐（武器 / 套装 / 词条 / 技能升级 / 配队） =====
+async function renderLoadoutTab(){
+  const box = $('#tabContent');
+  box.innerHTML = '<div class="note">正在获取配装推荐…</div>';
+  try{
+    const res = await fetch('/api/loadout?game=' + encodeURIComponent(_currentGameId||'')
+      + '&character=' + encodeURIComponent(curChar||''));
+    const r = await res.json();
+    if(!r.ok){ box.innerHTML = '<div class="note" style="border-left-color:var(--red)">配装推荐获取失败：' + escHtml(r.error||'未知错误') + '</div>'; return; }
+    box.innerHTML = loadoutHTML(r);
+  }catch(e){ box.innerHTML = '<div class="note" style="border-left-color:var(--red)">配装推荐获取失败：' + escHtml(e.message) + '</div>'; }
+}
+function cleanWikiText(s){
+  if(!s) return '';
+  let t = String(s)
+    .replace(/<!--[\s\S]*?-->/g, ' ')
+    .replace(/<\s*br\s*\/?>/gi, '\n')
+    .replace(/<[^>]+>/g, ' ');
+  t = t.replace(/\[\[([^\]|]+)\|([^\]]+)\]\]/g, '$2')
+    .replace(/\[\[([^\]]+)\]\]/g, '$1');
+  t = t.replace(/\{\{\{([\s\S]*?)\}\}\}/g, '$1');
+  t = t.replace(/\{\{([^{}]*)\}\}/g, function(m, body){
+    const parts = body.split('|').map(x => x.trim()).filter(Boolean);
+    return parts.length ? String(parts[parts.length-1]).replace(/^[^=]+=/, '') : '';
+  });
+  t = t.replace(/''+([^'']*)''+/g, '$1')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/[ \t\f\v]+/g, ' ')
+    .replace(/ *\n */g, '\n')
+    .replace(/\n{3,}/g, '\n\n');
+  return t.trim();
+}
+function wikiNote(s){ return escHtml(cleanWikiText(s)); }
+function ldItemText(x){
+  return typeof x === 'string' ? x : ((x && x.text) || '');
+}
+function noteBox(text, cls){
+  return text ? '<div class="ld-note '+cls+'">'+wikiNote(text)+'</div>' : '';
+}
+function wikiBlock(label, text){
+  const clean = cleanWikiText(text || '');
+  if(!clean) return '';
+  if(clean.length <= 160) return '<div class="ld-note" style="margin-top:10px">'+escHtml(clean)+'</div>';
+  return '<details class="ld-details"><summary>'+escHtml(label)+'</summary><div class="ld-note">'+escHtml(clean)+'</div></details>';
+}
+function loadoutMemberHTML(m){
+  if(typeof m === 'string') return '<span class="ld-member">'+wikiNote(m)+'</span>';
+  const col = charColor(m);
+  const grad = 'linear-gradient(135deg,' + col + ',' + shade(col,0.6) + ')';
+  const src = m.icon || m.icon_fallback || '';
+  const fb = (m.icon && m.icon_fallback && m.icon !== m.icon_fallback) ? m.icon_fallback : '';
+  const onerr = fb
+    ? `if(this.dataset.fb!=='1'){this.dataset.fb='1';this.src='${fb}';}else{this.style.display='none';this.nextElementSibling.style.display='flex';}`
+    : `this.style.display='none';this.nextElementSibling.style.display='flex';`;
+  const ava = src
+    ? '<span class="lm-ava"><img src="'+escAttr(src)+'" alt="" onerror="'+onerr+'"><span class="lm-fb" style="background:'+grad+'">'+escHtml((m.name||'?').slice(0,1))+'</span></span>'
+    : '<span class="lm-ava fb"><span class="lm-fb" style="background:'+grad+'">'+escHtml((m.name||'?').slice(0,1))+'</span></span>';
+  const role = m.role ? '<span class="lm-role">'+escHtml(m.role)+'</span>' : '';
+  return '<span class="ld-member lm">'+ava+'<span class="lm-name">'+escHtml(m.name||'?')+'</span>'+role+'</span>';
+}
+function loadoutHTML(r){
+  const apiChar = r.character || {};
+  const mapChar = (typeof CHAR_MAP !== 'undefined' && CHAR_MAP[apiChar.id]) || {};
+  const c = Object.assign({}, apiChar, mapChar);
+  const isWiki = r.source_type === 'wiki';
+  const badge = isWiki
+    ? '<span class="ld-badge wiki">✔ 百科配装</span>'
+    : '<span class="ld-badge rules">通用推导（非官方）</span>';
+  const srcMeta = [cleanWikiText(r.source||''), cleanWikiText(r.source_date||'')].filter(Boolean).join(' · ');
+  const charMeta = [c.element ? escHtml(cleanWikiText(c.element)) : '', c.rarity ? escHtml(cleanWikiText(c.rarity))+'★' : ''].filter(Boolean).join(' · ');
+  const emCol = charColor(c);
+  const emGrad = 'linear-gradient(135deg,' + emCol + ',' + shade(emCol,0.6) + ')';
+  const emChar = (c.name || '?').replace(/[「」『』（）()·\s]/g, '').slice(0,1) || '?';
+  const emblemSpan = '<span>' + escHtml(emChar) + '</span>';
+  const avaSrc = c.icon || c.icon_fallback || '';
+  const avaFbSrc = (c.icon && c.icon_fallback && c.icon !== c.icon_fallback) ? c.icon_fallback : '';
+  const avaErr = avaFbSrc
+    ? "if(this.dataset.fb!=='1'){this.dataset.fb='1';this.src='" + escAttr(avaFbSrc) + "';}else{this.style.display='none';this.parentElement.classList.add('fb');}"
+    : "this.style.display='none';this.parentElement.classList.add('fb');";
+  const ava = avaSrc
+    ? '<div class="ld-emblem" style="background:' + emGrad + '"><img class="ld-emblem-img" src="' + escAttr(avaSrc)
+      + '" alt="" onerror="' + avaErr + '">' + emblemSpan + '</div>'
+    : '<div class="ld-emblem fb" style="background:' + emGrad + '">' + emblemSpan + '</div>';
+  const head = '<div class="ld-hero"><div class="ld-left">' + ava + '<div class="ld-title"><h2>'+escHtml(cleanWikiText(c.name||'角色'))
+    + '</h2>' + (charMeta ? '<div class="sub">'+charMeta+'</div>' : '') + '</div></div>'
+    + '<div class="ld-src">' + badge + (srcMeta ? '<span class="ld-src-meta">'+escHtml(srcMeta)+'</span>' : '') + '</div></div>';
+
+  const sec = (icon, title, body, cnt) => body
+    ? '<section class="ld-section"><div class="ld-sec-head"><span class="ic">'+icon+'</span><h3>'+escHtml(title)+'</h3>'
+      + (cnt ? '<span class="cnt">'+escHtml(cnt)+'</span>' : '') + '</div>'+body+'</section>'
+    : '';
+
+  // 武器
+  let weaponsHTML = '';
+  const weapons = (r.weapons||[]).filter(w => w && w.name && cleanWikiText(w.name) && w.name !== '运行「🤖 AI 分析」获取角色专属建议');
+  if(weapons.length){
+    const tags = new Set(weapons.map(w => String(w.tag||'').trim()).filter(Boolean));
+    const showTag = tags.size > 1;
+    const items = weapons.map((w,i) => {
+      const tag = String(w.tag||'').trim();
+      const tagCls = tag.includes('毕业') ? 'grad' : (tag.includes('可选') ? 'alt' : '');
+      const fullName = cleanWikiText(w.name);
+      const rankCls = i === 0 ? ' top top1' : (i < 3 ? ' top' : '');
+      const rankLabel = i === 0 ? '首选' : (i < 3 ? '优选' : '');
+      const iconHTML = w.icon
+        ? '<img class="wicon" src="'+escAttr(w.icon)+'" alt="" loading="lazy" onerror="this.style.display=\'none\'">'
+        : '';
+      return '<div class="ld-weapon'+rankCls+'"><span class="idx">'+(i+1)+'</span>'+iconHTML+'<span class="wname" title="'+escAttr(fullName)+'">'+escHtml(fullName)+'</span>'
+        + (rankLabel ? '<span class="prio">'+rankLabel+'</span>' : '')
+        + (showTag && tag ? '<span class="wtag '+tagCls+'" title="'+escAttr(tag)+'">'+escHtml(tag)+'</span>' : '') + '</div>';
+    }).join('');
+    weaponsHTML = sec('🗡','武器 / 装备推荐', '<div class="ld-weapons">'+items+'</div>' + wikiBlock('武器选择说明', r.weapon_note), weapons.length+' 件');
+  } else if(r.weapon_note){
+    weaponsHTML = sec('🗡','武器 / 装备推荐', noteBox(r.weapon_note,'accent'), '无专属推荐');
+  }
+
+  // 套装方案
+  let plansHTML = '';
+  const plans = r.plans || [];
+  if(plans.length){
+    const cards = plans.map((p,i) => {
+      const pTitle = cleanWikiText(p.title||'方案');
+      const isGeneric = /^(方案|圣遗物方案|遗器方案|套装方案|推荐方案)$/.test(pTitle);
+      const pSub = isGeneric ? (p.items||[]).map(x => cleanWikiText(ldItemText(x)).replace(/^\d+\s*件套\s*[：:]\s*/, '')).filter(Boolean).join(' + ') : '';
+      const pTitleHTML = isGeneric ? '<span class="kind">'+escHtml(pTitle)+'</span>' : escHtml(pTitle);
+      return '<div class="ld-plan"><h4><span class="no">'+(i+1)+'</span>'+pTitleHTML
+        + (pSub ? '<span class="sub">'+escHtml(pSub)+'</span>' : '') + '</h4>'
+      + ((p.items && p.items.length) ? '<div class="items">'+p.items.map(x => {
+          const txt = ldItemText(x);
+          const icon = (typeof x === 'object' && x) ? (x.icon || '') : '';
+          const iconHTML = icon
+            ? '<img class="licon" src="'+escAttr(icon)+'" alt="" loading="lazy" onerror="this.style.display=\'none\'">'
+            : '';
+          return '<span class="ld-item'+(icon ? ' has-icon' : '')+'">'+iconHTML+'<span>'+wikiNote(txt)+'</span></span>';
+        }).join('')+'</div>' : '')
+      + wikiBlock('方案说明', p.note) + '</div>';
+    }).join('');
+    plansHTML = sec('🛡','套装 / 遗器方案', '<div class="ld-plans">'+cards+'</div>', plans.length+' 套');
+  } else if(r.note){
+    plansHTML = sec('🛡','套装 / 遗器方案', noteBox(r.note,'amber'));
+  }
+
+  // 词条
+  let statHTML = '';
+  const main = r.main_stats || [];
+  if(main.length || r.sub_stats){
+    const mainHTML = main.length
+      ? '<div class="ld-main">'+main.map(m => '<div class="stat"><span class="slot">'+escHtml(cleanWikiText(m.slot))+'</span><span class="val">'+wikiNote(m.value)+'</span></div>').join('')+'</div>'
+      : '';
+    const subHTML = r.sub_stats ? '<div class="ld-note" style="margin-top:10px"><b class="k">副词条</b>'+wikiNote(r.sub_stats)+'</div>' : '';
+    statHTML = sec('📊','词条推荐', mainHTML + subHTML, main.length ? main.length+' 个部位' : '');
+  }
+
+  // 技能升级
+  let skillHTML = '';
+  const skills = r.skill_order || [];
+  if(skills.length || r.skill_note){
+    const orderHTML = skills.length ? '<div class="ld-skill">'+skills.map((s,i) => '<span class="step"><i>'+(i+1)+'</i><span>'+wikiNote(s)+'</span></span>').join('')+'</div>' : '';
+    skillHTML = sec('🎓','技能升级顺序', orderHTML + wikiBlock('技能升级说明', r.skill_note), skills.length ? skills.length+' 项' : '');
+  }
+
+  // 配队
+  let teamHTML = '';
+  const teams = r.teams || [];
+  if(teams.length || r.team_note){
+    const teamCards = teams.length ? '<div class="ld-teams">'+teams.map(t => '<div class="ld-team"><h4>'+escHtml(cleanWikiText(t.name||'配队'))+'</h4><div class="members">'
+      + (t.members||[]).map(m => loadoutMemberHTML(m)).join('') + '</div></div>').join('')+'</div>' : '';
+    teamHTML = sec('🤝','配队建议', teamCards + wikiBlock('AI 配队建议', r.team_note), teams.length ? teams.length+' 队' : '');
+  }
+
+  // 毕业面板
+  let panelHTML = '';
+  const panel = r.panel || [];
+  if(panel.length){
+    const pv = '<div class="ld-panel">'+panel.map(p => '<div class="pv"><span class="k">'+escHtml(cleanWikiText(p.k))+'</span><span class="v">'+wikiNote(p.v)+'</span></div>').join('')+'</div>'
+      + (isWiki ? '<div class="ld-panel-note">白值来自本地官方数值库（Lv1→满级）</div>' : '');
+    panelHTML = sec('📐', r.panel_title || '面板属性', pv, panel.length+' 项');
+  }
+
+  const foot = '<footer class="ld-foot">' + wikiNote(r.note || '配装推荐为辅助参考，不参与抽取结论。') + '</footer>';
+  return '<div class="ld-wrap">' + head + weaponsHTML + plansHTML + statHTML + skillHTML + teamHTML + panelHTML + foot + '</div>';
+}
+
+// 增强证据来源展示（规则/AI 通用，读取顶层 enhanced_sources）
+function enhancedSourcesHTML(r){
+  const srcs = (r && r.enhanced_sources) || [];
+  const note = (r && r.enhanced_note) || '';
+  if(srcs.length > 0){
+    const items = srcs.map(e => {
+      const isForum = e.result_type === 'forum';
+      const typeIcon = isForum ? '📋' : (e.result_type === 'article' ? '📰' : '🎬');
+      const cleanTitle = (e.title || '').replace(/<[^>]+>/g, '');
+      const fmtPlay = e.play ? formatNum(e.play) : '';
+      const fmtLike = e.like ? formatNum(e.like) : '';
+      const fmtFav = e.favorite ? formatNum(e.favorite) : '';
+      const stats = [fmtPlay && (fmtPlay + (isForum ? '回复' : '播放')),
+                     fmtLike && (fmtLike + (isForum ? '赞' : '赞')),
+                     fmtFav && (fmtFav + '收藏')].filter(Boolean).join('  ');
+      const author = (e.subscribed && e.author) ? '<span class="enh-stats">'+escHtml(e.author)+'</span>' : '';
+      let subTag = '';
+      if(e.subscribed){
+        const roleTxt = e.source_role==='main' ? '主意见'
+          : (e.source_role==='cross_check' ? '交叉验证'
+            : (e.source_role==='official' ? '官方' : '订阅'));
+        subTag = '<span class="enh-rel high">订阅 · '+roleTxt+'</span>';
+      }
+      if(e.is_sample) subTag += '<span class="enh-rel low">示例</span>';
+      const rel = e.relevance != null ? Number(e.relevance) : null;
+      let relTag = '';
+      if(rel != null){
+        const relCls = rel >= 0.6 ? 'high' : (rel >= 0.35 ? 'mid' : 'low');
+        const relTxt = rel >= 0.6 ? '高相关' : (rel >= 0.35 ? '中相关' : '低相关');
+        relTag = '<span class="enh-rel '+relCls+'">'+relTxt+'</span>';
+      }
+      return '<div class="enh-src"><span>'+typeIcon+'</span><a href="'+escAttr(e.url)+'" target="_blank" rel="noopener">'+escHtml(cleanTitle)+'</a>'+subTag+relTag+author+(stats ? '<span class="enh-stats">'+stats+'</span>' : '')+'</div>';
+    }).join('');
+    return '<div class="sec-title">🔍 增强参考来源（订阅主播+B站搜索+NGA · 共'+srcs.length+'条，已过滤无关内容）</div><div class="enh-list">'+items+'</div>';
+  }
+  if(note){
+    return '<div class="note" style="border-left-color:var(--amber);font-size:11px">💡 '+escHtml(note)+'</div>';
+  }
+  return '';
+}
+
+function renderRuleTab(r){
+  const modeTxt = r.data_mode === 'live' ? '真实数据'
+    : (r.data_mode === 'sample' ? '示例数据' : '无数据');
+  const modeClr = r.data_mode === 'live' ? 'var(--green)' : (r.data_mode === 'sample' ? 'var(--amber)' : 'var(--red)');
+  const noEvidenceReason = (r.evidence||[]).length === 0
+    ? '近 ' + r.recency_window_days + ' 天内无相关视频命中规则关键词'
+      + (enhanceEnabled ? '，增强证据已开启但仍未命中，说明该角色近期证据面很薄。' : '，可勾选「增强证据」重试交叉检索。')
+    : '';
+  const srcRows = (r.sources_breakdown||[]).map(s => {
+    const stanceCls = s.stance==='正向'?'stance-pos':(s.stance==='负向'?'stance-neg':'stance-mid');
+    let tag = '';
+    if(s.trusted) tag += '<span class="tag2 trust">主意见</span> ';
+    if(s.role==='official') tag += '<span class="tag2 official">官方</span> ';
+    return `<div class="src-row"><span class="nm">${s.name}</span>${tag}
+      <span class="${stanceCls}">${s.stance}</span>
+      <span style="color:var(--muted)">（正${s.pos}/负${s.neg}/中${s.neutral}，视频${s.video_count}）</span></div>`;
+  }).join('');
+
+  const evi = (r.evidence||[]).map(e => {
+    const polCls = e.polarity>0?'pol-1':(e.polarity<0?'pol--1':'pol-0');
+    const polTxt = e.polarity>0?'正向':(e.polarity<0?'负向':'中性');
+    const sBadge = e.is_sample ? '<span class="sb-badge">示例</span> ' : '';
+    return `<div class="evi">
+      <a href="${e.url}" target="_blank" rel="noopener">${sBadge}${e.title}</a>
+      <span class="${polCls}">［${polTxt} · 贡献 ${e.contribution>0?'+':''}${e.contribution}］</span>
+      <div class="ctx">来源：${e.source_name} ｜ ${e.pubdate_str} ｜ 距今 ${e.age_days} 天 ｜ 时效系数 ${e.recency_factor} ｜ 来源权重 ${e.source_weight}</div>
+      <div class="ctx">${e.context}</div>
+    </div>`;
+  }).join('');
+
+  const trustedNote = r.trusted_dominant
+    ? '本结论已采纳你指定的<b>主意见主播</b>，其观点在交叉验证中权重最高。'
+    : '注意：当前角色暂无主意见主播覆盖，结论来自交叉验证主播与官方信号。';
+  const officialNote = r.official_mentioned
+    ? '官方前瞻/角色演示已点名该角色（当前版本相关信息）。' : '官方渠道未检索到该角色的点名/演示。';
+  const modeNote = '「规则建议」是全局<b>唯一快速、无 AI</b> 的方法：对视频标题/简介/标签做关键词抽取（含否定抵消），'+
+    '再按来源信任度 + 时效衰减做交叉验证加权。方向大致正确即可，细节以「我的标注」或「AI 分析」补足。';
+
+  $('#tabContent').innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px">
+      <span class="badge" style="border-color:${modeClr};color:${modeClr}">数据模式：${modeTxt}</span>
+      ${(r.evidence||[]).length ? '' : '<span style="font-size:12px;color:var(--muted)">'+escHtml(noEvidenceReason)+'</span>'}
+      <button class="btn primary" id="ruleAiRun" style="margin-left:auto">🤖 运行 AI 分析此角色</button>
+    </div>
+    <div class="sec-title">来源交叉验证</div>
+    ${srcRows || '<div class="note">无覆盖该角色的有效来源。</div>'}
+    <div class="sec-title">证据明细（按贡献排序）</div>
+    ${evi || (noEvidenceReason ? '<div class="note" style="border-left-color:var(--amber)">'+escHtml(noEvidenceReason)+'，当前结论为「数据不足」，建议运行 AI 分析补充判断。</div>' : '<div class="note">近 ' + r.recency_window_days + ' 天内无相关视频，无法给出建议。</div>')}
+    <div class="sec-title">时效与采信说明</div>
+    <div class="note">
+      • 仅采纳发布于近 <b>${r.recency_window_days}</b> 天内的视频，过期信息已剔除（越接近当前版本权重越高）。<br>
+      • 示例证据仅用于演示/兜底，按 0.15 系数大幅降权，不会单独撑起结论。<br>
+      • 同一视频命中多条关键词时仅保留贡献最高的一条，避免重复计票。<br>
+      • ${trustedNote}<br>
+      • ${officialNote}<br>
+      • ${modeNote}
+    </div>
+    <div class="sec-title">🔍 增强证据（B站 交叉论证）</div>
+    <div class="enh-box">
+      <label class="enh-label"><input type="checkbox" id="ruleEnh" ${enhanceEnabled?'checked':''} onchange="setEnhance(this.checked);analyze(curChar, 'rule');"> 🔍 增强证据：额外拉取 B站 视频+专栏 与 NGA 社区主题用于交叉论证（勾选后自动重新分析）</label>
+      <button class="btn" id="ruleEnhRun" style="margin-left:8px">重新分析</button>
+    </div>
+    <div id="enhContainer">${enhancedSourcesHTML(r)}</div>`;
+
+  const ruleEnhRun = $('#ruleEnhRun');
+  if(ruleEnhRun) ruleEnhRun.onclick = () => { analyze(curChar, 'rule'); };
+  const ruleAiRun = $('#ruleAiRun');
+  if(ruleAiRun) ruleAiRun.onclick = runAiAndShow;
+}
+
+function renderAiTab(){
+  const box = $('#tabContent');
+  if(!AI_INFO || !AI_INFO.enabled){
+    box.innerHTML = `<div class="ai-box">
+      <div class="note" style="border-left-color:var(--amber)">AI 分析未启用。打开右上「⚙ 设置 → AI 分析」：勾选启用，选择线上 API 或本地大模型，填好 base_url / api_key / model 后保存即可。无需改任何配置文件。</div>
+    </div>` + buildRadarHTML(null);
+    return;
+  }
+  if(CUR.ai && CUR.ai.ok){
+    renderAiResult(CUR.ai);
+  } else if(CUR.ai && !CUR.ai.ok){
+    box.innerHTML = `<div class="ai-box">
+      <div class="note" style="border-left-color:var(--red)">本次 AI 调用失败：${CUR.ai.error || '未知错误'}</div>
+      <label class="enh-label"><input type="checkbox" id="aiEnh" ${enhanceEnabled?'checked':''} onchange="setEnhance(this.checked)"> 🔍 增强证据：额外拉取B站前20热门视频+专栏用于交叉论证</label>
+      <button class="btn primary" style="margin-top:10px" id="aiRun">重试 AI 分析</button></div>` + buildRadarHTML(null);
+    $('#aiRun').onclick = runAi;
+  } else {
+    box.innerHTML = `<div class="ai-box">
+      <div class="note">AI 分析会把角色属性 + 视频证据（标题/简介/倾向）发送给大模型，返回结构化结论与理由。</div>
+      <label class="enh-label"><input type="checkbox" id="aiEnh" ${enhanceEnabled?'checked':''} onchange="setEnhance(this.checked)"> 🔍 增强证据：额外拉取B站视频+专栏与 NGA 社区主题用于交叉论证（需关闭示例模式 + SESSDATA，NGA 需 Cookie）</label>
+      <button class="btn primary" style="margin-top:10px" id="aiRun">🤖 运行 AI 分析此角色</button></div>` + buildRadarHTML(null);
+    $('#aiRun').onclick = runAi;
+  }
+}
+
+function buildRadarHTML(aiRadar){
+  // 雷达图：优先官方数据确定性评分，AI 评分仅作补充参考；
+  // 未运行 AI 时也展示官方雷达，避免「看雷达必须先跑 AI」。
+  let radarHTML = '';
+  const officialRadar = (CUR && CUR.official_radar_scores) ? CUR.official_radar_scores : null;
+  const radarData = officialRadar || aiRadar || null;
+  const radarAxes = (CUR && CUR.radar_dims && CUR.radar_dims.length) ? CUR.radar_dims : RADAR_AXES;
+  if (radarData) {
+    let srcBadge;
+    if (officialRadar) {
+      // 逐维来源：official=官方面板/技能数据；official_derived=官方文本推导；review=社区评测
+      let nOfficial = 0, nDerived = 0, nReview = 0;
+      for (const k in officialRadar) {
+        const src = officialRadar[k].source || (officialRadar[k].official ? 'official' : 'review');
+        if (src === 'official') nOfficial++;
+        else if (src === 'official_derived') nDerived++;
+        else nReview++;
+      }
+      const srcLabel = CUR.official_source === 'ambr.top' ? 'ambr.top 在线拉取'
+        : (String(CUR.official_source||'').indexOf('lunaris') >= 0 ? 'api.lunaris.moe 在线拉取'
+        : (CUR.official_source === 'official' ? '官方数值确定性推导'
+        : (CUR.official_source === 'review' ? '官方 Wiki 定位推导（非官方数值）'
+        : '本地核实缓存')));
+      const sub = srcLabel + (CUR.official_fetched ? '（' + escHtml(CUR.official_fetched) + '）' : '');
+      const parts = ['<span class="radar-src official">📐 官方数据基准(' + nOfficial + '维)</span>'];
+      if (nDerived > 0) parts.push('<span class="radar-src derived">🧮 官方文本推导(' + nDerived + '维)</span>');
+      if (nReview > 0) parts.push('<span class="radar-src review">📝 评测参考(' + nReview + '维)</span>');
+      srcBadge = parts.join(' ');
+    } else {
+      srcBadge = '<span class="radar-src">🤖 AI 模型评分（非官方）</span>';
+    }
+    radarHTML = '<div class="radar-wrap">'
+      + '<div class="sec-title">📊 多维能力雷达图 ' + srcBadge + '</div>'
+      + renderRadarChart(radarData, 320, 280, radarAxes)
+      + renderRadarDetail(radarData, radarAxes)
+      + (officialRadar && CUR.official_missing
+          ? '<div class="note" style="font-size:11px;border-left-color:var(--amber)">'
+            + '该角色官方数值尚未收录，雷达按常规预设评分，仅供参考；可在「设置 → 数据来源」'
+            + (CUR.official_source === 'not_refreshed' && _currentGameId && ['hsr','zzz'].includes(_currentGameId)
+                ? '先关闭示例模式，再点「刷新官方数据」拉取（' + _currentGameId.toUpperCase() + '）。'
+                : '点「刷新官方数据」从官方数据源拉取。')
+            + '</div>'
+          : '')
+      + '</div>';
+  } else if (CUR && CUR.official_source === 'unsupported') {
+    // 非原神游戏：基础数值/技能已在「官方基础数据」卡展示；雷达图仅 AI 运行后可能提供
+    radarHTML = '<div class="note" style="font-size:11px;border-left-color:var(--muted)">📐 该游戏暂无完整雷达评分源（官方白值/技能见上方「官方基础数据」）；雷达图需运行 AI 分析后才可能提供（非官方评分，仅供参考）。</div>';
+  }
+  return radarHTML;
+}
+
+function renderAiResult(ai){
+  const reasons = (ai.reasons||[]).map(x => '<li>'+escHtml(x)+'</li>').join('');
+  const pros = (ai.pros||[]).map(x => '<li class="stance-pos">'+escHtml(x)+'</li>').join('');
+  const cons = (ai.cons||[]).map(x => '<li class="stance-neg">'+escHtml(x)+'</li>').join('');
+  // 优先用 evidence_chain；老模型可能只返回 evidence，做兼容
+  const chain = (ai.evidence_chain && ai.evidence_chain.length)
+    ? ai.evidence_chain
+    : (ai.evidence||[]).map(e => ({point: e.source, source: e.source, time_point: e.time_point, quote: e.quote, support: 'neutral'}));
+  const chainHTML = chain.map(e => {
+    const sup = e.support==='positive' ? 'stance-pos' : (e.support==='negative' ? 'stance-neg' : 'stance-mid');
+    const supTxt = e.support==='positive' ? '利好' : (e.support==='negative' ? '利空' : '中立');
+    const tp = e.time_point ? `<span class="tp">⏱ ${escHtml(e.time_point)}</span> ` : '';
+    return `<div class="evi">
+      <div style="font-weight:600">${escHtml(e.point || e.source || '')}</div>
+      <span class="${sup}">［${supTxt}］</span> ${tp}<span style="color:var(--muted)">${escHtml(e.source || '')}</span>
+      <div class="ctx">${escHtml(e.quote || '')}</div>
+    </div>`;
+  }).join('');
+  const tier = ai.tier
+    ? `<span class="tag2" style="border-color:var(--gold);color:var(--gold)">${escHtml(ai.tier)}</span> ` : '';
+  const rationale = ai.verdict_rationale
+    ? `<div class="note" style="border-left-color:var(--green)">${escHtml(ai.verdict_rationale)}</div>`
+    : '<div class="note">模型未提供结论推导。</div>';
+  const who = ai.who_should_pull
+    ? `<div class="note"><b>推荐人群：</b>${escHtml(ai.who_should_pull)}</div>` : '';
+  const risk = ai.risk_note
+    ? `<div class="note" style="border-left-color:var(--red)"><b>风险提示：</b>${escHtml(ai.risk_note)}</div>` : '';
+  const team = ai.team_advice
+    ? `<div class="note" style="border-left-color:var(--accent)"><b>配队与抽取价值：</b>${escHtml(ai.team_advice)}</div>` : '';
+  const weapon = ai.weapon_advice
+    ? `<div class="note" style="border-left-color:var(--gold)"><b>武器/光锥建议：</b>${escHtml(ai.weapon_advice)}</div>` : '';
+  const con = ai.constellation_advice
+    ? `<div class="note" style="border-left-color:var(--accent)"><b>命座/星魂建议：</b>${escHtml(ai.constellation_advice)}</div>` : '';
+  const rerun = ai.rerun_advice
+    ? `<div class="note" style="border-left-color:var(--wait-blue)"><b>复刻/卡池预测：</b>${escHtml(ai.rerun_advice)}</div>` : '';
+  const roi = ai.roi
+    ? `<div class="note" style="border-left-color:var(--amber)"><b>性价比(ROI)：</b>${escHtml(ai.roi)}</div>` : '';
+
+  // ---- 雷达图（优先官方数据确定性评分，AI 评分仅作补充参考） ----
+  const radarHTML = buildRadarHTML(
+    (ai.radar_scores && typeof ai.radar_scores === 'object') ? ai.radar_scores : null
+  );
+
+  // 增强证据来源（B站搜索结果）—— 与规则页共用顶层 enhanced_sources 显示
+  const enhHTML = enhancedSourcesHTML(CUR);
+
+  // 角色污染警告（AI 返回了其他角色的内容）
+  let contaminationHTML = '';
+  if (ai.character_contaminated && ai.contamination_warning) {
+    const leakedNames = (ai.leaked_character_names||[]).map(n => '<b style="color:var(--red)">'+escHtml(n)+'</b>').join('、');
+    contaminationHTML = '<div class="note" style="border-left-color:var(--red);background:rgba(229,83,75,.08);margin-top:8px">'
+      + '⚠️ <b>AI 角色隔离失效</b>：模型返回内容中检测到非目标角色名（'+leakedNames+'）。'
+      + escHtml(ai.contamination_warning)
+      + '结论已强制降级为「数据不足」。</div>';
+  }
+
+  $('#tabContent').innerHTML = '<div class="ai-box">'
+    + '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">'
+      + '<div class="verdict '+ai.verdict+'">'+ai.verdict_label+'</div>'
+      + (tier || '')
+      + '<span class="eff-note">来自 '+(ai.provider==='local'?'本地大模型':'线上 API')+' ｜ 置信度 '+(ai.confidence*100).toFixed(0)+'%</span>'
+      + (ai.from_cache ? '<span class="tag2" style="border-color:var(--accent);color:var(--accent)">💾 本地缓存结果</span>' : '')
+      + (ai.enhanced_evidence_count ? '<span class="tag2" style="border-color:var(--accent);color:var(--accent)">增强证据</span>' : '')
+    + '</div>'
+    + contaminationHTML
+    + '<div class="note" style="margin-top:10px">'+escHtml(ai.summary || '')+'</div>'
+
+    // 雷达图放在摘要之后、证据链之前
+    + radarHTML
+
+    + '<div class="sec-title">证据链（证据 → 结论）</div>'
+    + (chainHTML || '<div class="note">模型未返回证据链。</div>')
+
+    + '<div class="sec-title">强度优缺点</div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'
+      + '<div><div style="font-size:12px;color:var(--green);margin-bottom:4px">优点</div><ul class="reasons">'+(pros || '<li>—</li>')+'</ul></div>'
+      + '<div><div style="font-size:12px;color:var(--red);margin-bottom:4px">顾虑</div><ul class="reasons">'+(cons || '<li>—</li>')+'</ul></div>'
+    + '</div>'
+
+    + '<div class="sec-title">综合理由</div>'
+    + '<ul class="reasons">'+(reasons || '<li>—</li>')+'</ul>'
+
+    + '<div class="sec-title">结论推导</div>'
+    + rationale
+
+    + (who || '')
+    + (risk || '')
+    + (team || '')
+    + (weapon || '')
+    + (con || '')
+    + (rerun || '')
+    + (roi || '')
+    + enhHTML
+
+    + '<details style="margin-top:12px"><summary style="cursor:pointer;color:var(--muted);font-size:12px">查看模型原始返回</summary>'
+      + '<pre class="test-out" style="white-space:pre-wrap;margin-top:8px">'+escHtml(ai.raw || '')+'</pre>'
+    + '</details>'
+
+    + '<label class="enh-label" style="margin-top:10px"><input type="checkbox" id="aiEnh" '+(enhanceEnabled?'checked':'')+' onchange="setEnhance(this.checked)"> 🔍 增强证据：拉取B站热门视频+专栏（含评测/强度/攻略等关键词过滤）</label>'
+    + '<button class="btn primary" style="margin-top:10px" id="aiRun">重新运行</button>'
+  + '</div>';
+  $('#aiRun').onclick = runAi;
+}
+
+async function runAi(){
+  const btn = $('#aiRun'); if(btn){ btn.disabled = true; btn.textContent = 'AI 分析中…'; }
+  const wasAiTab = (activeTab === 'ai');
+  // ---- 分析进度（轮询 /api/ai-progress）----
+  const pkey = 'p' + Date.now() + '_' + Math.floor(Math.random() * 9999);
+  const ov = $('#aiProgressOverlay'), pt = $('#aiProgressText'), pb = $('#aiProgressBar');
+  if(ov){ ov.style.display = 'block'; }
+  if(pt){ pt.textContent = '准备中…'; }
+  if(pb){ pb.style.width = '2%'; }
+  const poll = setInterval(async () => {
+    try{
+      const res = await fetch('/api/ai-progress?key=' + encodeURIComponent(pkey));
+      const d = await res.json();
+      if(d && d.ok){
+        if(pt){ pt.textContent = d.message || ''; }
+        if(pb){ pb.style.width = Math.max(2, Math.min(100, Number(d.pct) || 2)) + '%'; }
+      }
+    }catch(e){}
+  }, 700);
+  try {
+    const enh = enhanceEnabled ? '1' : '0';
+    const res = await fetch('/api/analyze?character=' + encodeURIComponent(curChar)
+      + '&game=' + encodeURIComponent(_currentGameId)
+      + '&mode=ai&enhanced=' + enh + '&refresh=1&progress_key=' + encodeURIComponent(pkey));
+    const r = await res.json();
+    if(r.ok){
+      CUR = r;
+      // 重新渲染整个报告头（结论徽章 + 卡片边框跟随 effective 结论）
+      renderReport(r);
+      // 同步侧边栏角色卡的边框色 / 圆点 / 结论文字
+      updateCharCardVerdict(r);
+      // 如果原本就在 AI 标签页，切回 AI 展示结果
+      if(wasAiTab){ activeTab = 'ai'; renderTab(); }
+    }
+    else { showToast('AI 分析失败：' + (r.error||'')); }
+  } catch(e){ showToast('AI 分析失败：' + e.message); }
+  clearInterval(poll);
+  if(ov){ ov.style.display = 'none'; }
+  if(btn){ btn.disabled = false; btn.textContent = '重新运行'; }
+}
+
+// 报告头「🤖 AI 分析」按钮：运行 AI 并自动切到 AI 标签页展示结果
+async function runAiAndShow(){
+  await runAi();
+  if(CUR && CUR.ai && CUR.ai.ok){ activeTab = 'ai'; renderTab(); }
+}
+
+/** 根据 effective 结论更新侧边栏角色卡的边框类、圆点色、结论标签 */
+function updateCharCardVerdict(r){
+  if(!curChar) return;
+  const ev = effectiveVerdict(r);
+  const card = document.querySelector('.char[data-id="' + curChar + '"]');
+  if(!card) return;
+  // 移除旧边框类、加上新的
+  card.className = card.className.replace(/\b(b-\S+)\b/g, '').trim() + ' b-' + ev.v
+    + (card.classList.contains('active') ? ' active' : '');
+  // 更新圆点颜色
+  const dot = card.querySelector('.dot');
+  if(dot){ dot.className = 'dot ' + verdictClass(ev.v); }
+  // 更新结论文字
+  const sub = card.querySelector('.sub');
+  if(sub){
+    const parts = sub.innerHTML.split(' · ');
+    if(parts.length >= 4) parts[3] = ev.l; // 最后一段是结论标签
+    sub.innerHTML = parts.join(' · ');
+  }
+  // 同步 ALL 缓存（让筛选/重渲染保持一致）
+  const c = CHAR_MAP[curChar];
+  if(c){ c.verdict = ev.v; c.verdict_label = ev.l; }
+}
+
+async function renderManualTab(){
+  const box = $('#tabContent');
+  box.innerHTML = '<div class="placeholder">加载标注…</div>';
+  let existing = null;
+  try {
+    const res = await fetch('/api/characters/' + encodeURIComponent(curChar) + '/analysis');
+    const d = await res.json();
+    existing = d.override;
+  } catch(e){ /* 忽略，按空处理 */ }
+  CUR_MANUAL = existing;
+  buildManualEditor(curChar, existing);
+}
+
+function buildManualEditor(cid, ex){
+  const defVerdict = (ex && ex.verdict) || (CUR && CUR.verdict) || 'insufficient';
+  const defTier = (ex && ex.tier) || (CUR && CUR.ai && CUR.ai.tier) || '未分级';
+  const defSummary = (ex && ex.summary) || '';
+  const sources = (ex && ex.sources) || [];
+  const opts = ['strong_pull','pull','wait','skip','pure_xp','insufficient'].map(v =>
+    `<option value="${v}" ${v===defVerdict?'selected':''}>${({strong_pull:'必抽',pull:'推荐',wait:'观望',skip:'不推荐',pure_xp:'纯XP',insufficient:'数据不足'})[v]}</option>`).join('');
+  const tierOpts = ['T0','T0.5','T1','T2','T3','未分级'].map(t =>
+    `<option value="${t}" ${t===defTier?'selected':''}>${t}</option>`).join('');
+  const srcHTML = sources.map(s => srcRowHTML(s.title||'', s.url||'', s.time_point||'', s.note||'')).join('');
+  const updated = ex && ex.updated_at ? `<div class="eff-note">最后更新：${ex.updated_at} ｜ 此标注在展示时优先级最高</div>` : '<div class="eff-note">尚未保存标注，保存后将在角色面板置顶显示</div>';
+
+  $('#tabContent').innerHTML = `
+    <div class="editor">
+      <label>抽取建议结论</label>
+      <select id="mVerdict">${opts}</select>
+      <label>强度梯队（仅总览参考，不参与抽取主结论）</label>
+      <select id="mTier">${tierOpts}</select>
+      <label>结论说明（你对该角色的真实具体分析）</label>
+      <textarea id="mSummary" placeholder="例如：综合某主播实机演示 + 自己体验，机制独特、人权级…">${defSummary}</textarea>
+      <label>证明来源（可多条；时间点如 12:34，可空）</label>
+      <div id="mSources">${srcHTML || srcRowHTML('','','','')}</div>
+      <button class="btn sm" id="mAdd" style="margin:6px 0">＋ 添加证明来源</button>
+      <div style="margin-top:12px; display:flex; gap:10px; align-items:center;">
+        <button class="btn primary" id="mSave">💾 保存标注</button>
+        ${updated}
+      </div>
+    </div>
+    <div class="sec-title">已保存证明来源</div>
+    <div id="mSaved"></div>
+    <div class="sec-title" style="margin-top:14px">📒 本地备战 / 养成备注（仅存本机浏览器 · 非官方 · 不参与结论）</div>
+    <textarea id="mMemo" placeholder="例如：突破/天赋所需核心材料、本周规划抽数、持有率/人气观感（趣味）…此内容仅保存在你本机，不会上传。"></textarea>
+    <button class="btn sm" id="mMemoSave" style="margin-top:6px">💾 保存备注</button>
+    <span id="mMemoHint" class="eff-note" style="margin-left:8px"></span>`;
+
+  $('#mAdd').onclick = () => {
+    const wrap = $('#mSources');
+    wrap.insertAdjacentHTML('beforeend', srcRowHTML('','','',''));
+    bindRemove();
+  };
+  bindRemove();
+  $('#mSave').onclick = saveManual;
+  // 本地备战备注（localStorage，按 游戏+角色 区分）
+  const memoKey = 'gacha_memo_' + (_currentGameId||'') + '_' + cid;
+  let memoVal = '';
+  try { memoVal = localStorage.getItem(memoKey) || ''; } catch(e){}
+  const memoEl = $('#mMemo'); if(memoEl) memoEl.value = memoVal;
+  const memoSave = $('#mMemoSave');
+  if(memoSave) memoSave.onclick = () => {
+    try { localStorage.setItem(memoKey, ($('#mMemo').value||'').trim()); $('#mMemoHint').textContent = '已保存（本机）'; }
+    catch(e){ $('#mMemoHint').textContent = '保存失败：'+e.message; }
+  };
+  renderSavedSources(sources);
+}
+
+function srcRowHTML(title, url, tp, note){
+  return `<div class="msrc-row">
+    <input class="s-title" placeholder="来源标题" value="${escAttr(title)}" />
+    <input class="s-url" placeholder="链接 URL" value="${escAttr(url)}" />
+    <input class="s-tp" placeholder="时间点" value="${escAttr(tp)}" />
+    <input class="s-note" placeholder="备注/要点" value="${escAttr(note)}" />
+    <button class="btn sm danger s-del">✕</button>
+  </div>`;
+}
+function bindRemove(){
+  document.querySelectorAll('.s-del').forEach(b => {
+    b.onclick = () => b.closest('.msrc-row').remove();
+  });
+}
+function renderSavedSources(sources){
+  const el = $('#mSaved');
+  if(!sources || !sources.length){ el.innerHTML = '<div class="note">暂无证明来源。</div>'; return; }
+  el.innerHTML = sources.map(s => {
+    const tp = s.time_point ? `<span class="tp">⏱ ${s.time_point}</span>` : '';
+    const link = s.url ? `｜ <a href="${escAttr(s.url)}" target="_blank" rel="noopener" style="color:var(--accent)">链接</a>` : '';
+    return `<div class="msrc"><b>${escHtml(s.title||'(未命名来源)')}</b> ${tp} ${link}
+      <div class="ai-quote">${escHtml(s.note||'')}</div></div>`;
+  }).join('');
+}
+
+async function saveManual(){
+  const btn = $('#mSave'); btn.disabled = true;
+  const verdict = $('#mVerdict').value;
+  const tier = $('#mTier').value;
+  const summary = $('#mSummary').value;
+  const sources = [];
+  document.querySelectorAll('#mSources .msrc-row').forEach(row => {
+    const title = row.querySelector('.s-title').value.trim();
+    if(!title && !row.querySelector('.s-url').value.trim() && !row.querySelector('.s-note').value.trim()) return;
+    sources.push({
+      title: title,
+      url: row.querySelector('.s-url').value.trim(),
+      time_point: row.querySelector('.s-tp').value.trim(),
+      note: row.querySelector('.s-note').value.trim(),
+    });
+  });
+  try {
+    const res = await fetch('/api/characters/' + encodeURIComponent(curChar) + '/analysis', {
+      method: 'PUT', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({verdict, summary, sources, tier})
+    });
+    const d = await res.json();
+    if(!d.ok){ showToast('保存失败：' + (d.error||'')); }
+    else { showToast('已保存标注'); CUR_MANUAL = d.override;
+      await analyze(curChar, 'rule');
+      if(activeTab !== 'manual'){ activeTab = 'manual'; document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active', x.dataset.tab==='manual')); renderTab(); }
+    }
+  } catch(e){ showToast('保存失败：' + e.message); }
+  finally { btn.disabled = false; }
+}
+
+function escHtml(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function escAttr(s){ return (s||'').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+
+function formatNum(n){
+  if(!n && n!==0) return '';
+  n = Number(n);
+  if(n >= 100000000) return (n/100000000).toFixed(1)+'亿';
+  if(n >= 10000) return (n/10000).toFixed(1)+'万';
+  return String(n);
+}
+
+// ---- 雷达图（6轴：数值/倍率/反应/吃拐/辅助/大世界） ----
+const RADAR_AXES = [
+  {key:'base_stats', label:'数值基础', weight:0.20},
+  {key:'multiplier', label:'倍率水平', weight:0.25},
+  {key:'reaction', label:'反应强度', weight:0.20},
+  {key:'team_dependency', label:'吃拐强度', weight:0.15},
+  {key:'utility', label:'辅助能力', weight:0.10},
+  {key:'overworld', label:'大世界便利性', weight:0.10},
+];
+const RADAR_COLORS = {stroke:'#6ea8fe', fill:'rgba(110,168,254,0.15)', text:'#e6e9f2', grid:'#2a3350', dot:'#6ea8fe'};
+
+function renderRadarChart(radarScores, width=320, height=280, axes){
+  if(!radarScores || typeof radarScores !== 'object') return '';
+  axes = (axes && axes.length) ? axes : RADAR_AXES;
+  const cx = width/2, cy = height/2 + 8;
+  const maxR = Math.min(width, height)/2 - 36; // 留出标签空间
+  const n = axes.length;
+  const angleStep = (2*Math.PI) / n;
+  // 起始角度：-90度（12点钟方向）
+  const startAngle = -Math.PI / 2;
+
+  // 计算数据点
+  const points = axes.map((axis, i) => {
+    const score = (radarScores[axis.key] && radarScores[axis.key].score != null)
+      ? Math.max(0, Math.min(10, Number(radarScores[axis.key].score) || 5)) : 5;
+    const a = startAngle + i * angleStep;
+    const r = (score / 10) * maxR;
+    return {x: cx + r*Math.cos(a), y: cy + r*Math.sin(a), score, axis};
+  });
+
+  // 背景网格（5环：2/4/6/8/10分）
+  let rings = '';
+  for(let level=1; level<=5; level++){
+    const r = (level/5)*maxR;
+    let ringPts = axes.map((_, i) => {
+      const a = startAngle + i * angleStep;
+      return (cx+r*Math.cos(a))+','+(cy+r*Math.sin(a));
+    }).join(' ');
+    rings += '<polygon points="'+ringPts+'" fill="none" stroke="'+RADAR_COLORS.grid+'" stroke-width="0.7" opacity="0.5"/>';
+  }
+
+  // 轴线
+  let axesLines = '';
+  axes.forEach((axis, i) => {
+    const a = startAngle + i * angleStep;
+    axesLines += '<line x1="'+cx+'" y1="'+cy+'" x2="'+(cx+maxR*Math.cos(a))+'" y2="'+(cy+maxR*Math.sin(a))+'" stroke="'+RADAR_COLORS.grid+'" stroke-width="0.7" opacity="0.4"/>';
+    // 标签
+    const lx = cx + (maxR+22)*Math.cos(a);
+    const ly = cy + (maxR+22)*Math.sin(a);
+    const anchor = (Math.abs(Math.cos(a)) < 0.15) ? 'middle' : (Math.cos(a) > 0 ? 'start' : 'end');
+    const dy = (Math.abs(Math.sin(a)) < 0.15) ? '0.3em' : (Math.sin(a) > 0 ? '1em' : '-0.3em');
+    axesLines += '<text x="'+lx+'" y="'+ly+'" fill="'+RADAR_COLORS.text+'" font-size="11" text-anchor="'+anchor+'" dominant-baseline="middle">'+axis.label+'</text>';
+    if(axis.weight){
+      axesLines += '<text x="'+lx+'" y="'+(ly+12)+'" fill="'+RADAR_COLORS.text+'" font-size="9" opacity="0.6" text-anchor="'+anchor+'" dominant-baseline="middle">权重 '+(Math.round(axis.weight*100))+'%</text>';
+    }
+    // 分数标签
+    const sx = points[i].x;
+    const sy = points[i].y - (points[i].score > 7 ? -10 : 14);
+    axesLines += '<text x="'+sx+'" y="'+sy+'" fill="'+RADAR_COLORS.dot+'" font-size="11" font-weight="700" text-anchor="middle">'+points[i].score.toFixed(0)+'</text>';
+  });
+
+  // 数据多边形
+  const dataPts = points.map(p => p.x+','+p.y).join(' ');
+  const dataPoly = '<polygon points="'+dataPts+'" fill="'+RADAR_COLORS.fill+'" stroke="'+RADAR_COLORS.stroke+'" stroke-width="2" stroke-linejoin="round"/>';
+
+  // 数据点圆点
+  let dots = '';
+  points.forEach(p => {
+    dots += '<circle cx="'+p.x+'" cy="'+p.y+'" r="4" fill="'+RADAR_COLORS.stroke+'"/><circle cx="'+p.x+'" cy="'+p.y+'" r="2" fill="#fff"/>';
+  });
+
+  return '<div style="display:flex;justify-content:center;margin:12px 0">'
+    + '<svg width="'+width+'" height="'+height+'" viewBox="0 0 '+width+' '+height+'">'
+    + rings + axesLines + dataPoly + dots
+    + '</svg></div>';
+}
+
+function renderRadarDetail(radarScores, axes){
+  if(!radarScores || typeof radarScores !== 'object') return '';
+  axes = (axes && axes.length) ? axes : RADAR_AXES;
+  const items = axes.map(axis => {
+    const d = radarScores[axis.key] || {};
+    const s = d.score != null ? Math.max(0, Math.min(10, Number(d.score))) : 5;
+    const note = escHtml(d.note || '');
+    // 颜色编码：>=7 绿色，>=5 黄色，<5 橙红
+    const color = s >= 7 ? 'var(--green)' : (s >= 5 ? 'var(--amber)' : 'var(--red)');
+    const weight = (d.weight != null) ? Math.round(Number(d.weight)*100) : (axis.weight ? Math.round(axis.weight*100) : 0);
+    const wTxt = weight ? '<span style="display:block;font-size:10px;opacity:.75;margin-top:1px">权重 '+weight+'%</span>' : '';
+    // 逐维来源标签：官方数据 / 官方文本推导 / 评测参考
+    const src = d.source || (d.official ? 'official' : 'review');
+    const srcTag = src === 'official'
+      ? '<span class="radar-src official" style="font-size:10px;margin-left:6px">📐官方</span>'
+      : (src === 'official_derived'
+        ? '<span class="radar-src derived" style="font-size:10px;margin-left:6px">🧮官方推导</span>'
+        : '<span class="radar-src review" style="font-size:10px;margin-left:6px">📝评测</span>');
+    return '<div style="display:flex;align-items:center;gap:8px;padding:3px 0">'
+      + '<span style="font-size:12px;color:var(--muted);min-width:76px">'+axis.label+wTxt+'</span>'
+      + '<div style="flex:1;height:6px;background:var(--line);border-radius:3px;overflow:hidden">'
+        + '<div style="width:'+s*10+'%;height:100%;background:'+color+';border-radius:3px;transition:width 0.3s"></div>'
+      + '</div>'
+      + '<span style="font-size:12px;font-weight:700;color:'+color+';min-width:20px;text-align:right">'+s.toFixed(0)+'</span>'
+      + srcTag
+      + (note ? '<span style="font-size:11px;color:var(--muted);margin-left:4px">'+note+'</span>' : '')
+      + '</div>';
+  }).join('');
+  return '<div style="margin-top:6px">'+items+'</div>';
+}
+
+function showToast(msg){
+  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ---------- 设置面板 ----------
+function toggleAiForms(){
+  const prov = document.querySelector('input[name="sAiProv"]:checked');
+  const p = prov ? prov.value : 'online';
+  $('#aiOnline').classList.toggle('show', p === 'online');
+  $('#aiLocal').classList.toggle('show', p === 'local');
+}
+function updateDemoHint(){
+  const e = document.querySelector('input[name="sDemo"]:checked');
+  const demo = e ? e.value === 'true' : true;
+  const hint = $('#demoHint');
+  if(demo){
+    hint.innerHTML = '示例模式仅用于演示：证据为内置示例，<b>不会抓取真实视频</b>。它适合先熟悉界面与流程。';
+  } else {
+    hint.innerHTML = '真实模式会抓取你订阅主播的 B 站视频做分析。需要：① 填入 SESSDATA；② <b>在家庭宽带本机运行</b>（数据中心 IP 会被 B 站 -352 风控拦截，本沙箱无法真抓）。';
+  }
+}
+function fillSettings(s){
+  const set = (id,val)=>{ const e=document.getElementById(id); if(e) e.value = val==null?'':val; };
+  const setCk=(id,val)=>{ const e=document.getElementById(id); if(e) e.checked=!!val; };
+  set('sDisplayName', s.display_name);
+  set('sCurrentVersion', s.current_version);
+  set('sRecencyDays', s.recency_days);
+  set('sSessdata', s.sessdata);
+  const ngaInp = document.getElementById('sNgaCookie');
+  if(ngaInp){
+    ngaInp.value = '';
+    ngaInp.placeholder = s.nga_cookie_set
+      ? ('已保存：' + (s.nga_cookie_masked||'****') + '（留空=保持不变，如需替换直接粘贴新 Cookie）')
+      : '粘贴 NGA 登录 Cookie（含 ngaPassportUid / ngaPassportCid 等）';
+  }
+  ngaClearRequested = false;
+  document.querySelectorAll('input[name="sDemo"]').forEach(r=> r.checked = (r.value === (s.demo_mode?'true':'false')));
+  setCk('sAiEnabled', s.ai && s.ai.enabled);
+  document.querySelectorAll('input[name="sAiProv"]').forEach(r=> r.checked = (r.value === ((s.ai&&s.ai.provider)||'online')));
+  const on = (s.ai&&s.ai.online)||{}, lo=(s.ai&&s.ai.local)||{};
+  set('sAiOnUrl', on.base_url); set('sAiOnKey', on.api_key); set('sAiOnModel', on.model);
+  set('sAiLoUrl', lo.base_url); set('sAiLoKey', lo.api_key); set('sAiLoModel', lo.model);
+  const c = s.content||{};
+  set('sContentSrc', c.source||'metadata'); setCk('sPreferAudio', c.prefer_audio_only); set('sAsr', c.asr_provider);
+  const w = s.weights||{};
+  set('sWTrust', w.trusted); set('sWOfficial', w.official); set('sWNormal', w.normal); set('sWHalf', w.recency_half_life_days);
+  toggleAiForms(); updateDemoHint();
+}
+let ngaClearRequested = false;
+function collectSettings(){
+  const v = (id) => (document.getElementById(id).value || '').trim();
+  const rb = (name) => { const e = document.querySelector('input[name="'+name+'"]:checked'); return e ? e.value : null; };
+  const ck = (id) => document.getElementById(id).checked;
+  return {
+    display_name: v('sDisplayName'),
+    current_version: v('sCurrentVersion'),
+    recency_days: parseInt(v('sRecencyDays')) || 365,
+    demo_mode: rb('sDemo') === 'true',
+    analysis_mode: 'rule',
+    sessdata: v('sSessdata'),
+    ...(v('sNgaCookie') ? {nga_cookie: v('sNgaCookie')} : (ngaClearRequested ? {nga_cookie: ''} : {})),
+    ai: {
+      enabled: ck('sAiEnabled'),
+      provider: rb('sAiProv') || 'online',
+      prompt_lang: 'zh',
+      online: { base_url: v('sAiOnUrl'), api_key: v('sAiOnKey'), model: v('sAiOnModel') },
+      local: { base_url: v('sAiLoUrl'), api_key: v('sAiLoKey'), model: v('sAiLoModel') },
+    },
+    content: { source: v('sContentSrc'), prefer_audio_only: ck('sPreferAudio'), asr_provider: v('sAsr') },
+    weights: {
+      trusted: parseFloat(v('sWTrust')) || 3.0,
+      official: parseFloat(v('sWOfficial')) || 2.0,
+      normal: parseFloat(v('sWNormal')) || 1.0,
+      recency_half_life_days: parseInt(v('sWHalf')) || 120,
+    },
+  };
+}
+// ===================== 抽卡规划弹窗 =====================
+let planRankIds = [];   // 优先级排序：角色 id 列表
+let planCmpIds = [];    // 对比视图：角色 id 列表（最多 3）
+
+function openPlan(){
+  populatePlanSelects();
+  $('#planModal').classList.add('show');
+}
+function closePlan(){ $('#planModal').classList.remove('show'); }
+$('#openPlan').addEventListener('click', openPlan);
+$('#closePlan').addEventListener('click', closePlan);
+$('#planModal').addEventListener('click', e => { if(e.target.id === 'planModal') closePlan(); });
+
+// ===== 梯队榜弹窗 =====
+function openTier(){
+  renderTierList();
+  $('#tierModal').classList.add('show');
+}
+function closeTier(){ $('#tierModal').classList.remove('show'); }
+$('#openTier').addEventListener('click', openTier);
+$('#closeTier').addEventListener('click', closeTier);
+$('#tierModal').addEventListener('click', e => { if(e.target.id === 'tierModal') closeTier(); });
+// 从 AI tier 文本（如 "T0级泛用辅助"）提取梯级；手动标注直接使用
+function tierLevel(c){
+  const raw = (c.ai_tier || c.tier || '').trim();
+  if(!raw) return '';
+  if(/^T\d(?:\.\d)?$/.test(raw)) return raw.toUpperCase();
+  const m = raw.match(/T\d(?:\.\d)?/i);
+  return m ? m[0].toUpperCase() : raw.slice(0, 12);
+}
+function renderTierList(){
+  const order = ['T0','T0.5','T1','T2','T3','未分级'];
+  const groups = {};
+  (ALL || []).forEach(c => {
+    const t = tierLevel(c) || '未分级';
+    (groups[t] = groups[t] || []).push(c);
+  });
+  const out = $('#tierOut');
+  if(!out) return;
+  const extra = Object.keys(groups).filter(t => !order.includes(t)).sort();
+  out.innerHTML = order.concat(extra).map(t => {
+    const list = (groups[t] || []).sort((a,b)=> parseFloat(b.version||0)-parseFloat(a.version||0));
+    if(!list.length) return '';
+    const chips = list.map(c => `<span class="tier-chip">${avatarHTML(c,false)}<span>${escHtml(c.name)}</span></span>`).join('');
+    return `<div class="tier-group"><h3>${t}（${list.length}）</h3><div class="tier-chips">${chips}</div></div>`;
+  }).join('') || '<div class="note">暂无数据。</div>';
+}
+
+// 子标签切换
+const PLAN_PANES = { pity:'planPity', rank:'planRank', cmp:'planCmp', gacha:'planGacha', exp:'planExp' };
+document.querySelectorAll('.plan-tabs .pt').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.plan-tabs .pt').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    const tab = t.dataset.tab;
+    if(tab === 'gacha') loadGachaHistory();
+    Object.keys(PLAN_PANES).forEach(k => { $('#' + PLAN_PANES[k]).style.display = (k === tab ? 'block' : 'none'); });
+  });
+});
+
+// ===== 抽卡记录：自动导入（原神/星穹铁道/绝区零 getGachaLog） =====
+function setGachaOut(msg, isError){
+  const out = $('#gachaOut');
+  out.style.display = 'block';
+  out.style.borderColor = isError ? 'var(--red)' : 'var(--line)';
+  out.textContent = msg;
+}
+async function loadGachaHistory(){
+  const box = $('#gachaResult'); if(!box) return;
+  try{
+    const res = await fetch('/api/gacha-history?game=' + encodeURIComponent(_currentGameId||''));
+    const r = await res.json();
+    if(!r.ok){ box.innerHTML = '<div class="note" style="border-left-color:var(--muted)">' + escHtml(r.error||'暂无记录') + '</div>'; return; }
+    renderGachaHistory(r.data);
+  }catch(e){ box.innerHTML = '<div class="note" style="border-left-color:var(--red)">读取失败：' + escHtml(e.message) + '</div>'; }
+}
+function renderGachaHistory(d){
+  const box = $('#gachaResult'); if(!box) return;
+  const s = d.summary || {};
+  const banners = Object.values(d.banners || {}).sort((a,b)=> (b.total||0)-(a.total||0));
+  const fmtTime = t => (t||'').slice(0,10);
+  const rows = banners.map(b => {
+    const f5 = (b.five_stars||[]).map(f =>
+      `<div class="rank-item" style="margin:4px 0"><span class="rk" style="background:var(--gold);color:#1b1d24">★5</span>
+        <div><div style="font-weight:600">${escHtml(f.name)}</div>
+        <div class="cmp-row">${fmtTime(f.time)} ｜ 距上次5★间隔 ${f.pity} 抽${f.local_id?' ｜ 已匹配本地角色':''}</div></div></div>`).join('') || '';
+    return `<div style="margin-top:12px"><b>${escHtml(b.label||'')}</b>
+      <span style="font-size:12px;color:var(--muted)">（共 ${b.total} 抽 ｜ 5★ ${b.five_count} ｜ 4★ ${b.four_count} ｜ 当前已垫 ${b.current_pity} 抽）</span>${f5}</div>`;
+  }).join('');
+  const recents = (banners[0] ? (banners[0].recent||[]) : []).slice(0,10).map(p =>
+    `<span class="tag2" style="${p.rank>=5?'border-color:var(--gold);color:var(--gold);font-weight:700':''}">${escHtml(p.name)}${p.rank>=5?' ★5':''}</span>`).join(' ');
+  box.innerHTML = `
+    <div class="sec-title">🎫 ${escHtml(d.game_display||d.game)} 本地抽卡记录（导入于 ${escHtml(d.imported_at||'')}）</div>
+    <div class="kv" style="margin-top:8px">
+      <span>总抽数 <b>${s.total_pulls||0}</b></span>
+      <span>5★ <b style="color:var(--gold)">${s.total_5||0}</b></span>
+      <span>4★ <b>${s.total_4||0}</b></span>
+      <span>UID <b>${escHtml(d.uid||'—')}</b></span>
+    </div>
+    ${rows}
+    ${recents ? '<div class="sec-title" style="margin-top:14px">最近抽取</div><div>'+recents+'</div>' : ''}
+    <div class="note" style="font-size:11px;margin-top:12px;border-left-color:var(--muted)">记录仅存本机（${escHtml(d.source_host||'')}），不含 authkey。新版本拉取：重新在游戏内打开一次抽卡记录页复制新链接再导入即可。</div>`;
+}
+async function importGacha(){
+  const url = ($('#gachaUrl').value||'').trim();
+  if(!url){ setGachaOut('请先粘贴游戏内抽卡记录页链接', true); return; }
+  const btn = $('#gachaImport');
+  btn.disabled = true;
+  setGachaOut('正在分页拉取抽卡记录（每卡池最多 30 页），请稍候…');
+  try{
+    const res = await fetch('/api/gacha-import', {method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({url: url, game: _currentGameId})});
+    const r = await res.json();
+    if(!r.ok){ setGachaOut('导入失败：' + (r.error||'未知错误'), true); return; }
+    setGachaOut(r.message + '（authkey 未保存，仅保留统计与角色名）');
+    $('#gachaUrl').value = '';
+    renderGachaHistory(r.data);
+  }catch(e){ setGachaOut('导入失败：' + e.message, true); }
+  finally{ btn.disabled = false; }
+}
+async function clearGacha(){
+  if(!confirm('清空当前游戏的本地抽卡记录？')) return;
+  try{
+    const res = await fetch('/api/gacha-history?game=' + encodeURIComponent(_currentGameId||''),
+      {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({_method:'DELETE'})});
+    const r = await res.json();
+    setGachaOut(r.message || '已清空');
+    $('#gachaResult').innerHTML = '';
+  }catch(e){ setGachaOut('清空失败：' + e.message, true); }
+}
+$('#gachaImport').addEventListener('click', importGacha);
+$('#gachaClear').addEventListener('click', clearGacha);
+
+function populatePlanSelects(){
+  if(typeof GAMES !== 'undefined' && GAMES.length){
+    $('#pityGame').innerHTML = GAMES.map(g => `<option value="${g.id}">${escHtml(g.display_name || g.id)}</option>`).join('');
+    $('#pityGame').value = _currentGameId;
+  }
+  const opts = (ALL || []).map(c => `<option value="${c.id}">${escHtml(c.name)}（v${(c.version||'?')}·${(VERDICT_LABEL[c.verdict]||'数据不足')}）</option>`).join('');
+  $('#rankPick').innerHTML = opts;
+  $('#cmpPick').innerHTML = opts;
+  renderRankList(); renderCmp();
+}
+
+// ---------- 保底/概率计算 ----------
+function pityPerPull(pity, banner){
+  // pity = 已垫抽数；返回「下一抽（第 pity+1 抽）出 5★」的概率
+  const n = pity + 1;
+  if(banner === 'weapon'){
+    if(n < 63) return 0.007;
+    if(n >= 80) return 1;
+    return Math.min(1, 0.007 + 0.07 * (n - 62));
+  }
+  if(n < 74) return 0.006;
+  if(n >= 90) return 1;
+  return Math.min(1, 0.006 + 0.06 * (n - 73));
+}
+function pityProbInK(cur, k, banner){
+  let no5 = 1;
+  for(let i = 0; i < k; i++) no5 *= (1 - pityPerPull(cur + i, banner));
+  return 1 - no5;
+}
+function calcPity(){
+  const banner = $('#pityBanner').value;
+  let cur = parseInt($('#pityCur').value || '0', 10);
+  if(isNaN(cur) || cur < 0) cur = 0;
+  const hard = banner === 'weapon' ? 80 : 90;
+  const soft = banner === 'weapon' ? 63 : 74;
+  const guaranteed = $('#pityGuaranteed').checked;
+  const pGoldByK = [10,20,30,50].map(k => (pityProbInK(cur, k, banner) * 100).toFixed(1));
+  const pGoldToHard = pityProbInK(cur, Math.max(hard - cur, 1), banner);
+  // 出 UP 概率（近似）：已保底=出金概率；未保底则首金 50% 为 UP，歪了下次必 UP
+  const pUp = guaranteed ? pGoldToHard : Math.min(1, pGoldToHard * 0.5 + 0.5 * (pGoldToHard > 0.98 ? 0.5 : 0));
+  let advice;
+  if(cur >= soft){
+    advice = `已处于软保底区间，距离大保底仅剩 <b>${hard - cur}</b> 抽，出货确定性极高。若目标角色明确，可放心继续；临近硬保底前建议预留足够原石/星琼。`;
+  } else {
+    advice = `距软保底还有 <b>${soft - cur}</b> 抽，距大保底 <b>${hard - cur}</b> 抽。当前垫抽较少，除非非常想抽，建议<b>囤积资源</b>等待更心仪角色或其复刻，避免为低确定性投入过多。`;
+  }
+  if(guaranteed) advice += `（已吃大保底：本次出货必为 UP 角色。）`;
+  $('#pityOut').innerHTML =
+    `<div class="pity-stat">
+       <div>距大保底<b>${hard - cur}</b>抽</div>
+       <div>距软保底<b>${Math.max(0, soft - cur)}</b>抽</div>
+       <div>到大保底前出金<b>${(pGoldToHard*100).toFixed(1)}%</b></div>
+     </div>
+     <div class="note">未来 N 抽出金概率：10抽 <b>${pGoldByK[0]}%</b> ｜ 20抽 <b>${pGoldByK[1]}%</b> ｜ 30抽 <b>${pGoldByK[2]}%</b> ｜ 50抽 <b>${pGoldByK[3]}%</b></div>
+     <div class="note" style="border-left-color:var(--gold)">出 UP 角色概率（近似）：${(pUp*100).toFixed(1)}%${guaranteed?'（已保底）':'（未保底，按 50/50 估算）'}</div>
+     <div class="note" style="border-left-color:var(--accent)">📌 收手建议：${advice}</div>`;
+}
+$('#pityCalc').addEventListener('click', calcPity);
+
+// ---------- 抽取优先级排序 ----------
+function rankScore(c){
+  const w = { strong_pull:100, pull:70, wait:40, pure_xp:30, skip:15, insufficient:10 }[c.verdict] || 10;
+  const conf = Math.max(0, Math.min(1, (c.net_score || 0) / 10)); // net_score 视作置信代理
+  return Math.round(w + conf * 20);
+}
+function renderRankList(){
+  const list = $('#rankList');
+  if(!planRankIds.length){ list.innerHTML = '<div class="note">尚未添加角色。在上方选择并点「+ 加入」。</div>'; $('#rankOut').innerHTML = ''; return; }
+  const items = planRankIds.map(id => CHAR_MAP[id]).filter(Boolean)
+    .map(c => ({ c, s: rankScore(c) }))
+    .sort((a,b) => b.s - a.s);
+  list.innerHTML = items.map((it, i) => {
+    const c = it.c;
+    return `<div class="rank-item">
+      <span class="rk">${i+1}</span>
+      ${avatarHTML(c, false)}
+      <div><div style="font-weight:600">${escHtml(c.name)}</div>
+        <div class="cmp-row">${catSpan(c.category||c.element)} ｜ ${(VERDICT_LABEL[c.verdict]||'数据不足')} ｜ net ${c.net_score||0}</div></div>
+      <span class="sc">${it.s}</span>
+      <span class="x" data-id="${c.id}" title="移除">✕</span>
+    </div>`;
+  }).join('');
+  $('#rankOut').innerHTML = '<div class="note" style="border-left-color:var(--accent)">排序完成：高分角色优先投入预算；若资源有限，低分（观望/不推荐）可延后或放弃。</div>';
+  list.querySelectorAll('.x').forEach(x => x.addEventListener('click', () => {
+    planRankIds = planRankIds.filter(id => id !== x.dataset.id); renderRankList();
+  }));
+}
+$('#rankAdd').addEventListener('click', () => {
+  const id = $('#rankPick').value; if(id && !planRankIds.includes(id)){ planRankIds.push(id); renderRankList(); }
+});
+$('#rankClear').addEventListener('click', () => { planRankIds = []; renderRankList(); });
+
+// ---------- 多角色对比 ----------
+function renderCmp(){
+  const out = $('#cmpOut');
+  const items = planCmpIds.map(id => CHAR_MAP[id]).filter(Boolean);
+  if(!items.length){ out.innerHTML = '<div class="note">尚未添加对比角色（最多 3 个）。</div>'; return; }
+  out.innerHTML = items.map(c => {
+    const col = charColor(c);
+    const v = c.verdict || 'insufficient';
+    const vlabel = VERDICT_LABEL[v] || '数据不足';
+    return `<div class="cmp-card" style="border-top:3px solid ${col}">
+      ${avatarHTML(c, false)}
+      <h4>${escHtml(c.name)}</h4>
+      <div class="cmp-row">${catSpan(c.category||c.element)} ｜ ${c.rarity}★ ｜ v${c.version||'?'}</div>
+      <div class="cmp-row">结论：<span class="chip" style="background:${VERDICT_COLOR[v]||'#888'};color:#fff">${vlabel}</span></div>
+      <div class="cmp-row">net 分：${c.net_score||0} ｜ 证据 ${c.evidence_count||0} 条</div>
+      <div class="cmp-row" style="margin-top:6px">${escHtml((c.note||'').slice(0,60))}</div>
+    </div>`;
+  }).join('');
+}
+$('#cmpAdd').addEventListener('click', () => {
+  const id = $('#cmpPick').value;
+  if(id && !planCmpIds.includes(id)){ if(planCmpIds.length >= 3){ showToast('最多对比 3 个角色'); return; } planCmpIds.push(id); renderCmp(); }
+});
+$('#cmpClear').addEventListener('click', () => { planCmpIds = []; renderCmp(); });
+
+// ---------- 导出 / 分享 ----------
+function exportText(){
+  const target = $('#expTarget').value;
+  let txt = '';
+  if(target === 'current' && curChar && CUR){
+    txt = buildAnalysisText(CUR);
+  } else if(target === 'compare' && planCmpIds.length){
+    txt = '【抽卡规划 · 多角色对比】\n';
+    planCmpIds.forEach(id => {
+      const c = CHAR_MAP[id]; if(!c) return;
+      txt += `\n■ ${c.name}（${c.rarity}★ v${c.version||'?'}）\n`;
+      txt += `  属性：${c.category||c.element||'-'} ｜ 结论：${VERDICT_LABEL[c.verdict]||'数据不足'} ｜ net ${c.net_score||0}\n`;
+      if(c.note) txt += `  备注：${c.note}\n`;
+    });
+  } else {
+    txt = '（无可导出的内容：请先选择一个角色查看分析，或在「对比」中加入角色）';
+  }
+  $('#expTextOut').textContent = txt;
+  if(navigator.clipboard){ navigator.clipboard.writeText(txt).then(()=>showToast('已复制到剪贴板'),()=>{}); }
+  return txt;
+}
+function buildAnalysisText(c){
+  const L = [];
+  L.push('【抽卡建议分析】' + (_currentGameId || '') + ' · ' + (c.name || ''));
+  L.push('结论：' + ((c.verdict_label) || (VERDICT_LABEL[c.verdict]||'数据不足')));
+  if(c.summary) L.push('摘要：' + c.summary);
+  if(c.ai && c.ai.summary) L.push('AI 摘要：' + c.ai.summary);
+  if(c.ai && c.ai.team_advice) L.push('配队建议：' + c.ai.team_advice);
+  if(c.ai && c.ai.weapon_advice) L.push('武器建议：' + c.ai.weapon_advice);
+  if(c.ai && c.ai.constellation_advice) L.push('命座建议：' + c.ai.constellation_advice);
+  if(c.ai && c.ai.rerun_advice) L.push('复刻预测：' + c.ai.rerun_advice);
+  if(c.ai && c.ai.roi) L.push('性价比：' + c.ai.roi);
+  L.push('— 由「抽卡建议分析器」生成');
+  return L.join('\n');
+}
+function exportImage(){
+  const target = $('#expTarget').value;
+  const canvas = $('#expCanvas');
+  const cards = [];
+  if(target === 'current' && curChar && CHAR_MAP[curChar]) cards.push(CHAR_MAP[curChar]);
+  else if(target === 'compare') planCmpIds.forEach(id => { if(CHAR_MAP[id]) cards.push(CHAR_MAP[id]); });
+  if(!cards.length){ showToast('无可导出的角色'); return; }
+  const W = 760, rowH = 150, pad = 16;
+  canvas.width = W; canvas.height = pad*2 + rowH*cards.length;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#1b1d24'; ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle = '#e8e8ef'; ctx.font = 'bold 18px sans-serif';
+  ctx.fillText('抽卡建议分析 · ' + (_currentGameId||''), pad, pad+4);
+  cards.forEach((c, i) => {
+    const y = pad + 30 + i*rowH;
+    const col = charColor(c);
+    ctx.fillStyle = col; ctx.fillRect(pad, y, 8, rowH-20);
+    ctx.fillStyle = '#fff'; ctx.font = 'bold 16px sans-serif';
+    ctx.fillText(c.name + '  ' + (c.rarity||'') + '★', pad+20, y+22);
+    ctx.fillStyle = '#b9bcc8'; ctx.font = '13px sans-serif';
+    ctx.fillText((c.category||c.element||'-') + ' ｜ v' + (c.version||'?') + ' ｜ ' + (VERDICT_LABEL[c.verdict]||'数据不足'), pad+20, y+44);
+    const note = (c.note||'').slice(0, 48);
+    ctx.fillText(note, pad+20, y+66);
+  });
+  canvas.style.display = 'block';
+  try {
+    const url = canvas.toDataURL('image/png');
+    const a = document.createElement('a'); a.href = url;
+    a.download = 'gacha_plan_' + (_currentGameId||'export') + '.png'; a.click();
+    showToast('图片已导出');
+  } catch(e){ showToast('导出失败：' + e.message); }
+}
+$('#expText').addEventListener('click', exportText);
+$('#expImg').addEventListener('click', exportImage);
+
+async function openSettings(){
+  try { const r = await fetch('/api/config'); const d = await r.json(); if(d.settings) fillSettings(d.settings); } catch(e){}
+  loadAiCache();
+  $('#settingsModal').classList.add('show');
+}
+function closeSettings(){ $('#settingsModal').classList.remove('show'); }
+async function saveSettings(){
+  const btn=$('#saveSettings'); btn.disabled=true; btn.textContent='保存中…';
+  try{
+    const res = await fetch('/api/config', {method:'PUT', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({settings: collectSettings()})});
+    const d = await res.json();
+    if(!d.ok){ showToast('保存失败：'+(d.error||'')); }
+    else { showToast('设置已保存'); closeSettings(); await loadCharacters(_currentGameId); if(curChar) analyze(curChar, 'rule'); }
+  }catch(e){ showToast('保存失败：'+e.message); }
+  finally { btn.disabled=false; btn.textContent='💾 保存设置'; }
+}
+async function testConnection(){
+  const out=$('#connOut'); out.style.display='block'; out.textContent='测试中（本机联网时有效）…'; out.style.borderColor='var(--line)';
+  try{
+    const r=await fetch('/api/test-connection'); const d=await r.json();
+    out.textContent = (d.message||'') + (d.sample_titles? '\n示例标题：'+d.sample_titles.join(' / '):'');
+    out.style.borderColor = d.ok ? 'var(--green)' : 'var(--red)';
+  }catch(e){ out.textContent='测试失败：'+e.message; out.style.borderColor='var(--red)'; }
+}
+async function testNga(){
+  const out=$('#ngaOut'); out.style.display='block'; out.textContent='测试中（需要先保存 Cookie；本机联网时有效）…'; out.style.borderColor='var(--line)';
+  try{
+    const r=await fetch('/api/nga/test'); const d=await r.json();
+    out.textContent = d.message || (d.ok ? '连接成功' : '连接失败');
+    out.style.borderColor = d.ok ? 'var(--green)' : 'var(--red)';
+  }catch(e){ out.textContent='测试失败：'+e.message; out.style.borderColor='var(--red)'; }
+}
+async function testAi(){
+  const out=$('#aiOut'); out.style.display='block'; out.textContent='测试中…'; out.style.borderColor='var(--line)';
+  try{
+    const r=await fetch('/api/ai/test'); const d=await r.json();
+    out.textContent = d.error ? ('失败：'+d.error) : (d.message||'ok');
+    out.style.borderColor = d.ok ? 'var(--green)' : 'var(--red)';
+  }catch(e){ out.textContent='测试失败：'+e.message; out.style.borderColor='var(--red)'; }
+}
+
+// ---------- AI 结果缓存：统计 / 清空 ----------
+const GAME_LABEL = {genshin:'原神', hsr:'星穹铁道', zzz:'绝区零', wuthering_waves:'鸣潮',
+                    arknights_endfield:'终末地', nte:'异环'};
+function fmtSize(n){ return n > 1048576 ? (n/1048576).toFixed(1)+'MB' : (n > 1024 ? (n/1024).toFixed(0)+'KB' : n+'B'); }
+async function loadAiCache(){
+  const box = $('#aiCacheInfo');
+  if(!box) return;
+  try{
+    const res = await fetch('/api/ai-cache');
+    const d = await res.json();
+    if(!d.ok){ box.textContent = '缓存读取失败：' + (d.error||''); return; }
+    const byGame = {};
+    (d.items||[]).forEach(it => { byGame[it.game] = (byGame[it.game]||0) + 1; });
+    const perGame = Object.keys(byGame).map(g => (GAME_LABEL[g]||g) + '×' + byGame[g]).join('、');
+    const latest = (d.items||[]).slice(0,3)
+      .map(it => (GAME_LABEL[it.game]||it.game) + '·' + it.character + (it.enhanced?'(增强)':'') + ' ' + (it.cached_at||'').slice(5,16))
+      .join('<br>');
+    box.innerHTML = '已缓存 <b>' + d.count + '</b> 个角色结果（共 ' + fmtSize(d.total_size||0) + '）'
+      + (perGame ? '｜' + perGame : '')
+      + (latest ? '<br>最近：' + latest : '')
+      + '<br>点「🤖 AI 分析」会覆盖对应角色缓存；清空后首次查看需重新分析。';
+  }catch(e){ box.textContent = '缓存读取失败：' + e.message; }
+}
+async function clearAiCache(){
+  if(!confirm('确定清空全部 AI 缓存？已保存的分析结果将被删除，之后查看这些角色需重新 AI 分析（消耗 token）。')) return;
+  try{
+    const res = await fetch('/api/ai-cache', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({_method:'DELETE'})
+    });
+    const d = await res.json();
+    showToast(d.ok ? (d.message||'已清空') : ('清空失败：' + (d.error||'')));
+    loadAiCache();
+  }catch(e){ showToast('清空失败：' + e.message); }
+}
+
+// ---------- 重建当前游戏角色库（hsr/zzz/鸣潮/终末地/异环，离线精编） ----------
+async function refreshCharacters(){
+  const gid = _currentGameId || 'hsr';
+  if(gid === 'genshin'){
+    showToast('原神名单由 build_chars.py 精编维护，不支持一键重建；可直接用「在线拉取」补齐新版本角色。');
+    return;
+  }
+  if(!['hsr','zzz','wuthering_waves','arknights_endfield','nte'].includes(gid)){
+    showToast('当前游戏（'+gid+'）不支持重建。');
+    return;
+  }
+  const out=$('#charRefreshOut'); out.style.display='block';
+  out.textContent='正在用精编数据重建 ' + gid + ' 角色库（国服官方名）…';
+  out.style.borderColor='var(--line)';
+  const btn=$('#refreshCharacters'); btn.disabled=true;
+  try{
+    const r=await fetch('/api/refresh-characters', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({game: gid})
+    });
+    const d=await r.json();
+    if(!d.ok){
+      out.textContent='失败：'+ (d.error||'');
+      out.style.borderColor='var(--red)';
+    } else {
+      out.textContent = '✅ ' + (d.message||('已重建 '+gid+' 角色库（'+d.count+' 名，国服官方名）'));
+      out.style.borderColor='var(--green)';
+      showToast('角色库已重建，正在重新加载…');
+      await loadCharacters(gid);
+    }
+  }catch(e){ out.textContent='请求失败：'+e.message; out.style.borderColor='var(--red)'; }
+  btn.disabled=false;
+}
+
+// ---------- 联网拉取升级角色名单（六游戏官方镜像/百科源） ----------
+const UPDATE_DB_SUPPORTED = {hsr:true, genshin:true, arknights_endfield:true, zzz:true, wuthering_waves:true, nte:true};
+async function updateDb(){
+  const gid = _currentGameId || 'hsr';
+  if(!UPDATE_DB_SUPPORTED[gid]){
+    showToast('该游戏暂不支持在线拉取。');
+    return;
+  }
+  const out=$('#updateDbOut'); out.style.display='block';
+  out.textContent='正在从官方镜像拉取最新角色名单与官方数值…';
+  out.style.borderColor='var(--line)';
+  const btn=$('#updateDb'); btn.disabled=true;
+  try{
+    const r=await fetch('/api/update-db', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({game: gid})
+    });
+    const d=await r.json();
+    if(!d.ok){
+      out.textContent = (d.error==='network_unavailable' ? '⚠️ ' : '失败：') + (d.message||d.error||'');
+      out.style.borderColor='var(--gold)';
+    } else {
+      let msg = d.message||'';
+      if(d.official_stats && d.official_stats.ok){
+        msg += '，官方数值补写 ' + d.official_stats.updated + ' 名角色（' + d.official_stats.source
+          + (d.official_stats.version ? ' ' + d.official_stats.version : '') + '）';
+      }
+      out.textContent = '✅ ' + msg;
+      out.style.borderColor='var(--green)';
+      showToast('角色名单已同步，正在重新加载…');
+      await loadCharacters(gid);
+    }
+  }catch(e){ out.textContent='请求失败：'+e.message; out.style.borderColor='var(--red)'; }
+  btn.disabled=false;
+}
+
+// ---------- 联网拉取真实头像（支持 原神 / hsr / 终末地 / 异环） ----------
+const AVATAR_SUPPORTED = {genshin:true, hsr:true, arknights_endfield:true, nte:true};
+async function fetchAvatars(){
+  const gid = _currentGameId || 'hsr';
+  if(!AVATAR_SUPPORTED[gid]){
+    let why;
+    if(gid==='wuthering_waves') why='鸣潮暂无「角色名→图标」可确定性映射的干净 CDN，维持官方属性色卡。';
+    else why='该游戏暂无可确定性映射的头像源，维持官方属性色卡。';
+    showToast(why);
+    return;
+  }
+  const out=$('#fetchAvatarsOut'); out.style.display='block';
+  out.textContent='正在联网拉取并验证 ' + gid + ' 真实头像（仅写入验证通过的 URL）…';
+  out.style.borderColor='var(--line)';
+  const btn=$('#fetchAvatars'); btn.disabled=true;
+  try{
+    const r=await fetch('/api/fetch-avatars', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({game: gid})
+    });
+    const d=await r.json();
+    if(!d.ok){
+      out.textContent='说明：'+ (d.error||'');
+      out.style.borderColor='var(--gold)';
+    } else {
+      out.textContent = '✅ ' + (d.message||('已写入 '+d.updated+' 个真实头像'));
+      out.style.borderColor='var(--green)';
+      showToast('真实头像已更新，正在重新加载…');
+      await loadCharacters(gid);
+    }
+  }catch(e){ out.textContent='请求失败：'+e.message; out.style.borderColor='var(--red)'; }
+  btn.disabled=false;
+}
+
+// ---------- 订阅 ----------
+async function addSub(){
+  const input = $('#subInput').value.trim();
+  const role = $('#subRole').value;
+  if(!input){ showToast('请输入 UID 或空间链接'); return; }
+  const btn = $('#subAdd'); btn.disabled = true;
+  try {
+    const res = await fetch('/api/streamers', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({input, role, trusted: role==='main'})
+    });
+    const d = await res.json();
+    if(!d.ok){ showToast('添加失败：' + (d.error||'')); }
+    else { showToast(d.resolved ? ('已订阅：'+d.item.name) : ('已添加（沙箱未解析，本机可解析）')); $('#subInput').value=''; }
+  } catch(e){ showToast('添加失败：' + e.message); }
+  finally { btn.disabled = false; await loadCharacters(_currentGameId); }
+}
+async function removeSub(uid, kind){
+  try {
+    await fetch('/api/streamers/' + uid, { method:'DELETE',
+      headers:{'Content-Type':'application/json'}, body: JSON.stringify({_method:'DELETE'}) });
+    showToast('已取消订阅');
+  } catch(e){ showToast('删除失败：' + e.message); }
+  await loadCharacters(_currentGameId);
+}
+
+$('#subAdd').addEventListener('click', addSub);
+$('#search').addEventListener('input', renderGrid);
+$('#sortVer').addEventListener('click', () => { curSort='version'; $('#sortVer').classList.add('active'); $('#sortEle').classList.remove('active'); renderGrid(); });
+$('#sortEle').addEventListener('click', () => { curSort=CAT_FIELD; $('#sortEle').classList.add('active'); $('#sortVer').classList.remove('active'); renderGrid(); });
+$('#gameSel').addEventListener('change', () => { const id = $('#gameSel').value; _currentGameId = id; switchGame(id); });
+$('#refreshBtn').addEventListener('click', async () => {
+  const btn = $('#refreshBtn'); btn.disabled = true; btn.textContent = '更新中…';
+  try {
+    const res = await fetch('/api/refresh'); const d = await res.json();
+    showToast('已更新：清空缓存 ' + d.cache_cleared + ' 条' + (d.demo_mode ? '（示例模式）' : ''));
+    await loadCharacters(_currentGameId);
+    if(curChar) analyze(curChar, 'rule');
+  } catch(e){ showToast('更新失败：' + e.message); }
+  finally { btn.disabled = false; btn.textContent = '⟳ 更新分析'; }
+});
+$('#openSettings').addEventListener('click', openSettings);
+$('#closeSettings').addEventListener('click', closeSettings);
+$('#settingsModal').addEventListener('click', (e) => { if(e.target === $('#settingsModal')) closeSettings(); });
+$('#demoBadge').addEventListener('click', openSettings);
+$('#saveSettings').addEventListener('click', saveSettings);
+$('#testConn').addEventListener('click', testConnection);
+$('#testNga').addEventListener('click', testNga);
+$('#sNgaClear').addEventListener('click', () => {
+  const inp = $('#sNgaCookie');
+  if(inp){ inp.value = ''; inp.placeholder = '粘贴 NGA 登录 Cookie'; }
+  ngaClearRequested = true;
+  const out = $('#ngaOut'); out.style.display='block'; out.textContent='将在保存设置时清除已保存的 NGA Cookie。';
+  out.style.borderColor = 'var(--red)';
+});
+$('#refreshCharacters').addEventListener('click', refreshCharacters);
+$('#updateDb').addEventListener('click', updateDb);
+$('#fetchAvatars').addEventListener('click', fetchAvatars);
+$('#testAi').addEventListener('click', testAi);
+$('#clearAiCache').addEventListener('click', clearAiCache);
+$('#resetDemoBtn').addEventListener('click', () => { document.querySelector('input[name="sDemo"][value="true"]').checked = true; updateDemoHint(); });
+document.querySelectorAll('input[name="sAiProv"]').forEach(r => r.addEventListener('change', toggleAiForms));
+document.querySelectorAll('input[name="sDemo"]').forEach(r => r.addEventListener('change', updateDemoHint));
+
+loadCharacters().then(() => {
+  // 首次加载提示：示例模式只是演示，真实数据需在设置中开启
+  if($('#demoBadge').style.display !== 'none'){
+    showToast('当前为示例模式（演示数据）。点右上 ⚙ 设置 → 数据来源，关闭示例模式 + 填 SESSDATA 即可抓取真实 B 站数据。');
+  }
+});
+</script>
+</body>
+</html>
