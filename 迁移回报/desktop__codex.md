@@ -20,7 +20,7 @@ permalink: main/工作/项目/资产/ai-工具库/迁移回报/desktop__codex
   - 微信自动答题小工具、三角洲改枪码数据管理工具：规范明确为私人向小工具，保持原位 + 双链，不进库。
   - 此前误将微信/三角洲整目录迁入库内的副本已删除（仅删 AI工具库 内副本，未动本机原目录，遵守"不删库"护栏）。
   - 其他端（win/workbuddy 等）的未提交改动（scripts/、迁移回报等）一律未触碰、未替其 commit/push。
-- git commit：`021c567` add 手游抽取建议分析器 : 整目录物理迁入 AI工具库（desktop/codex 迁移）
+- git commit：`7606b5b` add 手游抽取建议分析器 : 整目录物理迁入 AI工具库（desktop/codex 迁移）
 - push：gitea 成功（gitea-pub = git.zafkiel.com.cn）；github 跳过（本机无 PAT）
 - 遗留问题：无。config.json 已脱敏为 `<FILL_IN_...>` 占位符并 force-add 作为模板，不含任何真实密钥。
 
