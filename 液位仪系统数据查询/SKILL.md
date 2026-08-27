@@ -4,7 +4,7 @@ description: 液位仪系统数据查询（原 sinopec-system-scrape）——抓
   各业务模块数据并导出 Excel。当需要登录该系统抓取 进货验收/出库单查询/时点库存实时清单/液位手工测量比对/加油站盘点/配送单查询 等任一常用功能的数据、或导出"进油验收报表(*.xls)"时使用。覆盖
   SSO 登录、菜单导航、easyui 筛选设置、导出/查询接口调用全流程。
 agent_created: true
-permalink: main/工作/项目/资产/work-buddy-私有-skills/液位仪系统数据查询/skill
+permalink: main/工作/项目/资产/work-buddy-私有-skills/液位仪系统数据查询/skill-1
 ---
 
 # 中石化液位仪系统数据抓取

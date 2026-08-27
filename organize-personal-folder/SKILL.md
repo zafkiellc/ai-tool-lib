@@ -2,7 +2,7 @@
 name: organize-personal-folder
 description: 安全整理个人文件夹（去重+归档）。当用户要求"整理/清理/去重/归档我的某个文件夹（尤其是 OneDrive）"时使用。严格遵循个人文件安全规则：先只读扫描、列清单、确认、整盘备份、回收站删除、分批可撤销。
 agent_created: true
-permalink: main/工作/项目/资产/work-buddy-私有-skills/organize-personal-folder/skill
+permalink: main/工作/项目/资产/work-buddy-私有-skills/organize-personal-folder/skill-1
 ---
 
 # 安全整理个人文件夹（去重 + 归档）

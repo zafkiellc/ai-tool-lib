@@ -2,7 +2,7 @@
 name: sinopec-loss-analysis
 description: 中石化/加油站进油验收与损耗综合分析。当用户提供加油站进油验收报表(.xls)和损耗排名(.xlsx)，要求分析综合损耗趋势/排名后五站点/损耗与天气或温度(来卸油温差)的关系/高罐位影响，或提出损耗调优建议(季节特性、汽柴油站点特性、进油节奏、卸油时段、进油量调节)时使用。覆盖汽油柴油口径拆分、卸油时段×天气交叉、罐位相关性、超标站点分层建议。
 agent_created: true
-permalink: main/工作/项目/资产/work-buddy-私有-skills/sinopec-loss-analysis/skill
+permalink: main/工作/项目/资产/work-buddy-私有-skills/sinopec-loss-analysis/skill-1
 ---
 
 # 中石化汉阳片区损耗分析

@@ -5,7 +5,7 @@ description: SAP ZHQR023 油品进销付存自动拉数 + 损耗排名/看板/�
   + 剪贴板 Ctrl+V 绕开中文 IME"。
 when_to_use: 用户要求拉 SAP ZHQR023 数据、刷损耗排名/看板/通报，或卡在 SAP 日期字段、导出乱码/站名丢失、文件锁时。
 agent_created: true
-permalink: main/工作/项目/资产/work-buddy-私有-skills/sap-zhqr023-loss-pipeline/skill
+permalink: main/工作/项目/资产/work-buddy-私有-skills/sap-zhqr023-loss-pipeline/skill-1
 ---
 
 # SAP ZHQR023 油品进销付存自动拉数管线

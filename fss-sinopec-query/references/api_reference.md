@@ -1,7 +1,7 @@
 ---
 title: api_reference
 type: note
-permalink: main/工作/项目/资产/work-buddy-私有-skills/fss-sinopec-query/references/api-reference
+permalink: main/工作/项目/资产/work-buddy-私有-skills/fss-sinopec-query/references/api-reference-1
 ---
 
 # FSS 系统 API 参考

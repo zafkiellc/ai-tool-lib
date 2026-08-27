@@ -3,7 +3,7 @@ name: compress-pdf-folder
 summary: 批量压缩文件夹内 PDF（扫描件/大文件），保持清晰度、可断点续跑、沙箱安全
 description: 当用户要求"压缩某个目录下的 PDF / 减小 PDF 体积 / 扫描件太占空间"时使用。针对 Windows + OneDrive +
   WorkBuddy 沙箱环境做了完整避坑设计。
-permalink: main/工作/项目/资产/work-buddy-私有-skills/compress-pdf-folder/skill
+permalink: main/工作/项目/资产/work-buddy-私有-skills/compress-pdf-folder/skill-1
 ---
 
 # 批量压缩文件夹内 PDF

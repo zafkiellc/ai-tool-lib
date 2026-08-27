@@ -1,7 +1,7 @@
 ---
 title: analysis_method
 type: note
-permalink: main/工作/项目/资产/work-buddy-私有-skills/sinopec-loss-analysis/references/analysis-method
+permalink: main/工作/项目/资产/work-buddy-私有-skills/sinopec-loss-analysis/references/analysis-method-1
 ---
 
 # 中石化汉阳片区损耗分析 —— 口径与方法参考

@@ -3,7 +3,7 @@ name: fss-sinopec-query
 description: 查询中国石化 FSS 费用报销系统（https://fss.sinopec.com）数据。当用户要求查询报销单据、审批状态、审批拒绝原因、待办汇总、借款还款、事前申请等
   FSS 系统数据，或需要抓取 FSS 审批历史/审批意见时使用。支持 SSO 自动登录、单据列表抓取、审批历史解析、拒绝原因归类与汇总报告生成。账号凭据由用户现场提供，不硬编码。
 agent_created: true
-permalink: main/工作/项目/资产/work-buddy-私有-skills/fss-sinopec-query/skill
+permalink: main/工作/项目/资产/work-buddy-私有-skills/fss-sinopec-query/skill-1
 ---
 
 # FSS 中石化报销系统数据查询
