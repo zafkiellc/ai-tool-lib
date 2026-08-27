@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>网络学院学习小助手</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-mark"><i data-lucide="bot"></i></span>
+        <div>
+          <strong>网络学院学习小助手</strong>
+          <small>多账号控制台</small>
+        </div>
+      </div>
+      <button id="newTaskBtn" class="btn primary block">
+        <i data-lucide="plus"></i>新建任务
+      </button>
+      <div id="taskList" class="task-list"></div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="heading">
+          <h1 id="taskName">未选择任务</h1>
+          <div id="taskMeta" class="meta"></div>
+        </div>
+        <div class="actions">
+          <button id="saveBtn" class="btn ghost" disabled>
+            <i data-lucide="save"></i>保存配置
+          </button>
+          <button id="continueBtn" class="btn accent hidden">
+            <i data-lucide="log-in"></i>已登录，继续
+          </button>
+          <button id="startBtn" class="btn primary" disabled>
+            <i data-lucide="play"></i>启动任务
+          </button>
+          <button id="stopBtn" class="btn danger" disabled>
+            <i data-lucide="square"></i>停止
+          </button>
+          <button id="deleteBtn" class="btn icon danger-ghost" title="删除任务" disabled>
+            <i data-lucide="trash-2"></i>
+          </button>
+        </div>
+      </header>
+
+      <div id="editor" class="content">
+        <section class="sheet">
+          <div class="section-head">
+            <h2><i data-lucide="settings-2"></i>基础配置</h2>
+          </div>
+          <div class="grid form-grid">
+            <label class="field span-2">
+              <span>任务名称</span>
+              <input id="name" type="text" placeholder="例如：内部培训平台">
+            </label>
+            <label class="field span-2">
+              <span>登录首页地址</span>
+              <input id="loginUrl" type="url" placeholder="https://sia.sinopec.com/learn/">
+            </label>
+            <label class="field">
+              <span>登录方式</span>
+              <select id="loginMode">
+                <option value="auto">自动填写账号密码</option>
+                <option value="manual">手动登录（弹出浏览器）</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>浏览器</span>
+              <select id="browserChannel">
+                <option value="auto">自动（优先系统Edge，无则用内置）</option>
+                <option value="msedge">系统 Edge</option>
+                <option value="chrome">系统 Chrome</option>
+                <option value="chromium">内置 Chromium</option>
+              </select>
+            </label>
+            <div class="field">
+              <span>行为选项</span>
+              <div class="checks">
+                <label class="check"><input id="headless" type="checkbox">隐藏浏览器窗口</label>
+                <label class="check"><input id="keepAlive" type="checkbox">定时滚动防掉线</label>
+              </div>
+            </div>
+            <label class="field">
+              <span>登录后等待（秒）</span>
+              <input id="waitSecondsAfterLogin" type="number" min="0" step="1">
+            </label>
+            <label class="field">
+              <span>单节最长（分钟）</span>
+              <input id="maxMinutesPerLesson" type="number" min="1" step="1">
+            </label>
+          </div>
+        </section>
+
+        <div class="split">
+          <section class="sheet">
+            <div class="section-head">
+              <h2><i data-lucide="users"></i>账号列表</h2>
+              <button id="addAccountBtn" class="btn ghost">
+                <i data-lucide="user-plus"></i>添加账号
+              </button>
+            </div>
+            <div id="accountsList" class="rows"></div>
+          </section>
+
+          <section class="sheet">
+            <div class="section-head">
+              <h2><i data-lucide="list-video"></i>课程列表</h2>
+              <button id="addCourseBtn" class="btn ghost">
+                <i data-lucide="plus"></i>添加课程
+              </button>
+            </div>
+            <div id="coursesList" class="rows"></div>
+            <div class="run-courses">
+              <span>本次运行课程</span>
+              <textarea id="runCourses" rows="4" placeholder="https://sia.sinopec.com/page/#/vedio/play?domainId=...&amp;courseId=..."></textarea>
+            </div>
+          </section>
+        </div>
+
+        <section class="sheet">
+          <div class="section-head">
+            <h2><i data-lucide="terminal"></i>运行日志</h2>
+            <div id="runBadge" class="badge"></div>
+          </div>
+          <div id="logs" class="logs">
+            <div class="log-empty">暂无日志</div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+  <script src="/vendor/lucide.min.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>

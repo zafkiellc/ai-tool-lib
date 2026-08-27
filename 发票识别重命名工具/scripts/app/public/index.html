@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>发票识别重命名工具</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span class="brand-mark">票</span>
+        <div>
+          <h1>发票识别重命名工具</h1>
+          <p>识别 PDF 发票备注、金额与发票号，按发票号配对 XML / ZIP 统一命名</p>
+        </div>
+      </div>
+      <div class="server-state" id="serverState"><span class="dot"></span>本机服务已连接</div>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="panel">
+      <div class="panel-head">
+        <h2>选择文件</h2>
+        <div class="actions">
+          <button type="button" class="btn" id="btnPickFolder">选择文件夹</button>
+          <button type="button" class="btn" id="btnPickFiles">选择文件</button>
+          <button type="button" class="btn primary" id="btnScan">开始扫描</button>
+        </div>
+      </div>
+      <textarea id="pathInput" rows="4" spellcheck="false" placeholder="输入文件夹或文件路径，每行一个；也可以点击上方按钮直接选择"></textarea>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>命名与输出</h2>
+        <div class="actions">
+          <button type="button" class="btn ghost" id="btnResetTemplate">恢复默认</button>
+        </div>
+      </div>
+      <div class="option-grid">
+        <label class="field wide">
+          <span>命名模板</span>
+          <input id="templateInput" value="{remark}_{amount}_{invoice}" spellcheck="false">
+          <small>可用变量：{remark} 备注名 · {station} 站点 · {project} 项目 · {amount} 总金额 · {invoice} 发票号</small>
+        </label>
+        <label class="radio-field">
+          <span>处理方式</span>
+          <label class="radio"><input type="radio" name="mode" value="inplace" checked> 原位置重命名</label>
+          <label class="radio"><input type="radio" name="mode" value="copy"> 输出到文件夹</label>
+        </label>
+        <div class="field output-field" id="outputField">
+          <span>输出文件夹</span>
+          <div class="inline-input">
+            <input id="outputDir" placeholder="选择输出文件夹" spellcheck="false">
+            <button type="button" class="btn small" id="btnPickOutput">选择</button>
+          </div>
+        </div>
+        <label class="check-field">
+          <input type="checkbox" id="extractSingleZip">
+          <span>单文件压缩包同时解压出重命名后的文件</span>
+        </label>
+        <label class="check-field">
+          <input type="checkbox" id="dedupeFiles" checked>
+          <span>重复执行时自动跳过已存在的相同文件</span>
+        </label>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>识别结果</h2>
+        <div class="summary" id="summary">尚未扫描</div>
+      </div>
+      <div class="table-wrap">
+        <table id="resultTable">
+          <thead>
+            <tr>
+              <th class="col-source">来源</th>
+              <th class="col-type">类型</th>
+              <th class="col-invoice">发票号</th>
+              <th class="col-station">站点</th>
+              <th class="col-project">项目</th>
+              <th class="col-amount">金额</th>
+              <th class="col-new">新文件名</th>
+              <th class="col-pair">配对</th>
+              <th class="col-status">状态</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <tr class="empty-row"><td colspan="9">扫描后会在这里显示识别与配对结果，可直接修改新文件名</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="panel-foot">
+        <div class="hint" id="applyHint"></div>
+        <button type="button" class="btn primary" id="btnApply" disabled>执行重命名</button>
+        <button type="button" class="btn ghost" id="btnOpenOutput" style="display:none">打开输出文件夹</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><h2>执行记录</h2></div>
+      <div id="logList" class="log-list"><div class="log-empty">暂无记录</div></div>
+    </section>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>

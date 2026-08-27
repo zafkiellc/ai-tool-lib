@@ -32,9 +32,12 @@ permalink: main/工作/项目/资产/ai-工具库/现场检查条目智能匹配
 - 视频督导模式 `video_mode`、固定/锁定条目(📌)、上传接口 3 列 GBK 防丢、真随机校验均已落地（2026-08-27）。
 - 完整坑速查与迭代要点见 `references/原笔记.md` 第三/七节。
 
-## ⚠️ 源码位置（重要）
-**源码当前不在本工具库，而在源端本机**：`D:/巡站724_便携版/`（server.py + ai_lib.py + inspector_matcher.html）。
-本库只收纳文档与统一入口。若要各端可继续优化代码，需把源码目录纳入本库 `scripts/`（由源端复制进来）。
+## ⚠️ 源码位置（已入册，2026-08-28）
+源码已由 **单位端 WorkBuddy(win__workbuddy)** 从 `D:/巡站724_便携版/` 整目录复制进本库 `scripts/`：
+`server.py` + `ai_lib.py` + `standard_lib.py` + `inspector_matcher.html` + `items.json` + `standards/` + 启动脚本 + 随机问题清单等。
+- **启动**：`scripts\启动.vbs`（或 `启动.bat`），浏览器开 `http://127.0.0.1:8721`。
+- **依赖**：Python 3.13 + `openpyxl`（本库仅存源码；原 `巡站724_便携版` 自带便携 Python 可直接跑，运行自备 Python 环境即可）。
+- 本机 `D:/巡站724_便携版/` 保留为日常运行副本（库内为单一真源，本机副本供随时使用）。
 
 ## 改造记录
 见 `MANIFEST.json` 的 `changelog`。完整迭代要点与待办见 `references/原笔记.md`。

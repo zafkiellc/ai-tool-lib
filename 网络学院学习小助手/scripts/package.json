@@ -1,0 +1,16 @@
+{
+  "name": "network-academy-helper",
+  "version": "1.0.0",
+  "private": true,
+  "description": "本地网页版多账号网络学院自动学习助手",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "postinstall": "playwright install chromium"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "lucide": "^0.454.0",
+    "playwright": "^1.47.0"
+  }
+}

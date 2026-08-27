@@ -1,0 +1,2261 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>现场检查条目 · 智能匹配工具</title>
+<style>
+  :root {
+    --bg: #f5f7fa;
+    --panel: #ffffff;
+    --border: #e5e7eb;
+    --text: #1f2937;
+    --muted: #6b7280;
+    --primary: #2563eb;
+    --primary-2: #1d4ed8;
+    --success: #16a34a;
+    --warn: #d97706;
+    --danger: #dc2626;
+    --shadow: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,.08), 0 2px 6px rgba(0,0,0,.04);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei",
+                 "PingFang SC", "Hiragino Sans GB", sans-serif;
+    font-size: 14px; line-height: 1.55; }
+  header {
+    background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
+    color: #fff; padding: 14px 24px; display: flex; align-items: center;
+    justify-content: space-between; box-shadow: var(--shadow);
+  }
+  header h1 { margin: 0; font-size: 18px; font-weight: 600; letter-spacing: .5px; }
+  header .meta { font-size: 12px; opacity: .9; }
+  header .meta .pill {
+    background: rgba(255,255,255,.18); padding: 3px 10px; border-radius: 10px;
+    margin-left: 8px;
+  }
+
+  main {
+    max-width: 1400px; margin: 16px auto; padding: 0 16px;
+    display: grid; grid-template-columns: 1fr 1.4fr 1fr; gap: 14px;
+  }
+  @media (max-width: 1100px) {
+    main { grid-template-columns: 1fr; }
+  }
+
+  .panel {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 8px; box-shadow: var(--shadow);
+    display: flex; flex-direction: column; min-height: 320px;
+  }
+  .panel-head {
+    padding: 10px 14px; border-bottom: 1px solid var(--border);
+    background: #fafbfc; border-radius: 8px 8px 0 0;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .panel-head h2 { margin: 0; font-size: 14px; font-weight: 600; color: #374151; }
+  .panel-head .actions { display: flex; gap: 6px; flex-wrap: wrap; }
+  .panel-body { padding: 12px 14px; flex: 1; overflow: auto; }
+
+  textarea, select, input[type=file] {
+    font: inherit; color: inherit;
+  }
+  textarea {
+    width: 100%; min-height: 280px; resize: vertical;
+    border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px;
+    background: #fff; outline: none; transition: border-color .15s;
+  }
+  textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,.12); }
+
+  select {
+    padding: 4px 8px; border: 1px solid var(--border); border-radius: 5px;
+    background: #fff; cursor: pointer; max-width: 130px;
+  }
+
+  button, .btn {
+    background: var(--primary); color: #fff; border: 0; padding: 7px 14px;
+    border-radius: 5px; cursor: pointer; font: inherit; font-weight: 500;
+    transition: background .15s, transform .05s;
+  }
+  button:hover, .btn:hover { background: var(--primary-2); }
+  button:active { transform: scale(.98); }
+  button.secondary { background: #fff; color: var(--text); border: 1px solid var(--border); }
+  button.secondary:hover { background: #f3f4f6; }
+  button.success { background: var(--success); }
+  button.success:hover { background: #15803d; }
+  button.danger { background: var(--danger); }
+  button.danger:hover { background: #b91c1c; }
+  button.mini { padding: 3px 8px; font-size: 12px; }
+  .btn-link {
+    background: none; color: var(--primary); padding: 0; border: 0;
+    cursor: pointer; text-decoration: underline; font-size: 12px;
+  }
+
+  /* 顶部 header 内的轻量按钮（白底半透明风） */
+  .header-btn {
+    background: rgba(255, 255, 255, .14); color: #fff;
+    border: 1px solid rgba(255, 255, 255, .35);
+    padding: 5px 11px; border-radius: 6px; cursor: pointer;
+    font: inherit; font-size: 12px; font-weight: 500;
+    transition: background .15s;
+  }
+  .header-btn:hover { background: rgba(255, 255, 255, .28); }
+  .header-btn .ico { margin-right: 4px; }
+  .btn-mini {
+    background: #f3f4f6; color: var(--muted); border: 1px solid var(--border);
+    padding: 2px 7px; border-radius: 4px; font-size: 12px; cursor: pointer;
+  }
+  .btn-mini:hover { background: var(--danger); color: #fff; border-color: var(--danger); }
+  .btn-mini.pushed { background: var(--success); color: #fff; border-color: var(--success); }
+  .btn-mini.pushed:hover { background: #b91c1c; border-color: #b91c1c; }
+
+  /* 待录入队列徽章（可点击清空） */
+  #queue-badge { cursor: pointer; user-select: none; }
+  #queue-badge:hover { text-decoration: underline; }
+
+  /* 候选卡 */
+  .card {
+    border: 1px solid var(--border); border-radius: 8px;
+    margin-bottom: 12px; background: #fff; overflow: hidden;
+    transition: box-shadow .15s;
+  }
+  .card:hover { box-shadow: var(--shadow-lg); }
+  .card.picked { border-color: var(--success); background: #f0fdf4; }
+  .card-head {
+    display: flex; align-items: center; gap: 8px; padding: 8px 12px;
+    background: #f9fafb; border-bottom: 1px solid var(--border);
+  }
+  .card-head .num {
+    background: var(--primary); color: #fff; border-radius: 50%;
+    width: 22px; height: 22px; display: flex; align-items: center;
+    justify-content: center; font-size: 11px; font-weight: 600;
+    flex-shrink: 0;
+  }
+  .card-head .desc {
+    flex: 1; font-weight: 500; color: #111827;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .card-head .head-right { display: flex; gap: 6px; align-items: center; }
+  .auto-badge {
+    background: #ecfeff; color: #0e7490; border: 1px solid #a5f3fc;
+    border-radius: 8px; padding: 1px 7px; font-size: 11px; font-weight: 600;
+    flex-shrink: 0;
+  }
+  .fixed-badge {
+    background: #fef3c7; color: #b45309; border: 1px solid #fcd34d;
+    border-radius: 8px; padding: 1px 7px; font-size: 11px; font-weight: 600;
+    flex-shrink: 0;
+  }
+  .btn-mini.pin-on { background: #fef3c7; color: #b45309; border-color: #fcd34d; }
+  .btn-mini.pin-on:hover { background: #fde68a; color: #92400e; border-color: #f59e0b; }
+  .card.auto.fixed .card-head { background: #fffbeb; border-left: 3px solid #f59e0b; }
+  .card.auto .card-head { background: #f0fdfa; }
+
+  .chosen { padding: 12px 14px; }
+  .ch-line { display: flex; gap: 8px; align-items: center; margin-bottom: 6px; flex-wrap: wrap; }
+  .ch-label {
+    background: var(--success); color: #fff; padding: 2px 8px;
+    border-radius: 4px; font-size: 11px; font-weight: 600;
+  }
+  .ch-code {
+    background: #1e3a8a; color: #fff; padding: 2px 8px;
+    border-radius: 4px; font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 11px; font-weight: 500;
+  }
+  .ch-cat { color: var(--muted); font-size: 12px; }
+  .ch-name { font-weight: 500; color: #111827; margin: 4px 0; }
+  .ch-meta { color: var(--muted); font-size: 12px; display: flex; gap: 12px; flex-wrap: wrap; }
+
+  /* 候选列表 */
+  .cand-list { padding: 6px; }
+  .cand {
+    border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px;
+    margin: 6px 4px; cursor: pointer; transition: all .15s;
+    background: #fff;
+  }
+  .cand:hover { border-color: var(--primary); background: #eff6ff; transform: translateX(2px); }
+  .cand-head {
+    display: flex; gap: 8px; align-items: center; margin-bottom: 4px;
+    flex-wrap: wrap;
+  }
+  .cand-rank {
+    background: #e5e7eb; color: #374151; border-radius: 4px;
+    padding: 1px 6px; font-size: 11px; font-weight: 600;
+  }
+  .cand-score { font-weight: 700; font-size: 14px; }
+  .cand-code {
+    background: #1e3a8a; color: #fff; padding: 1px 6px;
+    border-radius: 3px; font-family: ui-monospace, monospace; font-size: 11px;
+  }
+  .cand-cat { color: var(--muted); font-size: 12px; }
+  .cand-sev {
+    font-size: 11px; padding: 1px 6px; border-radius: 3px;
+    background: #fef3c7; color: #92400e;
+  }
+  .cand-name { font-weight: 500; color: #111827; margin: 4px 0; font-size: 13px; }
+  .cand-desc {
+    color: var(--muted); font-size: 12px; line-height: 1.5;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .cand-meta {
+    margin-top: 6px; color: var(--muted); font-size: 11px;
+    display: flex; gap: 10px; flex-wrap: wrap;
+  }
+  .cand-hit { color: var(--primary); }
+
+  /* 已选清单 */
+  .picked-row {
+    border-bottom: 1px solid var(--border); padding: 8px 0;
+    display: flex; gap: 10px;
+  }
+  .picked-row:last-child { border-bottom: 0; }
+  .picked-num { color: var(--muted); font-weight: 600; flex-shrink: 0; }
+  .picked-info { flex: 1; min-width: 0; }
+  .picked-line1 { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-bottom: 2px; }
+  .picked-code {
+    background: #1e3a8a; color: #fff; padding: 1px 6px; border-radius: 3px;
+    font-family: ui-monospace, monospace; font-size: 11px;
+  }
+  .picked-cat { color: var(--muted); font-size: 12px; }
+  .picked-name { font-size: 13px; font-weight: 500; color: #111827; }
+  .picked-orig {
+    color: var(--muted); font-size: 11px; margin-top: 2px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+
+  .empty {
+    color: var(--muted); text-align: center; padding: 30px 10px;
+    font-size: 13px;
+  }
+
+  footer {
+    text-align: center; color: var(--muted); font-size: 12px;
+    padding: 16px; margin-top: 8px;
+  }
+
+  .hint {
+    color: var(--muted); font-size: 12px; margin: 8px 0 0;
+  }
+  .hint kbd {
+    background: #f3f4f6; border: 1px solid var(--border); border-radius: 3px;
+    padding: 1px 5px; font-family: ui-monospace, monospace; font-size: 11px;
+  }
+
+  /* 状态条 */
+  #status {
+    transition: color .2s;
+  }
+
+  /* 滚动条美化 */
+  .panel-body::-webkit-scrollbar { width: 6px; }
+  .panel-body::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+  .panel-body::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+
+  /* 检查标准工具栏 */
+  .stdbar {
+    max-width: 1400px; margin: 12px auto 0; padding: 10px 16px;
+    background: var(--panel); border: 1px solid var(--border); border-radius: 8px;
+    box-shadow: var(--shadow);
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  }
+  .stdbar .label { font-weight: 600; color: #374151; font-size: 13px; }
+  .stdbar select { max-width: 240px; }
+  .stdbar .spacer { flex: 1; }
+  .stdbar .chips { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .stdbar .chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: #eef2ff; color: #3730a3; border: 1px solid #c7d2fe;
+    padding: 2px 9px; border-radius: 12px; font-size: 12px;
+  }
+  .stdbar .chip.builtin { background: #ecfdf5; color: #047857; border-color: #a7f3d0; }
+  .stdbar .chip .x { cursor: pointer; font-weight: 700; line-height: 1; }
+  .stdbar .chip .x:hover { color: var(--danger); }
+  .stdbar .chip .dl {
+    cursor: pointer; font-weight: 600; line-height: 1; margin-left: 6px;
+    color: var(--primary); background: rgba(37,99,235,.12);
+    border-radius: 4px; padding: 1px 5px; font-size: 11px;
+  }
+  .stdbar .chip .dl:hover { background: rgba(37,99,235,.22); }
+
+  .cand-std {
+    font-size: 11px; padding: 1px 6px; border-radius: 3px;
+    background: #ede9fe; color: #5b21b6; margin-left: 4px;
+  }
+
+  /* AI 推荐候选（置顶 #1） */
+  .cand.ai {
+    border-color: #7c3aed; background: #faf5ff;
+    box-shadow: 0 0 0 1px #ddd6fe inset;
+  }
+  .cand.ai:hover { background: #f3e8ff; border-color: #6d28d9; transform: translateX(2px); }
+  .cand-ai-badge {
+    background: linear-gradient(135deg, #7c3aed, #6d28d9); color: #fff;
+    padding: 1px 7px; border-radius: 4px; font-size: 11px; font-weight: 700;
+    display: inline-flex; align-items: center; gap: 3px;
+  }
+  .cand-ai-conf {
+    font-size: 11px; color: #7c3aed; font-weight: 600; margin-left: 4px;
+  }
+  .cand-ai-reason {
+    margin-top: 5px; font-size: 11px; color: #6d28d9;
+    background: #f3e8ff; border-radius: 4px; padding: 3px 7px; display: inline-block;
+  }
+  .ai-busy { color: #7c3aed; font-size: 12px; }
+  /* AI 设置弹窗内的字段填写范例 / Key 获取指引 */
+  #ai-key-hint a { color: #7c3aed; text-decoration: underline; }
+  #ai-key-hint code, #ai-base-hint code, #ai-model-hint code {
+    background: #f1f5f9; padding: 0 4px; border-radius: 3px; font-size: 10px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🛢️ 现场检查条目 · 智能匹配工具</h1>
+  <div class="meta">
+    <span id="meta-info">加载中...</span>
+    <span id="srv-status" class="pill" style="margin-left:8px; background:rgba(255,255,255,.18);">本地服务：检测中</span>
+    <button id="btn-userscript" class="header-btn" style="margin-left:10px;"
+            title="下载一键录入油猴脚本（ddgl_autofill.user.js），用于 360极速X 浏览器">📥 油猴脚本</button>
+    <button id="btn-help" class="header-btn" style="margin-left:6px;"
+            title="查看使用说明（首次使用必读）">❓ 使用帮助</button>
+    <button id="btn-quit" class="header-btn" style="margin-left:6px;"
+            title="停止本地服务并退出（双击 server.exe 运行时有用）">⏏ 退出服务</button>
+  </div>
+</header>
+
+<div class="stdbar">
+  <span class="label">检查标准：</span>
+  <select id="std-mode" title="匹配模式">
+    <option value="manual">手动选择标准</option>
+    <option value="smart">智能切换（自动选标准）</option>
+    <option value="all">全模式（所有标准合并）</option>
+  </select>
+  <select id="std-select" title="选择要匹配的标准"></select>
+  <button id="btn-upload" class="secondary mini">上传检查标准</button>
+  <input type="file" id="file-std" accept=".xlsx,.xls" style="display:none" />
+  <button id="btn-template" class="secondary mini">下载导入模板</button>
+  <span class="spacer"></span>
+  <span class="chips" id="std-chips"></span>
+  <span style="border-left:1px solid var(--border);padding-left:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+    <label style="font-size:12px;display:flex;gap:5px;align-items:center;cursor:pointer;user-select:none;">
+      <input type="checkbox" id="ai-enhance" style="width:auto;" /> 🤖 AI 增强
+    </label>
+    <button id="btn-ai-run" class="secondary mini" title="对全部未匹配记录调用 AI 语义识别">🤖 AI 识别全部</button>
+    <button id="btn-ai-settings" class="secondary mini" title="配置免费 AI 后端（DeepSeek / 豆包 / Ollama 等）">⚙️ AI 设置</button>
+  </span>
+  <span style="border-left:1px solid var(--border);padding-left:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+    <button id="btn-push-all" class="mini" title="把全部已选用推送到本地服务 → 在 360极速X 网页点击 📋 待录入 → 🚀 一键录入 自动打开抽屉、搜索、点行、填表" style="background:#16a34a;color:#fff;">🚀 一键录入</button>
+    <span id="queue-badge" class="pill" title="点击清空待录入队列" style="background:#fef3c7;color:#92400e;border-radius:10px;padding:3px 10px;cursor:pointer;">待录入 0</span>
+    <button id="btn-copy" class="success mini">复制 TSV</button>
+    <button id="btn-export" class="mini">导出 CSV</button>
+  </span>
+</div>
+
+<!-- AI 设置弹窗 -->
+<div id="ai-modal" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,.5);z-index:50;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:10px;width:min(520px,92vw);max-height:90vh;overflow:auto;box-shadow:var(--shadow-lg);">
+    <div style="padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+      <h3 style="margin:0;font-size:15px;">🤖 AI 语义匹配设置</h3>
+      <button id="ai-modal-close" class="btn-mini">✕</button>
+    </div>
+    <div style="padding:16px 18px;">
+      <p style="font-size:12px;color:var(--muted);margin:0 0 12px;">
+        选择一个免费 AI 后端，把不清楚的手工记录交给它做语义匹配，推荐结果会排在候选第一位。
+        API Key 仅保存在本机 <code>ai_config.json</code>，不会上传。
+      </p>
+      <div style="margin-bottom:12px;">
+        <label style="font-size:13px;font-weight:600;">后端</label>
+        <select id="ai-provider" style="width:100%;margin-top:4px;max-width:none;">
+          <option value="deepseek">DeepSeek（推荐 · 注册送免费额度）</option>
+          <option value="doubao">豆包 / 火山方舟</option>
+          <option value="ollama">本地 Ollama（无需密钥）</option>
+          <option value="custom">自定义 / 套壳 OpenAI 兼容</option>
+          <option value="mock">演示（无需密钥·模拟推荐）</option>
+        </select>
+        <p id="ai-hint" style="font-size:11px;color:var(--muted);margin:4px 0 0;"></p>
+      </div>
+      <div style="margin-bottom:12px;">
+        <label style="font-size:13px;font-weight:600;">API Key <span style="font-weight:400;color:var(--muted);">（演示/Ollama 可留空）</span></label>
+        <input id="ai-key" type="password" placeholder="粘贴你的 API Key" style="width:100%;margin-top:4px;padding:7px 10px;border:1px solid var(--border);border-radius:6px;font:inherit;" />
+        <p id="ai-key-hint" style="font-size:11px;color:var(--muted);margin:4px 0 0;line-height:1.5;"></p>
+      </div>
+      <div style="display:flex;gap:10px;margin-bottom:12px;">
+        <div style="flex:1;">
+          <label style="font-size:13px;font-weight:600;">Base URL</label>
+          <input id="ai-base" type="text" placeholder="https://..." style="width:100%;margin-top:4px;padding:7px 10px;border:1px solid var(--border);border-radius:6px;font:inherit;" />
+          <p id="ai-base-hint" style="font-size:11px;color:var(--muted);margin:4px 0 0;line-height:1.5;"></p>
+        </div>
+        <div style="flex:1;">
+          <label style="font-size:13px;font-weight:600;">模型</label>
+          <input id="ai-model" type="text" placeholder="deepseek-chat" style="width:100%;margin-top:4px;padding:7px 10px;border:1px solid var(--border);border-radius:6px;font:inherit;" />
+          <p id="ai-model-hint" style="font-size:11px;color:var(--muted);margin:4px 0 0;line-height:1.5;"></p>
+        </div>
+      </div>
+      <label style="font-size:13px;display:flex;gap:6px;align-items:center;cursor:pointer;user-select:none;margin-bottom:14px;">
+        <input type="checkbox" id="ai-enabled" style="width:auto;" /> 启用 AI 增强（开启后「开始匹配」会自动调用 AI）
+      </label>
+      <div style="display:flex;gap:8px;justify-content:flex-end;">
+        <button id="ai-test" class="secondary mini" title="用当前设置试一条，验证连通性">测试连通</button>
+        <button id="ai-save" class="mini">保存</button>
+      </div>
+      <p id="ai-msg" style="font-size:12px;margin:10px 0 0;min-height:16px;"></p>
+    </div>
+  </div>
+</div>
+
+<main>
+  <!-- 左：输入 -->
+  <section class="panel">
+    <div class="panel-head">
+      <h2>📝 手工记录</h2>
+      <div class="actions">
+        <label class="btn secondary" style="cursor:pointer;">
+          导入文件
+          <input type="file" id="file-import" accept=".txt,.csv" style="display:none" />
+        </label>
+        <button id="btn-clear" class="secondary">清空</button>
+      </div>
+    </div>
+    <div class="panel-body">
+      <!-- 巡站时间：快速生成一条归入「（2026年现场检查）问题整改」的固定记录 -->
+      <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-bottom:8px; padding-bottom:8px; border-bottom:1px dashed var(--border);">
+        <label style="font-size:12px; color:var(--muted); white-space:nowrap;">巡站时间（可选）：</label>
+        <input id="time-input" type="text" placeholder="如 2026年7月27日，留空默认今天" title="填入后生成一条归入「（2026年现场检查）问题整改」+ 站内现场管理良好的记录" style="flex:1; min-width:120px; padding:5px 9px; border:1px solid var(--border); border-radius:5px; font:inherit;" />
+        <button id="btn-time-add" style="padding:5px 12px;">➕ 添加整改</button>
+      </div>
+      <div id="time-status" style="font-size:11px; margin:-4px 0 8px; color:#16a34a; min-height:14px; line-height:1.3;">生成一条归入「（2026年现场检查）问题整改」+ 站内现场管理良好的记录</div>
+      <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:8px;">
+        <label style="font-size:12px; color:var(--muted); white-space:nowrap;">问题时间（可选）：</label>
+        <input id="problem-date" type="text" placeholder="日期" title="如 2026-07-27，留空不附" style="flex:1; min-width:120px; padding:5px 9px; border:1px solid var(--border); border-radius:5px; font:inherit;" />
+      </div>
+      <textarea id="input-text" style="min-height:130px;" placeholder="把检查问题逐行粘贴到这里，每行一条&#10;&#10;例如：&#10;安全帽过期&#10;卸油区静电释放器接地线断裂&#10;便利店货架商品空缺"></textarea>
+      <p class="hint" style="margin:6px 0 0;">
+        <kbd>一行一条</kbd> · 支持粘贴 / 拖入 txt / csv · 右侧卡片可单独指定一级分类
+      </p>
+      <div style="margin-top:8px; display:flex; gap:6px;">
+        <button id="btn-match" style="flex:1; padding:6px 12px;">🔍 开始匹配</button>
+        <button id="btn-fill" class="secondary" style="padding:6px 12px;" title="重新随机补足（换一批不同问题）；手工不足时自动补足到 10 条">🔢 随机补足</button>
+      </div>
+      <div style="margin-top:8px;">
+        <input id="match-keywords" type="text" placeholder="匹配关键词（逗号分隔，如 六步法,消防,发票）" title="程序也会自动把「未问候客户」等口语映射到「六步法/服务流程」等标准说法" style="width:100%; padding:5px 9px; border:1px solid var(--border); border-radius:5px; font:inherit;" />
+      </div>
+      <div style="margin-top:6px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-size:11px; color:var(--muted);">
+        <label style="display:flex; align-items:center; gap:5px; cursor:pointer;">
+          <input type="checkbox" id="chk-fill" checked style="width:auto;" />
+          不足 10 条自动补足
+        </label>
+        <label style="display:flex; align-items:center; gap:5px; cursor:pointer; color:#7c3aed;">
+          <input type="checkbox" id="chk-video" style="width:auto;" />
+          🎥 视频督导模式
+        </label>
+        <span id="fill-status" style="color:#92400e;"></span>
+      </div>
+      <div style="margin-top:10px; padding-top:8px; border-top:1px dashed var(--border);">
+        <div style="font-size:12px; color:var(--muted); font-weight:600; margin-bottom:4px;">➕ 扩充随机清单</div>
+        <input type="file" id="upload-file" accept=".xlsx,.xls,.csv,.txt" style="width:100%; font-size:12px; margin-bottom:4px;" />
+        <textarea id="upload-text" placeholder="或粘贴文本（每行一条，Tab 分隔第二列为分类）" style="width:100%; height:32px; font-size:12px; resize:vertical;"></textarea>
+        <div style="margin-top:4px; display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+          <select id="upload-mode" title="追加保留已有，替换仅留本次" style="font-size:12px; padding:3px 6px;">
+            <option value="append">追加</option>
+            <option value="replace">替换</option>
+          </select>
+          <button id="btn-upload" class="secondary" style="font-size:12px; padding:4px 10px;">📥 上传</button>
+        </div>
+        <div id="upload-status" style="font-size:11px; margin-top:4px; color:#16a34a;"></div>
+      </div>
+      <div style="margin-top:10px; padding-top:8px; border-top:1px dashed var(--border);">
+        <details id="manage-random">
+          <summary style="cursor:pointer; font-size:12px; color:var(--muted); font-weight:600;">🗂 管理随机清单（剔除不合适条目）</summary>
+          <div style="margin-top:6px;">
+            <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:6px;">
+              <button id="btn-rlist-load" class="secondary" style="font-size:12px; padding:4px 10px;">🔄 加载清单</button>
+              <button id="btn-rexclude" class="secondary" style="font-size:12px; padding:4px 10px;">💾 保存剔除</button>
+              <span id="rlist-count" style="font-size:11px; color:var(--muted);"></span>
+              <span style="font-size:11px; color:var(--muted); margin-left:auto;">
+                <label style="cursor:pointer; display:flex; align-items:center; gap:4px;"><input type="checkbox" id="rlist-checkall" style="width:auto;"> 全选</label>
+              </span>
+            </div>
+            <div id="rlist" style="max-height:240px; overflow:auto; border:1px solid var(--border); border-radius:6px; padding:6px; font-size:12px;"></div>
+            <div id="rlist-status" style="font-size:11px; margin-top:4px; color:#16a34a;"></div>
+          </div>
+        </details>
+      </div>
+      <div style="margin-top:8px; display:flex; align-items:center; gap:6px;">
+        <label style="font-size:11px; color:var(--muted); white-space:nowrap;">全局分类筛选：</label>
+        <select id="filter-cat1" style="flex:1; padding:3px 6px;"></select>
+      </div>
+    </div>
+  </section>
+
+  <!-- 中：候选 -->
+  <section class="panel">
+    <div class="panel-head">
+      <h2>🎯 匹配候选</h2>
+      <span id="status" style="font-size:12px; color:var(--muted);">共 0 条</span>
+    </div>
+    <div class="panel-body" id="results"></div>
+  </section>
+
+  <!-- 右：已选 -->
+  <section class="panel">
+    <div class="panel-head">
+      <h2>✅ 已选用</h2>
+    </div>
+    <div class="panel-body" id="picked"></div>
+  </section>
+</main>
+
+<footer>
+  💡 🎥 勾选「视频督导模式」后，随机补足只补 2 条，且仅限「六步法/五步法」相关现场服务问题（其余随机清单不参与补足） · 第一阶段：字符 n-gram 加权匹配（非语义匹配），已做 IDF 降噪 + 关键词/同义词加权，建议核对候选；匹配前可在上方「匹配关键词」框里写 六步法、消防、发票 等，程序也会自动把「未问候客户」等口语映射成「六步法/服务流程」标准说法 ·
+  第三阶段：顶部「检查标准」可上传多个标准并切换——<b>手动</b>选单个标准 / <b>智能切换</b>自动选最匹配标准 / <b>全模式</b>合并所有标准；点「下载导入模板」获取上传格式 ·
+  第四阶段（AI 增强）：点「⚙️ AI 设置」选一个后端（本地 Ollama+Qwen 免费最省 / 豆包 doubao-seed-1-6 极便宜 / DeepSeek 注册送额度），开启「🤖 AI 增强」后「开始匹配」会自动做语义识别、检索<b>完整检查标准</b>并把 AI 推荐置顶为候选 #1（也可点每条的 🤖 单独识别 / 「🤖 AI 识别全部」）；不填 Key 时 AI 等同关闭，不会生效 ·
+  第五阶段（一键录入）：点「🚀 一键录入」推送到本地服务，再到 360极速X 网页点浮动按钮「📋 待录入」→「🚀 一键录入」——脚本会自动点 +问题 按钮打开抽屉、按一级分类搜索、点中匹配行、检查条目打开内层表单、填问题描述/扣分/整改负责人/整改期限，你只需最后点「确定」
+</footer>
+
+<script>
+/* ===== 全局错误捕获（排错用：任何脚本错误都显示在页面顶部，不再白屏） ===== */
+function showPageError(msg) {
+  var d = document.getElementById('page-error');
+  if (!d) {
+    d = document.createElement('div');
+    d.id = 'page-error';
+    d.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99999;background:#b91c1c;color:#fff;font:13px/1.6 Consolas,monospace;padding:10px 14px;white-space:pre-wrap;box-shadow:0 2px 8px rgba(0,0,0,.3);max-height:50vh;overflow:auto;';
+    (document.body || document.documentElement).appendChild(d);
+  }
+  d.textContent = '⚠️ 页面脚本错误（排错用，请截图给开发者）：\n' + msg;
+}
+// 以「文件」方式打开（file://）时本地服务不可用，网络错误不是代码 bug：
+// 给出温和提示而非刺眼红横幅，内置检查标准仍可正常使用。
+var _fileHintShown = false;
+function showFileModeHint() {
+  if (_fileHintShown) return;
+  _fileHintShown = true;
+  var d = document.getElementById('file-mode-hint');
+  if (!d) {
+    d = document.createElement('div');
+    d.id = 'file-mode-hint';
+    d.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99998;background:#1d4ed8;color:#fff;font:13px/1.7 system-ui,"Microsoft YaHei",sans-serif;padding:9px 14px;box-shadow:0 2px 8px rgba(0,0,0,.3);';
+    (document.body || document.documentElement).appendChild(d);
+  }
+  d.innerHTML = 'ℹ️ 当前以「文件」方式打开，内置检查标准可正常使用。如需上传 / 切换标准、下载模板或油猴脚本，请先启动本地服务（双击本目录下的 <b>start.bat</b> 或 server.exe）。';
+}
+window.addEventListener('error', function (ev) {
+  var m = ev.message || '未知错误';
+  if (ev.filename) m += '\n  @ ' + ev.filename + ':' + ev.lineno + ':' + ev.colno;
+  if (ev.error && ev.error.stack) m += '\n' + ev.error.stack;
+  showPageError(m);
+});
+window.addEventListener('unhandledrejection', function (ev) {
+  var r = ev.reason;
+  var msg = (r && (r.stack || r.message || String(r))) || '';
+  // 本地服务未启动 / 以文件方式打开导致的网络错误：温和提示，不弹红横幅
+  if (location.protocol === 'file:' && /Failed to fetch|NetworkError|net::ERR|fetch/.test(msg)) {
+    showFileModeHint();
+    return;
+  }
+  showPageError('未处理的 Promise 拒绝：\n' + msg);
+});
+
+/* ===== 数据（build_html.py 生成时会嵌入这里） ===== */
+const __INSPECTOR_DATA__ = {"version":1,"source_xlsx":"D:\\下载\\LxResource\\LxResource\\Docs\\2026-05\\2026年现场检查-条目导入模板（下发版）.xlsx","n_items":65,"items":[{"idx":1,"code":"SVI2026041300847","system":"省级检查体系","cat1":"打非治违","cat2":"监测机制","area":"复合区","unit":"","name":"（2026年现场检查）打非治违。地方政府未印发成品油流通管理办法实施细则或市场整治行动方案等相关文件；未有效开展“自流黑”专项整治行动，大数据监测违法经营点位打击率低于70%的；未有效推动地方政府安装加油站大数据监管平台，社会站覆盖率低于80%的；省地公司未制定“打非治违”专项行动方案，每项扣4分。未按照方案要求建立组织机构，明确推进措施，落实整治行动，抓好回流承接，开展跟踪考核的，每项扣2分。","short":"（2026年现场检查）打非治违。","desc":"地方政府未印发成品油流通管理办法实施细则或市场整治行动方案等相关文件；未有效开展“自流黑”专项整治行动，大数据监测违法经营点位打击率低于70%的；未有效推动地方政府安装加油站大数据监管平台，社会站覆盖率低于80%的；省地公司未制定“打非治违”专项行动方案，每项扣4分。未按照方案要求建立组织机构，明确推进措施，落实整治行动，抓好回流承接，开展跟踪考核的，每项扣2分。","method":"明查","score_lo":2,"score_hi":12,"severity":"一般问题","haystack":"（2026年现场检查）打非治违。 地方政府未印发成品油流通管理办法实施细则或市场整治行动方案等相关文件；未有效开展“自流黑”专项整治行动，大数据监测违法经营点位打击率低于70%的；未有效推动地方政府安装加油站大数据监管平台，社会站覆盖率低于80%的；省地公司未制定“打非治违”专项行动方案，每项扣4分。未按照方案要求建立组织机构，明确推进措施，落实整治行动，抓好回流承接，开展跟踪考核的，每项扣2分。","grams_short":["0","02","2","20","26","6","6年","场","场检","年","年现","打","打非","查","查打","检","检查","治","治违","现","现场","违","非","非治"],"grams_full":["0","02","0的","2","20","26","2分","4","4分","6","6年","7","70","8","80","专","专项","于","于7","于8","件","件未","会","会站","位","位打","低","低于","公","公司","关","关文","击","击率","分","分未","则","则或","制","制定","办","办法","加","加油","动","动地","动大","动抓","动方","印","印发","发","发成","台","台社","司","司未","品","品油","回","回流","地","地公","地方","场","场整","场检","大","大数","好","好回","安","安装","定","定打","实","实整","实施","展","展自","展跟","市","市场","平","平台","年","年现","府","府安","府未","建","建立","开","开展","成","成品","或","或市","打","打击","打非","扣","扣2","扣4","承","承接","抓","抓好","按","按照","据","据监","接","接开","推","推动","推进","措","措施","政","政府","效","效开","效推","数","数据","整","整治","文","文件","方","方政","方案","施","施细","施落","明","明确","有","有效","未","未制","未印","未按","未有","机","机构","构","构明","查","查打","核","核的","案","案每","案等","案要","检","检查","每","每项","求","求建","油","油流","油站","治","治行","治违","法","法实","法经","流","流承","流通","流黑","测","测违","点","点位","照","照方","率","率低","现","现场","理","理办","的","的未","的每","的省","监","监测","监管","盖","盖率","相","相关","省","省地","确","确推","社","社会","立","立组","站","站大","站覆","等","等相","管","管平","管理","组","组织","细","细则","织","织机","经","经营","考","考核","自","自流","营","营点","落","落实","行","行动","装","装加","要","要求","覆","覆盖","跟","跟踪","踪","踪考","进","进措","违","违专","违地","违法","通","通管","非","非治","项","项扣","项整","项行","黑","黑专"]},{"idx":2,"code":"SVI2026041300848","system":"省级检查体系","cat1":"打非治违","cat2":"监测机制","area":"复合区","unit":"","name":"（2026年现场检查）外部协调。有效开展外部协调，推动市场净化，整体市场竞争烈度低的进行评分。与主营单位加能站主流综合优惠（不含油非）无优惠/0.3元以下/0.3-0.6元/0.6-0.8元/0.8-1元/1元以上；与民营单位主流综合优惠（不含油非）0.3元以下/0.3-0.6元/0.6-0.8元/0.8-1元/1-1.2元/1.2元以上，每项分别扣0/1.2/2.5/3.5/4.5/6分。","short":"（2026年现场检查）外部协调。","desc":"有效开展外部协调，推动市场净化，整体市场竞争烈度低的进行评分。与主营单位加能站主流综合优惠（不含油非）无优惠/0.3元以下/0.3-0.6元/0.6-0.8元/0.8-1元/1元以上；与民营单位主流综合优惠（不含油非）0.3元以下/0.3-0.6元/0.6-0.8元/0.8-1元/1-1.2元/1.2元以上，每项分别扣0/1.2/2.5/3.5/4.5/6分。","method":"明查","score_lo":1.2,"score_hi":12,"severity":"一般问题","haystack":"（2026年现场检查）外部协调。 有效开展外部协调，推动市场净化，整体市场竞争烈度低的进行评分。与主营单位加能站主流综合优惠（不含油非）无优惠/0.3元以下/0.3-0.6元/0.6-0.8元/0.8-1元/1元以上；与民营单位主流综合优惠（不含油非）0.3元以下/0.3-0.6元/0.6-0.8元/0.8-1元/1-1.2元/1.2元以上，每项分别扣0/1.2/2.5/3.5/4.5/6分。","grams_short":["0","02","2","20","26","6","6年","协","协调","场","场检","外","外部","年","年现","查","查外","检","检查","现","现场","调","部","部协"],"grams_full":["0","01","02","03","06","08","1","11","12","1元","2","20","22","25","26","2元","3","30","35","3元","4","45","5","53","54","56","6","60","6元","6分","6年","8","81","8元","上","上与","上每","下","下0","不","不含","与","与主","与民","主","主流","主营","争","争烈","以","以上","以下","优","优惠","位","位主","位加","低","低的","体","体市","元","元0","元1","元以","净","净化","分","分与","分别","别","别扣","加","加能","动","动市","化","化整","协","协调","单","单位","合","合优","含","含油","场","场净","场检","场竞","外","外部","展","展外","市","市场","年","年现","度","度低","开","开展","惠","惠0","惠不","扣","扣0","推","推动","效","效开","整","整体","无","无优","有","有效","查","查外","检","检查","每","每项","民","民营","油","油非","流","流综","烈","烈度","现","现场","的","的进","站","站主","竞","竞争","综","综合","能","能站","营","营单","行","行评","评","评分","调","调推","调有","进","进行","部","部协","非","非0","非无","项","项分"]},{"idx":3,"code":"SVI2026041300858","system":"省级检查体系","cat1":"队伍建设","cat2":"人员更新","area":"复合区","unit":"","name":"（2026年现场检查）任职条件。未落实《综合加能站督导管理办法》中关于各级督导人员的选聘条件；未落实新提拔的县区公司经理任职资历的要求；未对站经理公开竞聘选拔，每项扣5分。","short":"（2026年现场检查）任职条件。","desc":"未落实《综合加能站督导管理办法》中关于各级督导人员的选聘条件；未落实新提拔的县区公司经理任职资历的要求；未对站经理公开竞聘选拔，每项扣5分。","method":"","score_lo":5,"score_hi":10,"severity":"一般问题","haystack":"（2026年现场检查）任职条件。 未落实《综合加能站督导管理办法》中关于各级督导人员的选聘条件；未落实新提拔的县区公司经理任职资历的要求；未对站经理公开竞聘选拔，每项扣5分。","grams_short":["0","02","2","20","26","6","6年","件","任","任职","场","场检","年","年现","条","条件","查","查任","检","检查","现","现场","职","职条"],"grams_full":["0","02","2","20","26","5","5分","6","6年","中","中关","于","于各","人","人员","件","件未","任","任职","公","公司","公开","关","关于","分","办","办法","加","加能","区","区公","历","历的","县","县区","司","司经","各","各级","合","合加","员","员的","场","场检","实","实新","实综","对","对站","导","导人","导管","年","年现","开","开竞","扣","扣5","拔","拔每","拔的","提","提拔","新","新提","未","未对","未落","条","条件","查","查任","检","检查","每","每项","求","求未","法","法中","现","现场","理","理任","理公","理办","的","的县","的要","的选","督","督导","站","站督","站经","竞","竞聘","管","管理","级","级督","经","经理","综","综合","职","职条","职资","聘","聘条","聘选","能","能站","落","落实","要","要求","资","资历","选","选拔","选聘","项","项扣"]},{"idx":4,"code":"SVI2026041300859","system":"省级检查体系","cat1":"队伍建设","cat2":"人员培训","area":"复合区","unit":"","name":"（2026年现场检查）岗位培训。1.市州公司未按年度培训计划组织培训的；未开展新员工岗前培训，落实达标上岗要求；未开展加能站操作员职业技能等级认定培训；未开展运营手册与零售教学视频的宣贯与落地培训，普及充换电、车生态、即时零售等新业务知识；地市公司未建立站长站或站长站未运行的；未按站长站管理办法开展站经理和员工选聘的；未按要求发放站长站补助的；站长站未具备实操场景的；未对辖区站长开展全覆盖培训的（受加油站条件限制，理论可以在市公司组织，实操必须在站长站组织），每项扣5分。2.对营业员、站经理、县区经理及零管部主任等关键岗位人员，组织理论与实操技能随机抽测，按照考核名次进行排名赋分。","short":"（2026年现场检查）岗位培训。","desc":"1.市州公司未按年度培训计划组织培训的；未开展新员工岗前培训，落实达标上岗要求；未开展加能站操作员职业技能等级认定培训；未开展运营手册与零售教学视频的宣贯与落地培训，普及充换电、车生态、即时零售等新业务知识；地市公司未建立站长站或站长站未运行的；未按站长站管理办法开展站经理和员工选聘的；未按要求发放站长站补助的；站长站未具备实操场景的；未对辖区站长开展全覆盖培训的（受加油站条件限制，理论可以在市公司组织，实操必须在站长站组织），每项扣5分。2.对营业员、站经理、县区经理及零管部主任等关键岗位人员，组织理论与实操技能随机抽测，按照考核名次进行排名赋分。","method":"","score_lo":5,"score_hi":30,"severity":"一般问题","haystack":"（2026年现场检查）岗位培训。 1.市州公司未按年度培训计划组织培训的；未开展新员工岗前培训，落实达标上岗要求；未开展加能站操作员职业技能等级认定培训；未开展运营手册与零售教学视频的宣贯与落地培训，普及充换电、车生态、即时零售等新业务知识；地市公司未建立站长站或站长站未运行的；未按站长站管理办法开展站经理和员工选聘的；未按要求发放站长站补助的；站长站未具备实操场景的；未对辖区站长开展全覆盖培训的（受加油站条件限制，理论可以在市公司组织，实操必须在站长站组织），每项扣5分。2.对营业员、站经理、县区经理及零管部主任等关键岗位人员，组织理论与实操技能随机抽测，按照考核名次进行排名赋分。","grams_short":["0","02","2","20","26","6","6年","位","位培","场","场检","培","培训","岗","岗位","年","年现","查","查岗","检","检查","现","现场","训"],"grams_full":["0","02","1","1市","2","20","26","2对","5","5分","6","6年","上","上岗","与","与实","与落","与零","业","业务","业员","业技","主","主任","人","人员","以","以在","件","件限","任","任等","位","位人","位培","作","作员","充","充换","全","全覆","公","公司","关","关键","具","具备","册","册与","分","分2","划","划组","制","制理","前","前培","办","办法","加","加油","加能","务","务知","助","助的","区","区站","区经","即","即时","县","县区","及","及充","及零","发","发放","受","受加","可","可以","司","司未","司组","名","名次","名赋","员","员工","员站","员组","员职","和","和员","售","售教","售等","在","在市","在站","地","地培","地市","场","场景","场检","培","培训","备","备实","学","学视","定","定培","实","实操","实达","宣","宣贯","对","对营","对辖","展","展全","展加","展新","展站","展运","岗","岗位","岗前","岗要","州","州公","工","工岗","工选","市","市公","市州","年","年度","年现","度","度培","建","建立","开","开展","必","必须","态","态即","或","或站","手","手册","扣","扣5","技","技能","抽","抽测","按","按年","按照","按站","按要","换","换电","排","排名","操","操作","操场","操必","操技","放","放站","教","教学","新","新业","新员","时","时零","普","普及","景","景的","未","未具","未对","未建","未开","未按","未运","机","机抽","条","条件","查","查岗","标","标上","核","核名","检","检查","次","次进","每","每项","求","求发","求未","油","油站","法","法开","测","测按","照","照考","现","现场","理","理办","理县","理及","理和","理论","生","生态","电","电车","的","的受","的宣","的未","的站","盖","盖培","知","知识","立","立站","站","站或","站操","站未","站条","站管","站组","站经","站补","站长","等","等关","等新","等级","管","管理","管部","级","级认","组","组织","织","织培","织实","织每","织理","经","经理","考","考核","职","职业","聘","聘的","能","能站","能等","能随","营","营业","营手","落","落地","落实","行","行排","行的","补","补助","要","要求","覆","覆盖","视","视频","计","计划","认","认定","训","训1","训普","训未","训的","训落","训计","论","论与","论可","识","识地","贯","贯与","赋","赋分","车","车生","辖","辖区","达","达标","运","运营","运行","进","进行","选","选聘","部","部主","键","键岗","长","长开","长站","限","限制","随","随机","零","零售","零管","项","项扣","须","须在","频","频的"]},{"idx":5,"code":"SVI2026041300857","system":"省级检查体系","cat1":"队伍建设","cat2":"征信审核","area":"复合区","unit":"","name":"（2026年现场检查）梯队建设。市州公司每年未对站经理实施末位淘汰的；后备站经理人数低于在岗站经理总数的30%（不含承包站）；未实施优秀操作岗位人员向管理岗位转型，每项扣5分。","short":"（2026年现场检查）梯队建设。","desc":"市州公司每年未对站经理实施末位淘汰的；后备站经理人数低于在岗站经理总数的30%（不含承包站）；未实施优秀操作岗位人员向管理岗位转型，每项扣5分。","method":"","score_lo":10,"score_hi":10,"severity":"重要问题","haystack":"（2026年现场检查）梯队建设。 市州公司每年未对站经理实施末位淘汰的；后备站经理人数低于在岗站经理总数的30%（不含承包站）；未实施优秀操作岗位人员向管理岗位转型，每项扣5分。","grams_short":["0","02","2","20","26","6","6年","场","场检","年","年现","建","建设","查","查梯","梯","梯队","检","检查","现","现场","设","队","队建"],"grams_full":["0","02","0不","2","20","26","3","30","5","5分","6","6年","不","不含","于","于在","人","人员","人数","优","优秀","位","位人","位淘","位转","低","低于","作","作岗","公","公司","分","包","包站","司","司每","后","后备","向","向管","含","含承","员","员向","在","在岗","场","场检","型","型每","备","备站","实","实施","对","对站","岗","岗位","岗站","州","州公","市","市州","年","年未","年现","建","建设","总","总数","扣","扣5","承","承包","操","操作","数","数低","数的","施","施优","施末","未","未实","未对","末","末位","查","查梯","梯","梯队","检","检查","每","每年","每项","汰","汰的","淘","淘汰","现","现场","理","理人","理实","理岗","理总","的","的3","的后","秀","秀操","站","站未","站经","管","管理","经","经理","设","设市","转","转型","队","队建","项","项扣"]},{"idx":6,"code":"SVI2026041300831","system":"省级检查体系","cat1":"岗位风险","cat2":"合规经营","area":"复合区","unit":"","name":"（2026年现场检查）上岗资格。站经理未取得站长资格证；计量操作人员无成品油计量员上岗资格证；CNG、LNG、加氢站站经理、接卸员、加注员未取得A、R2、P等对应资格证书的；充电站站经理未取得低压电工证的，每人扣4.5分。","short":"（2026年现场检查）上岗资格。","desc":"站经理未取得站长资格证；计量操作人员无成品油计量员上岗资格证；CNG、LNG、加氢站站经理、接卸员、加注员未取得A、R2、P等对应资格证书的；充电站站经理未取得低压电工证的，每人扣4.5分。","method":"明查","score_lo":4.5,"score_hi":45,"severity":"一般问题","haystack":"（2026年现场检查）上岗资格。 站经理未取得站长资格证；计量操作人员无成品油计量员上岗资格证；CNG、LNG、加氢站站经理、接卸员、加注员未取得A、R2、P等对应资格证书的；充电站站经理未取得低压电工证的，每人扣4.5分。","grams_short":["0","02","2","20","26","6","6年","上","上岗","场","场检","岗","岗资","年","年现","查","查上","格","检","检查","现","现场","资","资格"],"grams_full":["0","02","2","20","26","2P","4","45","5","5分","6","6年","A","AR","C","CN","G","GL","G加","L","LN","N","NG","P","P等","R","R2","上","上岗","书","书的","人","人员","人扣","低","低压","作","作人","充","充电","分","加","加氢","加注","卸","卸员","压","压电","取","取得","员","员上","员加","员无","员未","品","品油","场","场检","对","对应","岗","岗资","工","工证","年","年现","应","应资","得","得A","得低","得站","成","成品","扣","扣4","接","接卸","操","操作","无","无成","未","未取","查","查上","格","格站","格证","检","检查","每","每人","氢","氢站","油","油计","注","注员","现","现场","理","理接","理未","电","电工","电站","的","的充","的每","站","站站","站经","站长","等","等对","经","经理","计","计量","证","证C","证书","证的","证计","资","资格","量","量员","量操","长","长资"]},{"idx":7,"code":"SVI2026041300853","system":"省级检查体系","cat1":"考核激励","cat2":"考核兑现","area":"复合区","unit":"","name":"（2026年现场检查）薪酬水平。对加能站绩效考核方案、薪酬切块结果未体现优先保障加能站员工油品薪酬，市州层面当期加能站油品联量薪酬部分占联量薪酬总额比例偏低，每项每处扣8分。","short":"（2026年现场检查）薪酬水平。","desc":"对加能站绩效考核方案、薪酬切块结果未体现优先保障加能站员工油品薪酬，市州层面当期加能站油品联量薪酬部分占联量薪酬总额比例偏低，每项每处扣8分。","method":"","score_lo":8,"score_hi":16,"severity":"重要问题","haystack":"（2026年现场检查）薪酬水平。 对加能站绩效考核方案、薪酬切块结果未体现优先保障加能站员工油品薪酬，市州层面当期加能站油品联量薪酬部分占联量薪酬总额比例偏低，每项每处扣8分。","grams_short":["0","02","2","20","26","6","6年","场","场检","平","年","年现","查","查薪","检","检查","水","水平","现","现场","薪","薪酬","酬","酬水"],"grams_full":["0","02","2","20","26","6","6年","8","8分","优","优先","低","低每","体","体现","例","例偏","保","保障","偏","偏低","先","先保","分","分占","切","切块","加","加能","占","占联","员","员工","品","品联","品薪","场","场检","块","块结","处","处扣","对","对加","层","层面","州","州层","工","工油","市","市州","平","平对","年","年现","当","当期","总","总额","扣","扣8","效","效考","方","方案","期","期加","未","未体","果","果未","查","查薪","核","核方","案","案薪","检","检查","每","每处","每项","比","比例","水","水平","油","油品","现","现优","现场","站","站员","站油","站绩","结","结果","绩","绩效","考","考核","联","联量","能","能站","薪","薪酬","部","部分","酬","酬切","酬市","酬总","酬水","酬部","量","量薪","障","障加","面","面当","项","项每","额","额比"]},{"idx":8,"code":"SVI2026041300854","system":"省级检查体系","cat1":"考核激励","cat2":"考核兑现","area":"复合区","unit":"","name":"（2026年现场检查）优化考核。1.5月底前，未优化完善加能站员工薪酬分配和联量计酬方案，薪酬结构、考核指标、兑现方式、津贴补贴等方面公司未相对统一的分配政策；考核未聚焦核心工作和主营业务；考核指标繁琐；计提方式繁杂，员工难以清晰计算个人薪酬，每项扣5分。2.升油工资标准未按油品标号体现梯度上升提成；对一线员工未按照综合0.2元/升标准兑现98号汽油销售薪酬奖励的；询问现场员工不知晓高标号薪酬奖励政策的，每项扣5分。","short":"（2026年现场检查）优化考核。","desc":"1.5月底前，未优化完善加能站员工薪酬分配和联量计酬方案，薪酬结构、考核指标、兑现方式、津贴补贴等方面公司未相对统一的分配政策；考核未聚焦核心工作和主营业务；考核指标繁琐；计提方式繁杂，员工难以清晰计算个人薪酬，每项扣5分。2.升油工资标准未按油品标号体现梯度上升提成；对一线员工未按照综合0.2元/升标准兑现98号汽油销售薪酬奖励的；询问现场员工不知晓高标号薪酬奖励政策的，每项扣5分。","method":"","score_lo":5,"score_hi":15,"severity":"一般问题","haystack":"（2026年现场检查）优化考核。 1.5月底前，未优化完善加能站员工薪酬分配和联量计酬方案，薪酬结构、考核指标、兑现方式、津贴补贴等方面公司未相对统一的分配政策；考核未聚焦核心工作和主营业务；考核指标繁琐；计提方式繁杂，员工难以清晰计算个人薪酬，每项扣5分。2.升油工资标准未按油品标号体现梯度上升提成；对一线员工未按照综合0.2元/升标准兑现98号汽油销售薪酬奖励的；询问现场员工不知晓高标号薪酬奖励政策的，每项扣5分。","grams_short":["0","02","2","20","26","6","6年","优","优化","化","化考","场","场检","年","年现","查","查优","核","检","检查","现","现场","考","考核"],"grams_full":["0","02","1","15","2","20","26","2元","2升","5","5分","5月","6","6年","8","8号","9","98","一","一的","一线","上","上升","不","不知","业","业务","个","个人","主","主营","人","人薪","以","以清","优","优化","体","体现","作","作和","元","元升","兑","兑现","公","公司","准","准兑","准未","分","分2","分配","前","前未","加","加能","务","务考","励","励政","励的","化","化完","化考","升","升提","升标","升油","号","号体","号汽","号薪","司","司未","合","合0","员","员工","和","和主","和联","品","品标","售","售薪","善","善加","场","场员","场检","奖","奖励","完","完善","对","对一","对统","工","工不","工作","工未","工薪","工资","工难","年","年现","底","底前","度","度上","式","式津","式繁","心","心工","成","成对","扣","扣5","指","指标","按","按油","按照","提","提成","提方","政","政策","方","方式","方案","方面","晓","晓高","晰","晰计","月","月底","未","未优","未按","未相","未聚","杂","杂员","构","构考","查","查优","标","标兑","标准","标号","标繁","核","核1","核心","核指","核未","案","案薪","梯","梯度","检","检查","每","每项","汽","汽油","油","油品","油工","油销","津","津贴","清","清晰","焦","焦核","照","照综","现","现9","现场","现方","现梯","琐","琐计","的","的分","的每","的询","相","相对","知","知晓","站","站员","等","等方","策","策的","策考","算","算个","繁","繁杂","繁琐","线","线员","结","结构","统","统一","综","综合","考","考核","联","联量","聚","聚焦","能","能站","营","营业","薪","薪酬","补","补贴","计","计提","计算","计酬","询","询问","贴","贴等","贴补","资","资标","配","配和","配政","酬","酬分","酬奖","酬方","酬每","酬结","量","量计","销","销售","问","问现","难","难以","面","面公","项","项扣","高","高标"]},{"idx":9,"code":"SVI2026041300855","system":"省级检查体系","cat1":"考核激励","cat2":"考核兑现","area":"复合区","unit":"","name":"（2026年现场检查）即时绩效。通过收集资料进行考核。6月底前，即时绩效系统未完成推广应用的，扣15分。","short":"（2026年现场检查）即时绩效。","desc":"通过收集资料进行考核。6月底前，即时绩效系统未完成推广应用的，扣15分。","method":"","score_lo":15,"score_hi":15,"severity":"重要问题","haystack":"（2026年现场检查）即时绩效。 通过收集资料进行考核。6月底前，即时绩效系统未完成推广应用的，扣15分。","grams_short":["0","02","2","20","26","6","6年","即","即时","场","场检","年","年现","效","时","时绩","查","查即","检","检查","现","现场","绩","绩效"],"grams_full":["0","02","1","15","2","20","26","5","5分","6","6年","6月","分","前","前即","即","即时","场","场检","完","完成","年","年现","广","广应","应","应用","底","底前","成","成推","扣","扣1","推","推广","收","收集","效","效系","效通","料","料进","时","时绩","月","月底","未","未完","查","查即","核","核6","检","检查","现","现场","用","用的","的","的扣","系","系统","统","统未","绩","绩效","考","考核","行","行考","资","资料","过","过收","进","进行","通","通过","集","集资"]},{"idx":10,"code":"SVI2026041300856","system":"省级检查体系","cat1":"考核激励","cat2":"考核兑现","area":"复合区","unit":"","name":"（2026年现场检查）合规分配。1.涉及员工薪酬扣减的项目未经市州或以上单位归口管理部门审批执行，扣5分。因未完成任务倒扣薪酬（特别是对油气、商品、自助加油、养车卡等权益卡券包、销售竞赛等采取“未完成扣罚”）等，每项扣2.5分。2.未按分配考核办法或员工实际绩效进行薪酬分配、随意设置扣罚项目、实施过度考核处罚、要求员工贴钱销售、薪酬发放后线下重新分配、委托站存在吃空饷员工、私自预留代理手续费，及其他损害员工利益的薪酬分配问题，每项每人次扣2.5分。","short":"（2026年现场检查）合规分配。","desc":"1.涉及员工薪酬扣减的项目未经市州或以上单位归口管理部门审批执行，扣5分。因未完成任务倒扣薪酬（特别是对油气、商品、自助加油、养车卡等权益卡券包、销售竞赛等采取“未完成扣罚”）等，每项扣2.5分。2.未按分配考核办法或员工实际绩效进行薪酬分配、随意设置扣罚项目、实施过度考核处罚、要求员工贴钱销售、薪酬发放后线下重新分配、委托站存在吃空饷员工、私自预留代理手续费，及其他损害员工利益的薪酬分配问题，每项每人次扣2.5分。","method":"","score_lo":2.5,"score_hi":10,"severity":"一般问题","haystack":"（2026年现场检查）合规分配。 1.涉及员工薪酬扣减的项目未经市州或以上单位归口管理部门审批执行，扣5分。因未完成任务倒扣薪酬（特别是对油气、商品、自助加油、养车卡等权益卡券包、销售竞赛等采取“未完成扣罚”）等，每项扣2.5分。2.未按分配考核办法或员工实际绩效进行薪酬分配、随意设置扣罚项目、实施过度考核处罚、要求员工贴钱销售、薪酬发放后线下重新分配、委托站存在吃空饷员工、私自预留代理手续费，及其他损害员工利益的薪酬分配问题，每项每人次扣2.5分。","grams_short":["0","02","2","20","26","6","6年","分","分配","合","合规","场","场检","年","年现","查","查合","检","检查","现","现场","规","规分","配"],"grams_full":["0","02","1","1涉","2","20","25","26","2未","5","5分","6","6年","上","上单","下","下重","人","人次","他","他损","代","代理","以","以上","任","任务","位","位归","倒","倒扣","其","其他","养","养车","减","减的","分","分2","分因","分配","利","利益","别","别是","券","券包","办","办法","加","加油","务","务倒","助","助加","包","包销","单","单位","卡","卡券","卡等","及","及其","及员","发","发放","取","取未","口","口管","吃","吃空","合","合规","后","后线","员","员工","品","品自","售","售竞","售薪","商","商品","因","因未","在","在吃","场","场检","处","处罚","委","委托","存","存在","完","完成","实","实施","实际","审","审批","害","害员","对","对油","州","州或","工","工利","工实","工私","工薪","工贴","市","市州","年","年现","度","度考","归","归口","意","意设","成","成任","成扣","或","或以","或员","手","手续","托","托站","扣","扣2","扣5","扣减","扣罚","扣薪","执","执行","批","批执","按","按分","损","损害","放","放后","效","效进","新","新分","施","施过","是","是对","未","未完","未按","未经","权","权益","查","查合","核","核办","核处","检","检查","次","次扣","每","每人","每项","气","气商","求","求员","油","油养","油气","法","法或","涉","涉及","特","特别","现","现场","理","理手","理部","留","留代","的","的薪","的项","益","益卡","益的","目","目实","目未","私","私自","空","空饷","站","站存","竞","竞赛","等","等权","等每","等采","管","管理","线","线下","经","经市","绩","绩效","续","续费","罚","罚等","罚要","罚项","置","置扣","考","考核","自","自助","自预","薪","薪酬","行","行扣","行薪","要","要求","规","规分","设","设置","贴","贴钱","费","费及","赛","赛等","车","车卡","过","过度","进","进行","部","部门","配","配1","配委","配考","配问","配随","酬","酬分","酬发","酬扣","酬特","采","采取","重","重新","钱","钱销","销","销售","门","门审","问","问题","际","际绩","随","随意","项","项扣","项每","项目","预","预留","题","题每","饷","饷员"]},{"idx":11,"code":"SVI2026041300836","system":"省级检查体系","cat1":"其他问题","cat2":"其他","area":"复合区","unit":"","name":"（2026年现场检查）问题整改。1.5月底前，市州公司未建立问题整改管理机制，扣6分；整改管理机制（发现、传递、整改、验收、复查、溯源、考核）不健全，职责不清晰，每处扣0.6分；问题整改不到位，每条扣0.4分。","short":"（2026年现场检查）问题整改。","desc":"1.5月底前，市州公司未建立问题整改管理机制，扣6分；整改管理机制（发现、传递、整改、验收、复查、溯源、考核）不健全，职责不清晰，每处扣0.6分；问题整改不到位，每条扣0.4分。","method":"明查","score_lo":1.8,"score_hi":6,"severity":"一般问题","haystack":"（2026年现场检查）问题整改。 1.5月底前，市州公司未建立问题整改管理机制，扣6分；整改管理机制（发现、传递、整改、验收、复查、溯源、考核）不健全，职责不清晰，每处扣0.6分；问题整改不到位，每条扣0.4分。","grams_short":["0","02","2","20","26","6","6年","场","场检","年","年现","改","整","整改","查","查问","检","检查","现","现场","问","问题","题","题整"],"grams_full":["0","02","04","06","1","15","2","20","26","4","4分","5","5月","6","6分","6年","不","不健","不到","不清","传","传递","位","位每","健","健全","全","全职","公","公司","分","分整","分问","到","到位","制","制发","制扣","前","前市","发","发现","司","司未","场","场检","处","处扣","复","复查","州","州公","市","市州","年","年现","底","底前","建","建立","扣","扣0","扣6","收","收复","改","改1","改不","改管","改验","整","整改","晰","晰每","月","月底","未","未建","机","机制","条","条扣","查","查溯","查问","核","核不","检","检查","每","每处","每条","清","清晰","源","源考","溯","溯源","现","现传","现场","理","理机","立","立问","管","管理","考","考核","职","职责","责","责不","递","递整","问","问题","题","题整","验","验收"]},{"idx":12,"code":"SVI2026041300837","system":"省级检查体系","cat1":"其他问题","cat2":"其他","area":"复合区","unit":"","name":"（2026年现场检查）问题整改。2.通过零售督查系统进行考核。以当期问题整改完成率95%为基准，每下降1个百分点扣2分（不足1个百分点按照1个百分点计算）。","short":"（2026年现场检查）问题整改。","desc":"2.通过零售督查系统进行考核。以当期问题整改完成率95%为基准，每下降1个百分点扣2分（不足1个百分点按照1个百分点计算）。","method":"明查","score_lo":1.8,"score_hi":24,"severity":"一般问题","haystack":"（2026年现场检查）问题整改。 2.通过零售督查系统进行考核。以当期问题整改完成率95%为基准，每下降1个百分点扣2分（不足1个百分点按照1个百分点计算）。","grams_short":["0","02","2","20","26","6","6年","场","场检","年","年现","改","整","整改","查","查问","检","检查","现","现场","问","问题","题","题整"],"grams_full":["0","02","1","1个","2","20","26","2分","2通","5","5为","6","6年","9","95","下","下降","不","不足","个","个百","为","为基","以","以当","准","准每","分","分不","分点","售","售督","场","场检","基","基准","完","完成","年","年现","当","当期","成","成率","扣","扣2","按","按照","改","改2","改完","整","整改","期","期问","查","查系","查问","核","核以","检","检查","每","每下","点","点扣","点按","点计","照","照1","率","率9","现","现场","百","百分","督","督查","算","系","系统","统","统进","考","考核","行","行考","计","计算","足","足1","过","过零","进","进行","通","通过","问","问题","降","降1","零","零售","题","题整"]},{"idx":13,"code":"SVI2026041300838","system":"省级检查体系","cat1":"其他问题","cat2":"其他","area":"复合区","unit":"","name":"（2026年现场检查）样板打造。6月底前，每个市州公司至少建成一座样板站及一个样板县区，未落实的扣10分。样板打造制度缺乏样板标准、实施要求、进度要求、考核组织等要求，每处扣3分。","short":"（2026年现场检查）样板打造。","desc":"6月底前，每个市州公司至少建成一座样板站及一个样板县区，未落实的扣10分。样板打造制度缺乏样板标准、实施要求、进度要求、考核组织等要求，每处扣3分。","method":"明查","score_lo":3,"score_hi":10,"severity":"重要问题","haystack":"（2026年现场检查）样板打造。 6月底前，每个市州公司至少建成一座样板站及一个样板县区，未落实的扣10分。样板打造制度缺乏样板标准、实施要求、进度要求、考核组织等要求，每处扣3分。","grams_short":["0","02","2","20","26","6","6年","场","场检","年","年现","打","打造","板","板打","查","查样","样","样板","检","检查","现","现场","造"],"grams_full":["0","02","0分","1","10","2","20","26","3","3分","6","6年","6月","一","一个","一座","个","个市","个样","乏","乏样","公","公司","准","准实","分","分样","制","制度","前","前每","区","区未","县","县区","及","及一","司","司至","场","场检","处","处扣","实","实施","实的","少","少建","州","州公","市","市州","年","年现","底","底前","度","度缺","度要","座","座样","建","建成","成","成一","打","打造","扣","扣1","扣3","施","施要","月","月底","未","未落","板","板县","板打","板标","板站","查","查样","标","标准","样","样板","核","核组","检","检查","每","每个","每处","求","求每","求考","求进","现","现场","的","的扣","站","站及","等","等要","组","组织","织","织等","缺","缺乏","考","考核","至","至少","落","落实","要","要求","进","进度","造","造6","造制"]},{"idx":14,"code":"SVI2026041300839","system":"省级检查体系","cat1":"其他问题","cat2":"其他","area":"复合区","unit":"","name":"（2026年现场检查）样板打造。6月底前，每个市州公司至少建成一座样板站及一个样板县区，未落实的扣10分。样板打造制度缺乏样板标准、实施要求、进度要求、考核组织等要求，每处扣3分。","short":"（2026年现场检查）样板打造。","desc":"6月底前，每个市州公司至少建成一座样板站及一个样板县区，未落实的扣10分。样板打造制度缺乏样板标准、实施要求、进度要求、考核组织等要求，每处扣3分。","method":"明查","score_lo":3,"score_hi":10,"severity":"一般问题","haystack":"（2026年现场检查）样板打造。 6月底前，每个市州公司至少建成一座样板站及一个样板县区，未落实的扣10分。样板打造制度缺乏样板标准、实施要求、进度要求、考核组织等要求，每处扣3分。","grams_short":["0","02","2","20","26","6","6年","场","场检","年","年现","打","打造","板","板打","查","查样","样","样板","检","检查","现","现场","造"],"grams_full":["0","02","0分","1","10","2","20","26","3","3分","6","6年","6月","一","一个","一座","个","个市","个样","乏","乏样","公","公司","准","准实","分","分样","制","制度","前","前每","区","区未","县","县区","及","及一","司","司至","场","场检","处","处扣","实","实施","实的","少","少建","州","州公","市","市州","年","年现","底","底前","度","度缺","度要","座","座样","建","建成","成","成一","打","打造","扣","扣1","扣3","施","施要","月","月底","未","未落","板","板县","板打","板标","板站","查","查样","标","标准","样","样板","核","核组","检","检查","每","每个","每处","求","求每","求考","求进","现","现场","的","的扣","站","站及","等","等要","组","组织","织","织等","缺","缺乏","考","考核","至","至少","落","落实","要","要求","进","进度","造","造6","造制"]},{"idx":15,"code":"SVI2026041300843","system":"省级检查体系","cat1":"其他问题","cat2":"其他","area":"复合区","unit":"","name":"（2026年现场检查）自助推广。1.市、县区公司自助加油实施率50%（自助流水占比不低于5%）为基准，每降低1个百分点扣1.2分（不足1个百分点按1个百分点计算）。2.抽查不低于10笔自助加油流水真实性，加能站自助加油的真实性低于60%，每低1个百分点扣0.6分（不足1个百分点按1个百分点计算）。","short":"（2026年现场检查）自助推广。","desc":"1.市、县区公司自助加油实施率50%（自助流水占比不低于5%）为基准，每降低1个百分点扣1.2分（不足1个百分点按1个百分点计算）。2.抽查不低于10笔自助加油流水真实性，加能站自助加油的真实性低于60%，每低1个百分点扣0.6分（不足1个百分点按1个百分点计算）。","method":"明查","score_lo":0.6,"score_hi":4,"severity":"一般问题","haystack":"（2026年现场检查）自助推广。 1.市、县区公司自助加油实施率50%（自助流水占比不低于5%）为基准，每降低1个百分点扣1.2分（不足1个百分点按1个百分点计算）。2.抽查不低于10笔自助加油流水真实性，加能站自助加油的真实性低于60%，每低1个百分点扣0.6分（不足1个百分点按1个百分点计算）。","grams_short":["0","02","2","20","26","6","6年","助","助推","场","场检","年","年现","广","推","推广","查","查自","检","检查","现","现场","自","自助"],"grams_full":["0","02","06","0每","0笔","0自","1","10","12","1个","1市","2","20","26","2分","2抽","5","50","5为","6","60","6分","6年","不","不低","不足","个","个百","为","为基","于","于1","于5","于6","低","低1","低于","公","公司","准","准每","分","分不","分点","加","加油","加能","助","助加","助推","助流","区","区公","占","占比","县","县区","司","司自","场","场检","基","基准","实","实性","实施","市","市县","年","年现","广","广1","性","性低","性加","扣","扣0","扣1","抽","抽查","按","按1","推","推广","施","施率","查","查不","查自","检","检查","每","每低","每降","比","比不","水","水占","水真","油","油实","油流","油的","流","流水","点","点扣","点按","点计","率","率5","现","现场","百","百分","的","的真","真","真实","站","站自","笔","笔自","算","算2","能","能站","自","自助","计","计算","足","足1","降","降低"]},{"idx":16,"code":"SVI2026041300844","system":"省级检查体系","cat1":"其他问题","cat2":"其他","area":"复合区","unit":"","name":"（2026年现场检查）自助改造。1.自助站的加油机静电释放、紧急切断、语音对讲、场地广播等的改造不规范，每处扣2分。2.自助加油机的协议升级，精准标注自助流水不足95%，每低5个百分点扣2分（不足5个百分点按5个百分点计算）。","short":"（2026年现场检查）自助改造。","desc":"1.自助站的加油机静电释放、紧急切断、语音对讲、场地广播等的改造不规范，每处扣2分。2.自助加油机的协议升级，精准标注自助流水不足95%，每低5个百分点扣2分（不足5个百分点按5个百分点计算）。","method":"明查","score_lo":2,"score_hi":5,"severity":"一般问题","haystack":"（2026年现场检查）自助改造。 1.自助站的加油机静电释放、紧急切断、语音对讲、场地广播等的改造不规范，每处扣2分。2.自助加油机的协议升级，精准标注自助流水不足95%，每低5个百分点扣2分（不足5个百分点按5个百分点计算）。","grams_short":["0","02","2","20","26","6","6年","助","助改","场","场检","年","年现","改","改造","查","查自","检","检查","现","现场","自","自助","造"],"grams_full":["0","02","1","1自","2","20","26","2分","2自","5","5个","5每","6","6年","9","95","不","不规","不足","个","个百","低","低5","准","准标","分","分2","分不","分点","切","切断","加","加油","助","助加","助改","助流","助站","升","升级","协","协议","地","地广","场","场地","场检","处","处扣","对","对讲","年","年现","广","广播","急","急切","扣","扣2","按","按5","播","播等","改","改造","放","放紧","断","断语","机","机的","机静","查","查自","标","标注","检","检查","每","每低","每处","水","水不","油","油机","注","注自","流","流水","点","点扣","点按","点计","现","现场","电","电释","百","百分","的","的加","的协","的改","站","站的","等","等的","算","精","精准","紧","紧急","级","级精","自","自助","范","范每","规","规范","计","计算","议","议升","讲","讲场","语","语音","足","足5","足9","造","造1","造不","释","释放","静","静电","音","音对"]},{"idx":17,"code":"SVI2026041300845","system":"省级检查体系","cat1":"其他问题","cat2":"其他","area":"复合区","unit":"","name":"（2026年现场检查）场景打造。自助氛围不足，现场未清晰张贴自助加油操作指引，未配备一次性手套，未建立并推行标准话术、未配套营销活动，每项扣1.2分。","short":"（2026年现场检查）场景打造。","desc":"自助氛围不足，现场未清晰张贴自助加油操作指引，未配备一次性手套，未建立并推行标准话术、未配套营销活动，每项扣1.2分。","method":"明查","score_lo":1.2,"score_hi":6,"severity":"一般问题","haystack":"（2026年现场检查）场景打造。 自助氛围不足，现场未清晰张贴自助加油操作指引，未配备一次性手套，未建立并推行标准话术、未配套营销活动，每项扣1.2分。","grams_short":["0","02","2","20","26","6","6年","场","场景","场检","年","年现","打","打造","景","景打","查","查场","检","检查","现","现场","造"],"grams_full":["0","02","1","12","2","20","26","2分","6","6年","一","一次","不","不足","作","作指","准","准话","分","加","加油","动","动每","助","助加","助氛","围","围不","场","场景","场未","场检","备","备一","套","套未","套营","年","年现","并","并推","建","建立","引","引未","张","张贴","性","性手","手","手套","打","打造","扣","扣1","指","指引","推","推行","操","操作","景","景打","晰","晰张","未","未建","未清","未配","术","术未","查","查场","标","标准","检","检查","次","次性","每","每项","氛","氛围","油","油操","活","活动","清","清晰","现","现场","立","立并","自","自助","营","营销","行","行标","话","话术","贴","贴自","足","足现","造","造自","配","配备","配套","销","销活","项","项扣"]},{"idx":18,"code":"SVI2026041300846","system":"省级检查体系","cat1":"其他问题","cat2":"其他","area":"复合区","unit":"","name":"（2026年现场检查）智能值守。1.现场无人指引监护，每人次扣0.6分。未利用自助加油、AI数字员工辅助、视频探头移动侦测技术或地市视频监控中心等措施，保障无人值守状态时的安全监管，扣1.5分。","short":"（2026年现场检查）智能值守。","desc":"1.现场无人指引监护，每人次扣0.6分。未利用自助加油、AI数字员工辅助、视频探头移动侦测技术或地市视频监控中心等措施，保障无人值守状态时的安全监管，扣1.5分。","method":"明查","score_lo":0.6,"score_hi":1.5,"severity":"一般问题","haystack":"（2026年现场检查）智能值守。 1.现场无人指引监护，每人次扣0.6分。未利用自助加油、AI数字员工辅助、视频探头移动侦测技术或地市视频监控中心等措施，保障无人值守状态时的安全监管，扣1.5分。","grams_short":["0","02","2","20","26","6","6年","值","值守","场","场检","守","年","年现","智","智能","查","查智","检","检查","现","现场","能","能值"],"grams_full":["0","02","06","1","15","1现","2","20","26","5","5分","6","6分","6年","A","AI","I","I数","中","中心","人","人值","人指","人次","侦","侦测","保","保障","值","值守","全","全监","分","分未","利","利用","加","加油","动","动侦","助","助加","助视","员","员工","地","地市","场","场无","场检","头","头移","字","字员","守","守1","守状","安","安全","工","工辅","市","市视","年","年现","引","引监","心","心等","态","态时","或","或地","扣","扣0","扣1","技","技术","护","护每","指","指引","探","探头","控","控中","措","措施","数","数字","施","施保","无","无人","时","时的","智","智能","未","未利","术","术或","查","查智","检","检查","次","次扣","每","每人","油","油A","测","测技","状","状态","现","现场","用","用自","的","的安","监","监护","监控","监管","移","移动","等","等措","管","管扣","能","能值","自","自助","视","视频","辅","辅助","障","障无","频","频探","频监"]},{"idx":19,"code":"SVI2026041300849","system":"省级检查体系","cat1":"其他问题","cat2":"其他","area":"复合区","unit":"","name":"（2026年现场检查）微改出新。没有结合加能站区位特点与夜间销量，对有必要的加能站分类实施夜间亮化、微改工程，每站扣1分。","short":"（2026年现场检查）微改出新。","desc":"没有结合加能站区位特点与夜间销量，对有必要的加能站分类实施夜间亮化、微改工程，每站扣1分。","method":"明查","score_lo":1,"score_hi":6,"severity":"一般问题","haystack":"（2026年现场检查）微改出新。 没有结合加能站区位特点与夜间销量，对有必要的加能站分类实施夜间亮化、微改工程，每站扣1分。","grams_short":["0","02","2","20","26","6","6年","出","出新","场","场检","年","年现","微","微改","改","改出","新","查","查微","检","检查","现","现场"],"grams_full":["0","02","1","1分","2","20","26","6","6年","与","与夜","亮","亮化","位","位特","出","出新","分","分类","加","加能","化","化微","区","区位","合","合加","场","场检","夜","夜间","实","实施","对","对有","工","工程","年","年现","微","微改","必","必要","扣","扣1","改","改出","改工","新","新没","施","施夜","有","有必","有结","查","查微","检","检查","每","每站","没","没有","点","点与","特","特点","现","现场","的","的加","程","程每","站","站分","站区","站扣","类","类实","结","结合","能","能站","要","要的","量","量对","销","销量","间","间亮","间销"]},{"idx":20,"code":"SVI2026041300865","system":"省级检查体系","cat1":"其他问题","cat2":"其他","area":"复合区","unit":"","name":"（2026年现场检查）自律承诺。站经理、营业员未签订廉洁从业承诺书，每人扣2分。","short":"（2026年现场检查）自律承诺。","desc":"站经理、营业员未签订廉洁从业承诺书，每人扣2分。","method":"","score_lo":2,"score_hi":5,"severity":"一般问题","haystack":"（2026年现场检查）自律承诺。 站经理、营业员未签订廉洁从业承诺书，每人扣2分。","grams_short":["0","02","2","20","26","6","6年","场","场检","年","年现","律","律承","承","承诺","查","查自","检","检查","现","现场","自","自律","诺"],"grams_full":["0","02","2","20","26","2分","6","6年","业","业员","业承","书","书每","人","人扣","从","从业","分","员","员未","场","场检","年","年现","廉","廉洁","律","律承","扣","扣2","承","承诺","未","未签","查","查自","检","检查","每","每人","洁","洁从","现","现场","理","理营","站","站经","签","签订","经","经理","自","自律","营","营业","订","订廉","诺","诺书","诺站"]},{"idx":21,"code":"SVI2026041300866","system":"省级检查体系","cat1":"其他问题","cat2":"其他","area":"复合区","unit":"","name":"（2026年现场检查）挂牌公示。加能站廉洁运营等级在石化油站黄页等平台进行未及时更新标注；“廉洁运营A类站”牌未规范悬挂；触发降级的站未在规定时间内摘牌，每项每处扣2分。","short":"（2026年现场检查）挂牌公示。","desc":"加能站廉洁运营等级在石化油站黄页等平台进行未及时更新标注；“廉洁运营A类站”牌未规范悬挂；触发降级的站未在规定时间内摘牌，每项每处扣2分。","method":"","score_lo":2,"score_hi":5,"severity":"一般问题","haystack":"（2026年现场检查）挂牌公示。 加能站廉洁运营等级在石化油站黄页等平台进行未及时更新标注；“廉洁运营A类站”牌未规范悬挂；触发降级的站未在规定时间内摘牌，每项每处扣2分。","grams_short":["0","02","2","20","26","6","6年","公","公示","场","场检","年","年现","挂","挂牌","查","查挂","检","检查","牌","牌公","现","现场","示"],"grams_full":["0","02","2","20","26","2分","6","6年","A","A类","公","公示","内","内摘","分","加","加能","化","化油","及","及时","发","发降","台","台进","在","在石","在规","场","场检","处","处扣","定","定时","平","平台","年","年现","廉","廉洁","悬","悬挂","扣","扣2","挂","挂牌","挂触","摘","摘牌","新","新标","时","时更","时间","更","更新","未","未及","未在","未规","查","查挂","标","标注","检","检查","每","每处","每项","油","油站","注","注廉","洁","洁运","牌","牌公","牌未","牌每","现","现场","的","的站","石","石化","示","示加","站","站廉","站未","站牌","站黄","等","等平","等级","类","类站","级","级在","级的","能","能站","范","范悬","营","营A","营等","行","行未","规","规定","规范","触","触发","运","运营","进","进行","间","间内","降","降级","页","页等","项","项每","黄","黄页"]},{"idx":22,"code":"SVI2026041300867","system":"省级检查体系","cat1":"其他问题","cat2":"其他","area":"复合区","unit":"","name":"（2026年现场检查）分类管理。市县两级未根据廉洁运营分类标准，按不同频次与比例开展覆盖性检查，每缺一次扣0.4分；市州公司未按要求对纳入廉洁运营高风险名录的地市公司加强督导，扣1分。","short":"（2026年现场检查）分类管理。","desc":"市县两级未根据廉洁运营分类标准，按不同频次与比例开展覆盖性检查，每缺一次扣0.4分；市州公司未按要求对纳入廉洁运营高风险名录的地市公司加强督导，扣1分。","method":"","score_lo":1,"score_hi":1,"severity":"一般问题","haystack":"（2026年现场检查）分类管理。 市县两级未根据廉洁运营分类标准，按不同频次与比例开展覆盖性检查，每缺一次扣0.4分；市州公司未按要求对纳入廉洁运营高风险名录的地市公司加强督导，扣1分。","grams_short":["0","02","2","20","26","6","6年","分","分类","场","场检","年","年现","查","查分","检","检查","现","现场","理","管","管理","类","类管"],"grams_full":["0","02","04","1","1分","2","20","26","4","4分","6","6年","一","一次","不","不同","与","与比","两","两级","例","例开","入","入廉","公","公司","准","准按","分","分市","分类","加","加强","县","县两","司","司加","司未","同","同频","名","名录","地","地市","场","场检","对","对纳","导","导扣","展","展覆","州","州公","市","市公","市县","市州","年","年现","廉","廉洁","开","开展","强","强督","录","录的","性","性检","扣","扣0","扣1","按","按不","按要","据","据廉","未","未按","未根","查","查分","查每","标","标准","根","根据","检","检查","次","次与","次扣","每","每缺","比","比例","求","求对","洁","洁运","现","现场","理","理市","的","的地","盖","盖性","督","督导","管","管理","类","类标","类管","级","级未","纳","纳入","缺","缺一","营","营分","营高","要","要求","覆","覆盖","运","运营","险","险名","频","频次","风","风险","高","高风"]},{"idx":23,"code":"SVI2026041300868","system":"省级检查体系","cat1":"其他问题","cat2":"其他","area":"复合区","unit":"","name":"（2026年现场检查）动态调整。每年未开展廉洁运营等级升级工作；对触发降级问题的加能站未直接降为B类站或关注类站，未按要求报送，每项扣1分。","short":"（2026年现场检查）动态调整。","desc":"每年未开展廉洁运营等级升级工作；对触发降级问题的加能站未直接降为B类站或关注类站，未按要求报送，每项扣1分。","method":"","score_lo":1,"score_hi":1,"severity":"一般问题","haystack":"（2026年现场检查）动态调整。 每年未开展廉洁运营等级升级工作；对触发降级问题的加能站未直接降为B类站或关注类站，未按要求报送，每项扣1分。","grams_short":["0","02","2","20","26","6","6年","动","动态","场","场检","年","年现","态","态调","整","查","查动","检","检查","现","现场","调","调整"],"grams_full":["0","02","1","1分","2","20","26","6","6年","B","B类","为","为B","作","作对","关","关注","分","加","加能","动","动态","升","升级","发","发降","场","场检","对","对触","展","展廉","工","工作","年","年未","年现","廉","廉洁","开","开展","态","态调","或","或关","扣","扣1","报","报送","按","按要","接","接降","整","整每","未","未开","未按","未直","查","查动","检","检查","每","每年","每项","求","求报","注","注类","洁","洁运","现","现场","的","的加","直","直接","站","站或","站未","等","等级","类","类站","级","级升","级工","级问","能","能站","营","营等","要","要求","触","触发","调","调整","运","运营","送","送每","问","问题","降","降为","降级","项","项扣","题","题的"]},{"idx":24,"code":"SVI2026041300861","system":"省级检查体系","cat1":"HSE管理","cat2":"现场管理","area":"复合区","unit":"","name":"（2026年现场检查）一岗双责。零售部门HSE职能职责不清晰，未按规定制定零售管理人员HSE职责清单与工作任务清单；市州公司零售管理部门未设置专（兼）职HSE管理岗位，每项扣3分。","short":"（2026年现场检查）一岗双责。","desc":"零售部门HSE职能职责不清晰，未按规定制定零售管理人员HSE职责清单与工作任务清单；市州公司零售管理部门未设置专（兼）职HSE管理岗位，每项扣3分。","method":"","score_lo":3,"score_hi":5,"severity":"一般问题","haystack":"（2026年现场检查）一岗双责。 零售部门HSE职能职责不清晰，未按规定制定零售管理人员HSE职责清单与工作任务清单；市州公司零售管理部门未设置专（兼）职HSE管理岗位，每项扣3分。","grams_short":["0","02","2","20","26","6","6年","一","一岗","双","双责","场","场检","岗","岗双","年","年现","查","查一","检","检查","现","现场","责"],"grams_full":["0","02","2","20","26","3","3分","6","6年","E","E管","E职","H","HS","S","SE","一","一岗","不","不清","与","与工","专","专兼","人","人员","任","任务","位","位每","作","作任","公","公司","兼","兼职","分","制","制定","务","务清","单","单与","单市","双","双责","司","司零","员","员H","售","售管","售部","场","场检","定","定制","定零","岗","岗位","岗双","州","州公","工","工作","市","市州","年","年现","扣","扣3","按","按规","晰","晰未","未","未按","未设","查","查一","检","检查","每","每项","清","清单","清晰","现","现场","理","理人","理岗","理部","管","管理","置","置专","职","职H","职能","职责","能","能职","规","规定","设","设置","责","责不","责清","责零","部","部门","门","门H","门未","零","零售","项","项扣"]},{"idx":25,"code":"SVI2026041300862","system":"省级检查体系","cat1":"HSE管理","cat2":"现场管理","area":"复合区","unit":"","name":"（2026年现场检查）日常管理。1.按远程现场检查标准，对加能站设备周查工作考核扣分。2.加能站加油、充装、充换电等现场作业存在违章行为的；安全培训未满足要求的；日常作业存在其他不安全行为的，每人次扣0.6分。","short":"（2026年现场检查）日常管理。","desc":"1.按远程现场检查标准，对加能站设备周查工作考核扣分。2.加能站加油、充装、充换电等现场作业存在违章行为的；安全培训未满足要求的；日常作业存在其他不安全行为的，每人次扣0.6分。","method":"","score_lo":0.6,"score_hi":7.5,"severity":"一般问题","haystack":"（2026年现场检查）日常管理。 1.按远程现场检查标准，对加能站设备周查工作考核扣分。2.加能站加油、充装、充换电等现场作业存在违章行为的；安全培训未满足要求的；日常作业存在其他不安全行为的，每人次扣0.6分。","grams_short":["0","02","2","20","26","6","6年","场","场检","常","常管","年","年现","日","日常","查","查日","检","检查","现","现场","理","管","管理"],"grams_full":["0","02","06","1","1按","2","20","26","2加","6","6分","6年","不","不安","业","业存","为","为的","人","人次","他","他不","作","作业","作考","充","充换","充装","全","全培","全行","其","其他","准","准对","分","分2","加","加油","加能","周","周查","在","在其","在违","场","场作","场检","培","培训","备","备周","存","存在","安","安全","对","对加","工","工作","常","常作","常管","年","年现","扣","扣0","扣分","按","按远","换","换电","日","日常","未","未满","查","查工","查日","查标","标","标准","核","核扣","检","检查","次","次扣","每","每人","求","求的","油","油充","满","满足","现","现场","理","理1","电","电等","的","的安","的日","的每","程","程现","站","站加","站设","章","章行","等","等现","管","管理","考","考核","能","能站","行","行为","装","装充","要","要求","训","训未","设","设备","足","足要","远","远程","违","违章"]},{"idx":26,"code":"SVI2026041300863","system":"省级检查体系","cat1":"HSE管理","cat2":"现场管理","area":"复合区","unit":"","name":"（2026年现场检查）应急演练。加能站未执行应急演练计划的，演练执行不到位的，没有分班组、全员没有参与、流程错误、器具不当，每处扣2分。虚假演练，每次扣5分。","short":"（2026年现场检查）应急演练。","desc":"加能站未执行应急演练计划的，演练执行不到位的，没有分班组、全员没有参与、流程错误、器具不当，每处扣2分。虚假演练，每次扣5分。","method":"","score_lo":2,"score_hi":5,"severity":"一般问题","haystack":"（2026年现场检查）应急演练。 加能站未执行应急演练计划的，演练执行不到位的，没有分班组、全员没有参与、流程错误、器具不当，每处扣2分。虚假演练，每次扣5分。","grams_short":["0","02","2","20","26","6","6年","场","场检","年","年现","应","应急","急","急演","查","查应","检","检查","演","演练","现","现场","练"],"grams_full":["0","02","2","20","26","2分","5","5分","6","6年","不","不到","不当","与","与流","位","位的","假","假演","全","全员","具","具不","分","分班","分虚","划","划的","到","到位","加","加能","参","参与","员","员没","器","器具","场","场检","处","处扣","年","年现","应","应急","当","当每","急","急演","扣","扣2","扣5","执","执行","有","有分","有参","未","未执","查","查应","检","检查","次","次扣","每","每处","每次","没","没有","流","流程","演","演练","现","现场","班","班组","的","的没","的演","程","程错","站","站未","练","练加","练执","练每","练计","组","组全","能","能站","虚","虚假","行","行不","行应","计","计划","误","误器","错","错误"]},{"idx":27,"code":"SVI2026041300864","system":"省级检查体系","cat1":"HSE管理","cat2":"现场管理","area":"复合区","unit":"","name":"（2026年现场检查）高风险作业。对加能站双边作业中涉及的临时用电、登高、动土、受限空间等高风险作业，以及滤芯更换、清罐、油品变类等特殊作业和非常规作业的现场安全监护力度不够，发现违章行为，每项每次扣2分。","short":"（2026年现场检查）高风险作业。","desc":"对加能站双边作业中涉及的临时用电、登高、动土、受限空间等高风险作业，以及滤芯更换、清罐、油品变类等特殊作业和非常规作业的现场安全监护力度不够，发现违章行为，每项每次扣2分。","method":"","score_lo":2,"score_hi":6,"severity":"一般问题","haystack":"（2026年现场检查）高风险作业。 对加能站双边作业中涉及的临时用电、登高、动土、受限空间等高风险作业，以及滤芯更换、清罐、油品变类等特殊作业和非常规作业的现场安全监护力度不够，发现违章行为，每项每次扣2分。","grams_short":["0","02","2","20","26","6","6年","业","作","作业","场","场检","年","年现","查","查高","检","检查","现","现场","险","险作","风","风险","高","高风"],"grams_full":["0","02","2","20","26","2分","6","6年","不","不够","业","业中","业以","业和","业对","业的","中","中涉","临","临时","为","为每","以","以及","作","作业","全","全监","分","力","力度","加","加能","动","动土","及","及滤","及的","双","双边","发","发现","受","受限","变","变类","和","和非","品","品变","土","土受","场","场安","场检","够","够发","安","安全","对","对加","常","常规","年","年现","度","度不","扣","扣2","护","护力","换","换清","时","时用","更","更换","查","查高","检","检查","次","次扣","殊","殊作","每","每次","每项","油","油品","涉","涉及","清","清罐","滤","滤芯","特","特殊","现","现场","现违","用","用电","电","电登","登","登高","的","的临","的现","监","监护","空","空间","站","站双","章","章行","等","等特","等高","类","类等","罐","罐油","能","能站","芯","芯更","行","行为","规","规作","边","边作","违","违章","间","间等","限","限空","险","险作","非","非常","项","项每","风","风险","高","高动","高风"]},{"idx":28,"code":"SVI2026041300808","system":"省级检查体系","cat1":"形象管理","cat2":"形象维护","area":"复合区","unit":"","name":"（2026年现场检查）治破治旧。加能站罩棚、檐口标识、品牌柱、指示灯箱、便利店店招、广告媒体（牌、屏）、立柱、出入口围墙、绿化带、营业房内外墙壁等部位出现明显破损；加能机、加能岛、服务箱、防撞柱等设备设施明显破损，每处扣0.2分。","short":"（2026年现场检查）治破治旧。","desc":"加能站罩棚、檐口标识、品牌柱、指示灯箱、便利店店招、广告媒体（牌、屏）、立柱、出入口围墙、绿化带、营业房内外墙壁等部位出现明显破损；加能机、加能岛、服务箱、防撞柱等设备设施明显破损，每处扣0.2分。","method":"暗查\n（含明查）","score_lo":0.2,"score_hi":3,"severity":"一般问题","haystack":"（2026年现场检查）治破治旧。 加能站罩棚、檐口标识、品牌柱、指示灯箱、便利店店招、广告媒体（牌、屏）、立柱、出入口围墙、绿化带、营业房内外墙壁等部位出现明显破损；加能机、加能岛、服务箱、防撞柱等设备设施明显破损，每处扣0.2分。","grams_short":["0","02","2","20","26","6","6年","场","场检","年","年现","旧","查","查治","检","检查","治","治旧","治破","现","现场","破","破治"],"grams_full":["0","02","2","20","26","2分","6","6年","业","业房","位","位出","体","体牌","便","便利","入","入口","内","内外","出","出入","出现","分","利","利店","加","加能","务","务箱","化","化带","口","口围","口标","告","告媒","品","品牌","围","围墙","场","场检","墙","墙壁","墙绿","壁","壁等","处","处扣","备","备设","外","外墙","媒","媒体","屏","屏立","岛","岛服","带","带营","年","年现","广","广告","店","店店","店招","房","房内","扣","扣0","招","招广","指","指示","损","损加","损每","撞","撞柱","施","施明","旧","旧加","明","明显","显","显破","服","服务","机","机加","查","查治","柱","柱出","柱指","柱等","标","标识","检","检查","棚","棚檐","檐","檐口","每","每处","治","治旧","治破","灯","灯箱","牌","牌屏","牌柱","现","现场","现明","破","破损","破治","示","示灯","立","立柱","站","站罩","等","等设","等部","箱","箱便","箱防","绿","绿化","罩","罩棚","能","能岛","能机","能站","营","营业","设","设备","设施","识","识品","部","部位","防","防撞"]},{"idx":29,"code":"SVI2026041300809","system":"省级检查体系","cat1":"形象管理","cat2":"厕所管理","area":"辅助区","unit":"","name":"（2026年现场检查）厕所管理。1.市州公司、县区公司无月度厕所环境卫生考评通报的，扣0.5分。2.厕所有明显异味或积尘污物；厕所内张贴小广告或涂鸦；冲水设备损坏、洗手设备损坏、门及门锁损坏、照明、排气等设备损坏的，每处扣0.2分。3.未按要求对厕所评价跟踪处置，追溯市、县、站未闭环整改责任，每人次扣0.2分。4.不按规定张贴评价二维码、涂改二维码、厕所不对外开放等情况，按每站次0.3分扣减当次督导和本项年度评价最终得分。","short":"（2026年现场检查）厕所管理。","desc":"1.市州公司、县区公司无月度厕所环境卫生考评通报的，扣0.5分。2.厕所有明显异味或积尘污物；厕所内张贴小广告或涂鸦；冲水设备损坏、洗手设备损坏、门及门锁损坏、照明、排气等设备损坏的，每处扣0.2分。3.未按要求对厕所评价跟踪处置，追溯市、县、站未闭环整改责任，每人次扣0.2分。4.不按规定张贴评价二维码、涂改二维码、厕所不对外开放等情况，按每站次0.3分扣减当次督导和本项年度评价最终得分。","method":"暗查\n（含明查）","score_lo":0.2,"score_hi":3,"severity":"一般问题","haystack":"（2026年现场检查）厕所管理。 1.市州公司、县区公司无月度厕所环境卫生考评通报的，扣0.5分。2.厕所有明显异味或积尘污物；厕所内张贴小广告或涂鸦；冲水设备损坏、洗手设备损坏、门及门锁损坏、照明、排气等设备损坏的，每处扣0.2分。3.未按要求对厕所评价跟踪处置，追溯市、县、站未闭环整改责任，每人次扣0.2分。4.不按规定张贴评价二维码、涂改二维码、厕所不对外开放等情况，按每站次0.3分扣减当次督导和本项年度评价最终得分。","grams_short":["0","02","2","20","26","6","6年","厕","厕所","场","场检","年","年现","所","所管","查","查厕","检","检查","现","现场","理","管","管理"],"grams_full":["0","02","03","05","1","1市","2","20","26","2分","2厕","3","3分","3未","4","4不","5","5分","6","6年","不","不对","不按","二","二维","人","人次","价","价二","价最","价跟","任","任每","公","公司","内","内张","冲","冲水","况","况按","减","减当","分","分2","分3","分4","分扣","区","区公","卫","卫生","厕","厕所","县","县区","县站","及","及门","司","司县","司无","告","告或","味","味或","和","和本","场","场检","坏","坏洗","坏照","坏的","坏门","境","境卫","处","处扣","处置","备","备损","外","外开","定","定张","对","对厕","对外","导","导和","小","小广","尘","尘污","州","州公","市","市县","市州","年","年度","年现","广","广告","度","度厕","度评","开","开放","异","异味","张","张贴","当","当次","得","得分","情","情况","或","或涂","或积","所","所不","所内","所有","所环","所管","所评","手","手设","扣","扣0","扣减","报","报的","按","按每","按要","按规","损","损坏","排","排气","改","改二","改责","放","放等","整","整改","无","无月","明","明排","明显","显","显异","最","最终","月","月度","有","有明","未","未按","未闭","本","本项","查","查厕","检","检查","次","次0","次扣","次督","每","每人","每处","每站","气","气等","水","水设","求","求对","污","污物","洗","洗手","涂","涂改","涂鸦","溯","溯市","照","照明","物","物厕","环","环境","环整","现","现场","理","理1","生","生考","的","的扣","的每","督","督导","码","码厕","码涂","积","积尘","站","站未","站次","等","等情","等设","管","管理","终","终得","维","维码","置","置追","考","考评","要","要求","规","规定","设","设备","评","评价","评通","责","责任","贴","贴小","贴评","跟","跟踪","踪","踪处","追","追溯","通","通报","锁","锁损","门","门及","门锁","闭","闭环","项","项年","鸦","鸦冲"]},{"idx":30,"code":"SVI2026041300810","system":"省级检查体系","cat1":"服务管理","cat2":"现场服务","area":"加油区","unit":"","name":"（2026年现场检查）服务流程。未规范执行加油“六步法”、室内收银“五步法”，按远程现场检查标准，对加能站现场服务考核每人次扣0.2分。","short":"（2026年现场检查）服务流程。","desc":"未规范执行加油“六步法”、室内收银“五步法”，按远程现场检查标准，对加能站现场服务考核每人次扣0.2分。","method":"暗查\n（含明查）","score_lo":0.2,"score_hi":4,"severity":"一般问题","haystack":"（2026年现场检查）服务流程。 未规范执行加油“六步法”、室内收银“五步法”，按远程现场检查标准，对加能站现场服务考核每人次扣0.2分。","grams_short":["0","02","2","20","26","6","6年","务","务流","场","场检","年","年现","服","服务","查","查服","检","检查","流","流程","现","现场","程"],"grams_full":["0","02","2","20","26","2分","6","6年","五","五步","人","人次","六","六步","内","内收","准","准对","分","加","加油","加能","务","务流","务考","场","场服","场检","室","室内","对","对加","年","年现","扣","扣0","执","执行","按","按远","收","收银","服","服务","未","未规","查","查服","查标","标","标准","核","核每","检","检查","次","次扣","步","步法","每","每人","油","油六","法","法室","法按","流","流程","现","现场","程","程未","程现","站","站现","考","考核","能","能站","范","范执","行","行加","规","规范","远","远程","银","银五"]},{"idx":31,"code":"SVI2026041300811","system":"省级检查体系","cat1":"服务管理","cat2":"现场服务","area":"加油区","unit":"","name":"（2026年现场检查）便民及增值服务。加能站未对外公示5+X便民服务项目，扣1.5分；未配齐对外公示的便民项目，每项扣0.6分。","short":"（2026年现场检查）便民及增值服务。","desc":"加能站未对外公示5+X便民服务项目，扣1.5分；未配齐对外公示的便民项目，每项扣0.6分。","method":"暗查\n（含明查）","score_lo":0.6,"score_hi":4,"severity":"一般问题","haystack":"（2026年现场检查）便民及增值服务。 加能站未对外公示5+X便民服务项目，扣1.5分；未配齐对外公示的便民项目，每项扣0.6分。","grams_short":["0","02","2","20","26","6","6年","便","便民","值","值服","务","及","及增","场","场检","增","增值","年","年现","服","服务","查","查便","检","检查","民","民及","现","现场"],"grams_full":["0","02","06","1","15","2","20","26","5","5X","5分","6","6分","6年","X","X便","便","便民","值","值服","公","公示","分","分未","加","加能","务","务加","务项","及","及增","场","场检","增","增值","外","外公","对","对外","年","年现","扣","扣0","扣1","服","服务","未","未对","未配","查","查便","检","检查","每","每项","民","民及","民服","民项","现","现场","的","的便","目","目扣","目每","示","示5","示的","站","站未","能","能站","配","配齐","项","项扣","项目","齐","齐对"]},{"idx":32,"code":"SVI2026041300812","system":"省级检查体系","cat1":"服务管理","cat2":"现场服务","area":"加油区","unit":"","name":"（2026年现场检查）24小时营业。结合现场经营情况，停业前一小时提枪15笔及以上但未延长时间的，加能站没有公布营业时间的，每项扣1分；营业时间内未对进站客户提供加油服务的，每次扣4分。","short":"（2026年现场检查）24小时营业。","desc":"结合现场经营情况，停业前一小时提枪15笔及以上但未延长时间的，加能站没有公布营业时间的，每项扣1分；营业时间内未对进站客户提供加油服务的，每次扣4分。","method":"暗查\n（含明查）","score_lo":1,"score_hi":4,"severity":"一般问题","haystack":"（2026年现场检查）24小时营业。 结合现场经营情况，停业前一小时提枪15笔及以上但未延长时间的，加能站没有公布营业时间的，每项扣1分；营业时间内未对进站客户提供加油服务的，每次扣4分。","grams_short":["0","02","2","20","24","26","4","4小","6","6年","业","场","场检","小","小时","年","年现","时","时营","查","查2","检","检查","现","现场","营","营业"],"grams_full":["0","02","1","15","1分","2","20","24","26","4","4分","4小","5","5笔","6","6年","一","一小","上","上但","业","业前","业时","业结","以","以上","但","但未","供","供加","停","停业","公","公布","内","内未","况","况停","分","分营","前","前一","加","加油","加能","务","务的","及","及以","合","合现","场","场检","场经","客","客户","对","对进","小","小时","布","布营","年","年现","延","延长","情","情况","户","户提","扣","扣1","扣4","提","提供","提枪","时","时提","时营","时间","有","有公","服","服务","未","未对","未延","枪","枪1","查","查2","检","检查","次","次扣","每","每次","每项","没","没有","油","油服","现","现场","的","的加","的每","站","站客","站没","笔","笔及","经","经营","结","结合","能","能站","营","营业","营情","进","进站","长","长时","间","间内","间的","项","项扣"]},{"idx":33,"code":"SVI2026041300813","system":"省级检查体系","cat1":"服务管理","cat2":"现场服务","area":"加油区","unit":"","name":"（2026年现场检查）咨询投诉。现场未公示统一客服热线95105888/95105988，扣1分。","short":"（2026年现场检查）咨询投诉。","desc":"现场未公示统一客服热线95105888/95105988，扣1分。","method":"暗查\n（含明查）","score_lo":1,"score_hi":4,"severity":"一般问题","haystack":"（2026年现场检查）咨询投诉。 现场未公示统一客服热线95105888/95105988，扣1分。","grams_short":["0","02","2","20","26","6","6年","咨","咨询","场","场检","年","年现","投","投诉","查","查咨","检","检查","现","现场","诉","询","询投"],"grams_full":["0","02","05","1","10","1分","2","20","26","5","51","58","59","6","6年","8","88","89","8扣","9","95","98","一","一客","公","公示","分","咨","咨询","场","场未","场检","客","客服","年","年现","扣","扣1","投","投诉","服","服热","未","未公","查","查咨","检","检查","热","热线","现","现场","示","示统","线","线9","统","统一","诉","诉现","询","询投"]},{"idx":34,"code":"SVI2026041300833","system":"省级检查体系","cat1":"经营管理","cat2":"发票管理","area":"复合区","unit":"","name":"（2026年现场检查）资金发票。1.现场抽盘站内资金，账实差异较大的（1000元及以上）；资金管理系统未按时进行差异处理的，每项扣4.5分。2.发票开具不规范，单位客户卡半年内异常频繁更换单位信息的；特殊因素导致发票需要补开的，未追溯交易流水，对过期交易开票未执行动态码授权，每笔扣2.7分。","short":"（2026年现场检查）资金发票。","desc":"1.现场抽盘站内资金，账实差异较大的（1000元及以上）；资金管理系统未按时进行差异处理的，每项扣4.5分。2.发票开具不规范，单位客户卡半年内异常频繁更换单位信息的；特殊因素导致发票需要补开的，未追溯交易流水，对过期交易开票未执行动态码授权，每笔扣2.7分。","method":"明查","score_lo":2.7,"score_hi":45,"severity":"一般问题","haystack":"（2026年现场检查）资金发票。 1.现场抽盘站内资金，账实差异较大的（1000元及以上）；资金管理系统未按时进行差异处理的，每项扣4.5分。2.发票开具不规范，单位客户卡半年内异常频繁更换单位信息的；特殊因素导致发票需要补开的，未追溯交易流水，对过期交易开票未执行动态码授权，每笔扣2.7分。","grams_short":["0","02","2","20","26","6","6年","发","发票","场","场检","年","年现","查","查资","检","检查","现","现场","票","资","资金","金","金发"],"grams_full":["0","00","02","0元","1","10","1现","2","20","26","27","2发","4","45","5","5分","6","6年","7","7分","上","上资","不","不规","交","交易","以","以上","位","位信","位客","信","信息","元","元及","具","具不","内","内异","内资","分","分2","动","动态","半","半年","单","单位","卡","卡半","及","及以","发","发票","因","因素","场","场抽","场检","处","处理","大","大的","实","实差","客","客户","对","对过","导","导致","差","差异","常","常频","年","年内","年现","开","开具","开的","开票","异","异处","异常","异较","态","态码","息","息的","户","户卡","扣","扣2","扣4","执","执行","抽","抽盘","按","按时","换","换单","授","授权","时","时进","易","易开","易流","更","更换","期","期交","未","未执","未按","未追","权","权每","查","查资","检","检查","殊","殊因","每","每笔","每项","水","水对","流","流水","溯","溯交","特","特殊","现","现场","理","理的","理系","的","的1","的未","的每","的特","盘","盘站","码","码授","票","票1","票开","票未","票需","站","站内","笔","笔扣","管","管理","系","系统","素","素导","繁","繁更","统","统未","致","致发","范","范单","行","行动","行差","补","补开","要","要补","规","规范","账","账实","资","资金","较","较大","过","过期","进","进行","追","追溯","金","金发","金管","金账","需","需要","项","项扣","频","频繁"]},{"idx":35,"code":"SVI2026041300820","system":"省级检查体系","cat1":"经营管理","cat2":"价格管理","area":"复合区","unit":"","name":"（2026年现场检查）价格管理。1.市州公司未明确价格审批权限；调价不及时的，每项每次扣5分。2.价格审批执行不到位，未按要求对小额配送、一户一策、标签客户、挂牌直降、明折明扣等优惠政策进行审批和报备（向上一级）的，每项每次扣5分。","short":"（2026年现场检查）价格管理。","desc":"1.市州公司未明确价格审批权限；调价不及时的，每项每次扣5分。2.价格审批执行不到位，未按要求对小额配送、一户一策、标签客户、挂牌直降、明折明扣等优惠政策进行审批和报备（向上一级）的，每项每次扣5分。","method":"明查","score_lo":5,"score_hi":60,"severity":"一般问题","haystack":"（2026年现场检查）价格管理。 1.市州公司未明确价格审批权限；调价不及时的，每项每次扣5分。2.价格审批执行不到位，未按要求对小额配送、一户一策、标签客户、挂牌直降、明折明扣等优惠政策进行审批和报备（向上一级）的，每项每次扣5分。","grams_short":["0","02","2","20","26","6","6年","价","价格","场","场检","年","年现","查","查价","格","格管","检","检查","现","现场","理","管","管理"],"grams_full":["0","02","1","1市","2","20","26","2价","5","5分","6","6年","一","一户","一策","一级","上","上一","不","不到","不及","价","价不","价格","优","优惠","位","位未","公","公司","分","分2","到","到位","及","及时","司","司未","向","向上","和","和报","场","场检","备","备向","审","审批","客","客户","对","对小","小","小额","州","州公","市","市州","年","年现","惠","惠政","户","户一","户挂","扣","扣5","扣等","执","执行","批","批和","批执","批权","折","折明","报","报备","挂","挂牌","按","按要","政","政策","时","时的","明","明扣","明折","明确","未","未按","未明","权","权限","查","查价","标","标签","格","格审","格管","检","检查","次","次扣","每","每次","每项","求","求对","牌","牌直","现","现场","理","理1","的","的每","直","直降","确","确价","等","等优","策","策标","策进","签","签客","管","管理","级","级的","行","行不","行审","要","要求","调","调价","进","进行","送","送一","配","配送","降","降明","限","限调","项","项每","额","额配"]},{"idx":36,"code":"SVI2026041300822","system":"省级检查体系","cat1":"经营管理","cat2":"进货管理","area":"加油区","unit":"","name":"（2026年现场检查）油品保供。除特殊情况外，每发生一起脱销（惜售）事故，扣40分。。","short":"（2026年现场检查）油品保供。","desc":"除特殊情况外，每发生一起脱销（惜售）事故，扣40分。。","method":"明查","score_lo":40,"score_hi":60,"severity":"重要问题","haystack":"（2026年现场检查）油品保供。 除特殊情况外，每发生一起脱销（惜售）事故，扣40分。。","grams_short":["0","02","2","20","26","6","6年","供","保","保供","品","品保","场","场检","年","年现","查","查油","检","检查","油","油品","现","现场"],"grams_full":["0","02","0分","2","20","26","4","40","6","6年","一","一起","事","事故","供","供除","保","保供","况","况外","分","发","发生","品","品保","售","售事","场","场检","外","外每","年","年现","情","情况","惜","惜售","扣","扣4","故","故扣","查","查油","检","检查","殊","殊情","每","每发","油","油品","特","特殊","现","现场","生","生一","脱","脱销","起","起脱","销","销惜","除","除特"]},{"idx":37,"code":"SVI2026041300823","system":"省级检查体系","cat1":"经营管理","cat2":"客户管理","area":"复合区","unit":"","name":"（2026年现场检查）客户档案。1.市州公司未制定客户管理办法扣20分；市、县、站未按本省市客户管理办法建立大客户档案的（纸质、电子或系统），每处扣5分；2.加能站未执行上级公司客户档案管理办法的，每处扣3分。","short":"（2026年现场检查）客户档案。","desc":"1.市州公司未制定客户管理办法扣20分；市、县、站未按本省市客户管理办法建立大客户档案的（纸质、电子或系统），每处扣5分；2.加能站未执行上级公司客户档案管理办法的，每处扣3分。","method":"明查","score_lo":3,"score_hi":60,"severity":"一般问题","haystack":"（2026年现场检查）客户档案。 1.市州公司未制定客户管理办法扣20分；市、县、站未按本省市客户管理办法建立大客户档案的（纸质、电子或系统），每处扣5分；2.加能站未执行上级公司客户档案管理办法的，每处扣3分。","grams_short":["0","02","2","20","26","6","6年","场","场检","客","客户","年","年现","户","户档","查","查客","案","档","档案","检","检查","现","现场"],"grams_full":["0","02","0分","1","1市","2","20","26","2加","3","3分","5","5分","6","6年","上","上级","公","公司","分","分2","分市","制","制定","办","办法","加","加能","县","县站","司","司客","司未","场","场检","处","处扣","大","大客","子","子或","定","定客","客","客户","州","州公","市","市县","市客","市州","年","年现","建","建立","或","或系","户","户档","户管","扣","扣2","扣3","扣5","执","执行","按","按本","未","未制","未执","未按","本","本省","查","查客","案","案1","案的","案管","档","档案","检","检查","每","每处","法","法建","法扣","法的","现","现场","理","理办","电","电子","的","的每","的纸","省","省市","立","立大","站","站未","管","管理","系","系统","级","级公","纸","纸质","统","统每","能","能站","行","行上","质","质电"]},{"idx":38,"code":"SVI2026041300824","system":"省级检查体系","cat1":"经营管理","cat2":"客户管理","area":"复合区","unit":"","name":"（2026年现场检查）客户维护。1.市州公司未建立大客户走访相关制度，扣20分；未有效开展分级管理的；未分级配套营销方案、激励政策的；市、县未按走访制度实际落实走访维系的，每项每处扣5分。2.加能站未按走访制度实际落实走访维系的，每次扣3分；","short":"（2026年现场检查）客户维护。","desc":"1.市州公司未建立大客户走访相关制度，扣20分；未有效开展分级管理的；未分级配套营销方案、激励政策的；市、县未按走访制度实际落实走访维系的，每项每处扣5分。2.加能站未按走访制度实际落实走访维系的，每次扣3分；","method":"明查","score_lo":3,"score_hi":60,"severity":"一般问题","haystack":"（2026年现场检查）客户维护。 1.市州公司未建立大客户走访相关制度，扣20分；未有效开展分级管理的；未分级配套营销方案、激励政策的；市、县未按走访制度实际落实走访维系的，每项每处扣5分。2.加能站未按走访制度实际落实走访维系的，每次扣3分；","grams_short":["0","02","2","20","26","6","6年","场","场检","客","客户","年","年现","户","户维","护","查","查客","检","检查","现","现场","维","维护"],"grams_full":["0","02","0分","1","1市","2","20","26","2加","3","3分","5","5分","6","6年","公","公司","关","关制","分","分2","分未","分级","制","制度","加","加能","励","励政","县","县未","司","司未","场","场检","处","处扣","大","大客","套","套营","实","实走","实际","客","客户","展","展分","州","州公","市","市县","市州","年","年现","度","度实","度扣","建","建立","开","开展","户","户维","户走","扣","扣2","扣3","扣5","护","护1","按","按走","政","政策","效","效开","方","方案","有","有效","未","未分","未建","未按","未有","查","查客","案","案激","检","检查","次","次扣","每","每处","每次","每项","激","激励","现","现场","理","理的","的","的市","的未","的每","相","相关","立","立大","站","站未","策","策的","管","管理","系","系的","级","级管","级配","维","维护","维系","能","能站","营","营销","落","落实","访","访制","访相","访维","走","走访","配","配套","销","销方","际","际落","项","项每"]},{"idx":39,"code":"SVI2026041300826","system":"省级检查体系","cat1":"经营管理","cat2":"客户管理","area":"复合区","unit":"","name":"（2026年现场检查）客户召回。市州公司未制定流失（睡眠）客户召回方案（计划）的，扣20分；未根据方案要求有效落地开展相关工作的，每次扣5分。","short":"（2026年现场检查）客户召回。","desc":"市州公司未制定流失（睡眠）客户召回方案（计划）的，扣20分；未根据方案要求有效落地开展相关工作的，每次扣5分。","method":"明查","score_lo":5,"score_hi":60,"severity":"一般问题","haystack":"（2026年现场检查）客户召回。 市州公司未制定流失（睡眠）客户召回方案（计划）的，扣20分；未根据方案要求有效落地开展相关工作的，每次扣5分。","grams_short":["0","02","2","20","26","6","6年","召","召回","回","场","场检","客","客户","年","年现","户","户召","查","查客","检","检查","现","现场"],"grams_full":["0","02","0分","2","20","26","5","5分","6","6年","作","作的","公","公司","关","关工","分","分未","划","划的","制","制定","召","召回","司","司未","回","回市","回方","地","地开","场","场检","失","失睡","定","定流","客","客户","展","展相","州","州公","工","工作","市","市州","年","年现","开","开展","户","户召","扣","扣2","扣5","据","据方","效","效落","方","方案","有","有效","未","未制","未根","查","查客","根","根据","案","案要","案计","检","检查","次","次扣","每","每次","求","求有","流","流失","现","现场","的","的扣","的每","相","相关","眠","眠客","睡","睡眠","落","落地","要","要求","计","计划"]},{"idx":40,"code":"SVI2026041300827","system":"省级检查体系","cat1":"经营管理","cat2":"对手分析","area":"复合区","unit":"","name":"（2026年现场检查）竞争对手。1.市、县系统外加能站价格监控采集不准确、不及时，每处扣3分。现场访谈市、县相关人员，对相应竞争对手主要营销活动不清楚的，对竞争对手汽服、餐饮等其他增值服务项目不熟悉的，每人次扣3分。2.加能站竞争对手信息采集不及时或错误的，每处扣3分。对竞争对手汽服、餐饮等其他增值服务项目不熟悉的，每人扣3分。","short":"（2026年现场检查）竞争对手。","desc":"1.市、县系统外加能站价格监控采集不准确、不及时，每处扣3分。现场访谈市、县相关人员，对相应竞争对手主要营销活动不清楚的，对竞争对手汽服、餐饮等其他增值服务项目不熟悉的，每人次扣3分。2.加能站竞争对手信息采集不及时或错误的，每处扣3分。对竞争对手汽服、餐饮等其他增值服务项目不熟悉的，每人扣3分。","method":"明查","score_lo":3,"score_hi":60,"severity":"一般问题","haystack":"（2026年现场检查）竞争对手。 1.市、县系统外加能站价格监控采集不准确、不及时，每处扣3分。现场访谈市、县相关人员，对相应竞争对手主要营销活动不清楚的，对竞争对手汽服、餐饮等其他增值服务项目不熟悉的，每人次扣3分。2.加能站竞争对手信息采集不及时或错误的，每处扣3分。对竞争对手汽服、餐饮等其他增值服务项目不熟悉的，每人扣3分。","grams_short":["0","02","2","20","26","6","6年","争","争对","场","场检","对","对手","年","年现","手","查","查竞","检","检查","现","现场","竞","竞争"],"grams_full":["0","02","1","1市","2","20","26","2加","3","3分","6","6年","不","不准","不及","不清","不熟","主","主要","争","争对","人","人员","人扣","人次","他","他增","价","价格","信","信息","值","值服","关","关人","其","其他","准","准确","分","分2","分对","分现","加","加能","务","务项","动","动不","县","县相","县系","及","及时","员","员对","场","场检","场访","增","增值","处","处扣","外","外加","对","对手","对相","对竞","市","市县","年","年现","应","应竞","息","息采","悉","悉的","或","或错","手","手1","手主","手信","手汽","扣","扣3","控","控采","时","时或","时每","服","服务","服餐","查","查竞","格","格监","检","检查","楚","楚的","次","次扣","每","每人","每处","汽","汽服","活","活动","清","清楚","熟","熟悉","现","现场","的","的对","的每","监","监控","目","目不","相","相关","相应","确","确不","站","站价","站竞","竞","竞争","等","等其","系","系统","统","统外","能","能站","营","营销","要","要营","访","访谈","误","误的","谈","谈市","采","采集","销","销活","错","错误","集","集不","项","项目","餐","餐饮","饮","饮等"]},{"idx":41,"code":"SVI2026041300852","system":"省级检查体系","cat1":"设备管理","cat2":"设备管理及维护","area":"复合区","unit":"","name":"（2026年现场检查）系统应用。1.5月底前，检维修系统未全面运用，扣18分。现场设备故障未“应报尽报”及时录入检维修系统的，每项每次扣3分；费用不属实的，每次扣6分。作业审批平均总用时超过12小时，或验收审批总用时超过24小时，每增加1小时扣0.6分（不足1小时按1小时计算）。2.年销量5000吨以上站，8年及以上加油机没有及时更换；汽油大站（5000吨及以上）未配备4枪及以上汽油加油机，每项每站扣3分。3.站内加注机、充电桩、储油设备、消防设备、电气设备、油气回收设备、监控设备等设备设施维护不到位，存在严重锈蚀、松动、渗漏、破损等情况，每项每处扣1.2分；站内加注机、充电桩、储油设备、消防设备、电气设备、油气回收设备、监控设备等存在故障无法使用，未及时上报维修或更换的，每项每处扣3分。","short":"（2026年现场检查）系统应用。","desc":"1.5月底前，检维修系统未全面运用，扣18分。现场设备故障未“应报尽报”及时录入检维修系统的，每项每次扣3分；费用不属实的，每次扣6分。作业审批平均总用时超过12小时，或验收审批总用时超过24小时，每增加1小时扣0.6分（不足1小时按1小时计算）。2.年销量5000吨以上站，8年及以上加油机没有及时更换；汽油大站（5000吨及以上）未配备4枪及以上汽油加油机，每项每站扣3分。3.站内加注机、充电桩、储油设备、消防设备、电气设备、油气回收设备、监控设备等设备设施维护不到位，存在严重锈蚀、松动、渗漏、破损等情况，每项每处扣1.2分；站内加注机、充电桩、储油设备、消防设备、电气设备、油气回收设备、监控设备等存在故障无法使用，未及时上报维修或更换的，每项每处扣3分。","method":"","score_lo":0.6,"score_hi":18,"severity":"一般问题","haystack":"（2026年现场检查）系统应用。 1.5月底前，检维修系统未全面运用，扣18分。现场设备故障未“应报尽报”及时录入检维修系统的，每项每次扣3分；费用不属实的，每次扣6分。作业审批平均总用时超过12小时，或验收审批总用时超过24小时，每增加1小时扣0.6分（不足1小时按1小时计算）。2.年销量5000吨以上站，8年及以上加油机没有及时更换；汽油大站（5000吨及以上）未配备4枪及以上汽油加油机，每项每站扣3分。3.站内加注机、充电桩、储油设备、消防设备、电气设备、油气回收设备、监控设备等设备设施维护不到位，存在严重锈蚀、松动、渗漏、破损等情况，每项每处扣1.2分；站内加注机、充电桩、储油设备、消防设备、电气设备、油气回收设备、监控设备等存在故障无法使用，未及时上报维修或更换的，每项每处扣3分。","grams_short":["0","02","2","20","26","6","6年","场","场检","年","年现","应","应用","查","查系","检","检查","现","现场","用","系","系统","统","统应"],"grams_full":["0","00","02","06","0吨","1","12","15","18","1小","2","20","24","26","2分","2小","2年","3","3分","3站","4","4小","4枪","5","50","5月","6","6分","6年","8","8分","8年","上","上加","上报","上未","上汽","上站","不","不到","不属","不足","业","业审","严","严重","以","以上","位","位存","作","作业","使","使用","修","修或","修系","储","储油","充","充电","入","入检","全","全面","内","内加","况","况每","分","分3","分不","分作","分现","分站","分费","到","到位","前","前检","加","加1","加油","加注","动","动渗","及","及以","及时","吨","吨以","吨及","回","回收","在","在严","在故","场","场检","场设","均","均总","增","增加","处","处扣","备","备4","备故","备油","备消","备电","备监","备等","备设","大","大站","存","存在","实","实的","审","审批","小","小时","尽","尽报","属","属实","平","平均","年","年及","年现","年销","应","应报","应用","底","底前","录","录入","总","总用","情","情况","或","或更","或验","扣","扣0","扣1","扣3","扣6","批","批平","批总","护","护不","报","报及","报尽","报维","按","按1","损","损等","换","换汽","换的","控","控设","收","收审","收设","故","故障","施","施维","无","无法","时","时上","时录","时或","时扣","时按","时更","时每","时计","时超","更","更换","月","月底","有","有及","未","未全","未及","未应","未配","机","机充","机每","机没","松","松动","枪","枪及","查","查系","桩","桩储","检","检查","检维","次","次扣","每","每增","每处","每次","每站","每项","气","气回","气设","汽","汽油","没","没有","油","油加","油大","油机","油气","油设","法","法使","注","注机","消","消防","渗","渗漏","漏","漏破","现","现场","用","用1","用不","用扣","用时","用未","电","电桩","电气","的","的每","监","监控","破","破损","站","站5","站8","站内","站扣","等","等存","等情","等设","算","算2","系","系统","统","统应","统未","统的","维","维修","维护","蚀","蚀松","计","计算","设","设备","设施","费","费用","超","超过","足","足1","过","过1","过2","运","运用","配","配备","重","重锈","量","量5","销","销量","锈","锈蚀","防","防设","障","障无","障未","面","面运","项","项每","验","验收"]},{"idx":42,"code":"SVI2026041300819","system":"省级检查体系","cat1":"信息系统管理","cat2":"网络管理","area":"复合区","unit":"","name":"（2026年现场检查）数字化装修。高德、百度等主流地图、易捷加油APP、石化油站黄页中，加能站名称、地址、营业时间、联系电话、服务项目等维护信息与实际不符，每处扣2分。","short":"（2026年现场检查）数字化装修。","desc":"高德、百度等主流地图、易捷加油APP、石化油站黄页中，加能站名称、地址、营业时间、联系电话、服务项目等维护信息与实际不符，每处扣2分。","method":"暗查\n（含明查）","score_lo":2,"score_hi":60,"severity":"一般问题","haystack":"（2026年现场检查）数字化装修。 高德、百度等主流地图、易捷加油APP、石化油站黄页中，加能站名称、地址、营业时间、联系电话、服务项目等维护信息与实际不符，每处扣2分。","grams_short":["0","02","2","20","26","6","6年","修","化","化装","场","场检","字","字化","年","年现","数","数字","查","查数","检","检查","现","现场","装","装修"],"grams_full":["0","02","2","20","26","2分","6","6年","A","AP","P","PP","P石","不","不符","与","与实","业","业时","中","中加","主","主流","信","信息","修","修高","分","加","加油","加能","务","务项","化","化油","化装","名","名称","图","图易","地","地图","地址","场","场检","址","址营","处","处扣","字","字化","实","实际","年","年现","度","度等","德","德百","息","息与","扣","扣2","护","护信","捷","捷加","数","数字","时","时间","易","易捷","服","服务","查","查数","检","检查","每","每处","油","油A","油站","流","流地","现","现场","电","电话","百","百度","目","目等","石","石化","称","称地","站","站名","站黄","符","符每","等","等主","等维","系","系电","维","维护","联","联系","能","能站","营","营业","装","装修","话","话服","间","间联","际","际不","页","页中","项","项目","高","高德","黄","黄页"]},{"idx":43,"code":"SVI2026041300829","system":"省级检查体系","cat1":"加油卡管理","cat2":"发卡充值业务管理","area":"复合区","unit":"","name":"（2026年现场检查）加油卡。1.加油卡相关业务手续不齐全，个人客户办理加油卡未持本人身份证；本地单位客户办理加油卡未提供营业执照、社会信用代码证、授权委托书、开票信息（含银行信息）等资料；外地单位客户办理加油卡未额外提供本地经商行为证明；单位客户办理加油卡未签订办卡知情承诺书；密码重置、挂失补卡、清户退款等特殊业务未持身份证、授权委托书等相关资料；各类办卡、充值、预分配等业务办理无客户在现场办理的，每人次扣1.8分。2.未严格执行先到账后充值，公转账单、现金或第三方支付办理充值业务未核实资金到账直接充值的，每项扣4.5分。","short":"（2026年现场检查）加油卡。","desc":"1.加油卡相关业务手续不齐全，个人客户办理加油卡未持本人身份证；本地单位客户办理加油卡未提供营业执照、社会信用代码证、授权委托书、开票信息（含银行信息）等资料；外地单位客户办理加油卡未额外提供本地经商行为证明；单位客户办理加油卡未签订办卡知情承诺书；密码重置、挂失补卡、清户退款等特殊业务未持身份证、授权委托书等相关资料；各类办卡、充值、预分配等业务办理无客户在现场办理的，每人次扣1.8分。2.未严格执行先到账后充值，公转账单、现金或第三方支付办理充值业务未核实资金到账直接充值的，每项扣4.5分。","method":"明查","score_lo":1.8,"score_hi":45,"severity":"一般问题","haystack":"（2026年现场检查）加油卡。 1.加油卡相关业务手续不齐全，个人客户办理加油卡未持本人身份证；本地单位客户办理加油卡未提供营业执照、社会信用代码证、授权委托书、开票信息（含银行信息）等资料；外地单位客户办理加油卡未额外提供本地经商行为证明；单位客户办理加油卡未签订办卡知情承诺书；密码重置、挂失补卡、清户退款等特殊业务未持身份证、授权委托书等相关资料；各类办卡、充值、预分配等业务办理无客户在现场办理的，每人次扣1.8分。2.未严格执行先到账后充值，公转账单、现金或第三方支付办理充值业务未核实资金到账直接充值的，每项扣4.5分。","grams_short":["0","02","2","20","26","6","6年","加","加油","卡","场","场检","年","年现","查","查加","检","检查","油","油卡","现","现场"],"grams_full":["0","02","1","18","1加","2","20","26","2未","4","45","5","5分","6","6年","8","8分","三","三方","不","不齐","业","业务","业执","严","严格","个","个人","为","为证","书","书密","书开","书等","人","人客","人次","人身","付","付办","代","代码","份","份证","会","会信","位","位客","供","供本","供营","信","信息","信用","值","值业","值公","值的","值预","充","充值","先","先到","全","全个","公","公转","关","关业","关资","分","分2","分配","到","到账","办","办卡","办理","加","加油","务","务办","务手","务未","单","单位","单现","卡","卡1","卡充","卡未","卡清","卡相","卡知","各","各类","后","后充","含","含银","商","商行","在","在现","地","地单","地经","场","场办","场检","外","外地","外提","失","失补","委","委托","实","实资","客","客户","密","密码","年","年现","开","开票","息","息含","息等","情","情承","或","或第","户","户办","户在","户退","手","手续","托","托书","扣","扣1","扣4","执","执照","执行","承","承诺","持","持本","持身","挂","挂失","授","授权","接","接充","提","提供","支","支付","料","料各","料外","方","方支","无","无客","明","明单","未","未严","未持","未提","未核","未签","未额","本","本人","本地","权","权委","查","查加","核","核实","格","格执","检","检查","次","次扣","款","款等","殊","殊业","每","每人","每项","油","油卡","清","清户","照","照社","特","特殊","现","现场","现金","理","理充","理加","理无","理的","用","用代","的","的每","直","直接","相","相关","知","知情","码","码证","码重","社","社会","票","票信","第","第三","等","等业","等特","等相","等资","签","签订","类","类办","经","经商","续","续不","置","置挂","营","营业","行","行为","行信","行先","补","补卡","订","订办","证","证授","证明","证本","诺","诺书","账","账单","账后","账直","资","资料","资金","身","身份","转","转账","退","退款","配","配等","重","重置","金","金到","金或","银","银行","项","项扣","预","预分","额","额外","齐","齐全"]},{"idx":44,"code":"SVI2026041300860","system":"省级检查体系","cat1":"员工管理","cat2":"员工关怀","area":"复合区","unit":"","name":"（2026年现场检查）员工关怀。1.通过收集资料进行考核。员工投诉24小时内未响应，7个工作日内未办结（特殊业务除外），每笔扣2分。2.6月底前，自营自管加能站未结合各种业态的工作量科学确定编制定员、配备用工人数；未灵活运用共享用工、钟点工等多元化用工形式，加能站高峰期人员明显不够，每项每站扣3分。加能站实际用工仅有1人（含站经理），扣5分。3.未严格执行《加能站岗位工作事项清单》和“五减、一免、一聚焦”基层回归行动；对过度抬高评价满分线、超标扣罚差评或投诉、考评不达标罚款或免职、库存零损耗考核以及日常操作层面各类脱离实际、层层加码行为，每项扣4分。4.6月底前，加能站“五小”（小休息室、小食堂、小浴室、小活动室、小宣传栏）配备或更新需求未及时完成，每处扣3分。","short":"（2026年现场检查）员工关怀。","desc":"1.通过收集资料进行考核。员工投诉24小时内未响应，7个工作日内未办结（特殊业务除外），每笔扣2分。2.6月底前，自营自管加能站未结合各种业态的工作量科学确定编制定员、配备用工人数；未灵活运用共享用工、钟点工等多元化用工形式，加能站高峰期人员明显不够，每项每站扣3分。加能站实际用工仅有1人（含站经理），扣5分。3.未严格执行《加能站岗位工作事项清单》和“五减、一免、一聚焦”基层回归行动；对过度抬高评价满分线、超标扣罚差评或投诉、考评不达标罚款或免职、库存零损耗考核以及日常操作层面各类脱离实际、层层加码行为，每项扣4分。4.6月底前，加能站“五小”（小休息室、小食堂、小浴室、小活动室、小宣传栏）配备或更新需求未及时完成，每处扣3分。","method":"","score_lo":2,"score_hi":40,"severity":"一般问题","haystack":"（2026年现场检查）员工关怀。 1.通过收集资料进行考核。员工投诉24小时内未响应，7个工作日内未办结（特殊业务除外），每笔扣2分。2.6月底前，自营自管加能站未结合各种业态的工作量科学确定编制定员、配备用工人数；未灵活运用共享用工、钟点工等多元化用工形式，加能站高峰期人员明显不够，每项每站扣3分。加能站实际用工仅有1人（含站经理），扣5分。3.未严格执行《加能站岗位工作事项清单》和“五减、一免、一聚焦”基层回归行动；对过度抬高评价满分线、超标扣罚差评或投诉、考评不达标罚款或免职、库存零损耗考核以及日常操作层面各类脱离实际、层层加码行为，每项扣4分。4.6月底前，加能站“五小”（小休息室、小食堂、小浴室、小活动室、小宣传栏）配备或更新需求未及时完成，每处扣3分。","grams_short":["0","02","2","20","26","6","6年","关","关怀","员","员工","场","场检","工","工关","年","年现","怀","查","查员","检","检查","现","现场"],"grams_full":["0","02","1","1人","1通","2","20","24","26","2分","3","3分","3未","4","46","4分","4小","5","5分","6","6年","6月","7","7个","一","一免","一聚","不","不够","不达","业","业务","业态","严","严格","个","个工","为","为每","事","事项","五","五减","五小","享","享用","人","人含","人员","人数","仅","仅有","以","以及","价","价满","休","休息","传","传栏","位","位工","作","作事","作层","作日","作量","元","元化","免","免一","免职","共","共享","关","关怀","内","内未","减","减一","分","分2","分3","分4","分加","分线","制","制定","前","前加","前自","办","办结","加","加码","加能","务","务除","动","动室","动对","化","化用","单","单和","及","及日","及时","各","各种","各类","合","合各","含","含站","员","员工","员明","员配","和","和五","响","响应","回","回归","场","场检","基","基层","堂","堂小","处","处扣","备","备或","备用","外","外每","多","多元","够","够每","存","存零","学","学确","完","完成","定","定员","定编","实","实际","宣","宣传","室","室小","对","对过","小","小休","小宣","小小","小时","小活","小浴","小食","层","层加","层回","层层","层面","岗","岗位","峰","峰期","工","工人","工仅","工作","工关","工形","工投","工等","工钟","差","差评","常","常操","年","年现","库","库存","应","应7","底","底前","度","度抬","式","式加","归","归行","形","形式","怀","怀1","态","态的","息","息室","成","成每","或","或免","或投","或更","扣","扣2","扣3","扣4","扣5","扣罚","执","执行","投","投诉","抬","抬高","损","损耗","操","操作","收","收集","数","数未","料","料进","新","新需","日","日内","日常","时","时内","时完","明","明显","显","显不","更","更新","月","月底","有","有1","期","期人","未","未严","未办","未及","未响","未灵","未结","查","查员","标","标扣","标罚","栏","栏配","核","核以","核员","格","格执","检","检查","款","款或","殊","殊业","每","每处","每站","每笔","每项","求","求未","活","活动","活运","浴","浴室","清","清单","满","满分","灵","灵活","点","点工","焦","焦基","特","特殊","现","现场","理","理扣","用","用共","用工","的","的工","码","码行","确","确定","离","离实","种","种业","科","科学","站","站五","站实","站岗","站扣","站未","站经","站高","笔","笔扣","等","等多","管","管加","类","类脱","线","线超","经","经理","结","结合","结特","编","编制","罚","罚差","罚款","考","考核","考评","耗","耗考","职","职库","聚","聚焦","能","能站","脱","脱离","自","自管","自营","营","营自","行","行为","行加","行动","行考","评","评不","评价","评或","诉","诉2","诉考","资","资料","超","超标","达","达标","过","过度","过收","运","运用","进","进行","通","通过","配","配备","量","量科","钟","钟点","际","际层","际用","除","除外","集","集资","零","零损","需","需求","面","面各","项","项扣","项每","项清","食","食堂","高","高峰","高评"]},{"idx":45,"code":"SVI2026041300840","system":"省级检查体系","cat1":"督查管理","cat2":"县（市）公司","area":"复合区","unit":"","name":"（2026年现场检查）督导培训。4月，市州公司未宣贯督导管理制度及督导手册，扣10分。","short":"（2026年现场检查）督导培训。","desc":"4月，市州公司未宣贯督导管理制度及督导手册，扣10分。","method":"明查","score_lo":10,"score_hi":30,"severity":"重要问题","haystack":"（2026年现场检查）督导培训。 4月，市州公司未宣贯督导管理制度及督导手册，扣10分。","grams_short":["0","02","2","20","26","6","6年","场","场检","培","培训","导","导培","年","年现","查","查督","检","检查","现","现场","督","督导","训"],"grams_full":["0","02","0分","1","10","2","20","26","4","4月","6","6年","公","公司","册","册扣","分","制","制度","及","及督","司","司未","场","场检","培","培训","宣","宣贯","导","导培","导手","导管","州","州公","市","市州","年","年现","度","度及","手","手册","扣","扣1","月","月市","未","未宣","查","查督","检","检查","现","现场","理","理制","督","督导","管","管理","训","训4","贯","贯督"]},{"idx":46,"code":"SVI2026041300841","system":"省级检查体系","cat1":"督查管理","cat2":"县（市）公司","area":"复合区","unit":"","name":"（2026年现场检查）督导制度。市州公司未建立督查管理办法，发文成立督查队，扣2分。未明确人员、督查计划、督查职责的，每处扣0.6分。","short":"（2026年现场检查）督导制度。","desc":"市州公司未建立督查管理办法，发文成立督查队，扣2分。未明确人员、督查计划、督查职责的，每处扣0.6分。","method":"明查","score_lo":0.6,"score_hi":2,"severity":"一般问题","haystack":"（2026年现场检查）督导制度。 市州公司未建立督查管理办法，发文成立督查队，扣2分。未明确人员、督查计划、督查职责的，每处扣0.6分。","grams_short":["0","02","2","20","26","6","6年","制","制度","场","场检","导","导制","年","年现","度","查","查督","检","检查","现","现场","督","督导"],"grams_full":["0","02","06","2","20","26","2分","6","6分","6年","人","人员","公","公司","分","分未","划","划督","制","制度","办","办法","发","发文","司","司未","员","员督","场","场检","处","处扣","导","导制","州","州公","市","市州","年","年现","度","度市","建","建立","成","成立","扣","扣0","扣2","文","文成","明","明确","未","未建","未明","查","查督","查管","查职","查计","查队","检","检查","每","每处","法","法发","现","现场","理","理办","的","的每","督","督导","督查","确","确人","立","立督","管","管理","职","职责","计","计划","责","责的","队","队扣"]},{"idx":47,"code":"SVI2026041300842","system":"省级检查体系","cat1":"督查管理","cat2":"县（市）公司","area":"复合区","unit":"","name":"（2026年现场检查）现场督导。1.市、县区公司对加能站的综合考评未由各线条联合开展；市、县区公司对加能站的综合考评，没有涵盖加能站经营、服务、营销、HSE、设备、数质量、非油品、风险防控等主要业务，每项扣0.6分。2.督（巡）查弄虚作假的，扣2分（督导弄虚作假主要是指记录的时间并没有巡站或督导、没有到站却填写督导或巡站记录、记录中的问题视频中并没有检查、记录的巡站人员与实际不一致等）；市、县区公司日常巡站未发现问题的，每次扣1分。","short":"（2026年现场检查）现场督导。","desc":"1.市、县区公司对加能站的综合考评未由各线条联合开展；市、县区公司对加能站的综合考评，没有涵盖加能站经营、服务、营销、HSE、设备、数质量、非油品、风险防控等主要业务，每项扣0.6分。2.督（巡）查弄虚作假的，扣2分（督导弄虚作假主要是指记录的时间并没有巡站或督导、没有到站却填写督导或巡站记录、记录中的问题视频中并没有检查、记录的巡站人员与实际不一致等）；市、县区公司日常巡站未发现问题的，每次扣1分。","method":"明查","score_lo":0.6,"score_hi":2,"severity":"一般问题","haystack":"（2026年现场检查）现场督导。 1.市、县区公司对加能站的综合考评未由各线条联合开展；市、县区公司对加能站的综合考评，没有涵盖加能站经营、服务、营销、HSE、设备、数质量、非油品、风险防控等主要业务，每项扣0.6分。2.督（巡）查弄虚作假的，扣2分（督导弄虚作假主要是指记录的时间并没有巡站或督导、没有到站却填写督导或巡站记录、记录中的问题视频中并没有检查、记录的巡站人员与实际不一致等）；市、县区公司日常巡站未发现问题的，每次扣1分。","grams_short":["0","02","2","20","26","6","6年","场","场检","场督","导","年","年现","查","查现","检","检查","现","现场","督","督导"],"grams_full":["0","02","06","1","1分","1市","2","20","26","2分","2督","6","6分","6年","E","E设","H","HS","S","SE","一","一致","不","不一","与","与实","业","业务","中","中并","中的","主","主要","人","人员","作","作假","假","假主","假的","公","公司","写","写督","分","分2","分督","到","到站","加","加能","务","务每","务营","区","区公","却","却填","县","县区","发","发现","司","司对","司日","各","各线","合","合开","合考","员","员与","品","品风","场","场检","场督","填","填写","备","备数","实","实际","对","对加","导","导1","导弄","导或","导没","展","展市","巡","巡查","巡站","市","市县","常","常巡","年","年现","并","并没","开","开展","弄","弄虚","录","录中","录的","录记","或","或巡","或督","扣","扣0","扣1","扣2","指","指记","控","控等","数","数质","日","日常","时","时间","是","是指","有","有到","有巡","有检","有涵","服","服务","未","未发","未由","条","条联","查","查弄","查现","查记","检","检查","次","次扣","每","每次","每项","没","没有","油","油品","涵","涵盖","现","现场","现问","由","由各","的","的巡","的扣","的时","的每","的综","的问","盖","盖加","督","督导","督巡","站","站人","站却","站或","站未","站的","站经","站记","等","等主","等市","线","线条","经","经营","综","综合","考","考评","联","联合","能","能站","致","致等","营","营服","营销","虚","虚作","要","要业","要是","视","视频","记","记录","设","设备","评","评未","评没","质","质量","量","量非","销","销H","问","问题","间","间并","防","防控","际","际不","险","险防","非","非油","项","项扣","频","频中","题","题的","题视","风","风险"]},{"idx":48,"code":"SVI2026041300814","system":"省级检查体系","cat1":"一站一策","cat2":"“三优”工作","area":"加油区","unit":"","name":"（2026年现场检查）高效现场。1.加能站现场检查存在明显制约经营的“三优”问题，每处扣0.3分。2.对有“三优”问题的站点，市、县区公司未开展加能站“一站一策”帮扶诊断或对诊断结果未形成闭环管理的，每项扣1分。3.现场检查防水滤芯应装未装或未利用防水滤芯边卸边发的，扣1分。4.油枪、滤芯、潜泵等关键设备异常，油枪流速低于正常值的70%的，每枪扣0.3分。","short":"（2026年现场检查）高效现场。","desc":"1.加能站现场检查存在明显制约经营的“三优”问题，每处扣0.3分。2.对有“三优”问题的站点，市、县区公司未开展加能站“一站一策”帮扶诊断或对诊断结果未形成闭环管理的，每项扣1分。3.现场检查防水滤芯应装未装或未利用防水滤芯边卸边发的，扣1分。4.油枪、滤芯、潜泵等关键设备异常，油枪流速低于正常值的70%的，每枪扣0.3分。","method":"暗查\n（含明查）","score_lo":1,"score_hi":3,"severity":"一般问题","haystack":"（2026年现场检查）高效现场。 1.加能站现场检查存在明显制约经营的“三优”问题，每处扣0.3分。2.对有“三优”问题的站点，市、县区公司未开展加能站“一站一策”帮扶诊断或对诊断结果未形成闭环管理的，每项扣1分。3.现场检查防水滤芯应装未装或未利用防水滤芯边卸边发的，扣1分。4.油枪、滤芯、潜泵等关键设备异常，油枪流速低于正常值的70%的，每枪扣0.3分。","grams_short":["0","02","2","20","26","6","6年","场","场检","年","年现","效","效现","查","查高","检","检查","现","现场","高","高效"],"grams_full":["0","02","03","0的","1","1分","1加","2","20","26","2对","3","3分","3现","4","4油","6","6年","7","70","一","一站","一策","三","三优","于","于正","优","优问","低","低于","值","值的","公","公司","关","关键","分","分2","分3","分4","利","利用","制","制约","加","加能","区","区公","卸","卸边","县","县区","发","发的","司","司未","在","在明","场","场1","场检","处","处扣","备","备异","存","存在","对","对有","对诊","展","展加","市","市县","帮","帮扶","常","常值","常油","年","年现","应","应装","开","开展","异","异常","形","形成","成","成闭","或","或对","或未","扣","扣0","扣1","扶","扶诊","效","效现","断","断或","断结","明","明显","显","显制","有","有三","未","未利","未开","未形","未装","果","果未","枪","枪扣","枪流","枪滤","查","查存","查防","查高","检","检查","正","正常","每","每处","每枪","每项","水","水滤","油","油枪","泵","泵等","流","流速","滤","滤芯","潜","潜泵","点","点市","环","环管","现","现场","理","理的","用","用防","的","的7","的三","的扣","的每","的站","站","站一","站点","站现","等","等关","策","策帮","管","管理","约","约经","经","经营","结","结果","能","能站","芯","芯应","芯潜","芯边","营","营的","装","装或","装未","设","设备","诊","诊断","边","边卸","边发","速","速低","键","键设","闭","闭环","问","问题","防","防水","项","项扣","题","题每","题的","高","高效"]},{"idx":49,"code":"SVI2026041300850","system":"省级检查体系","cat1":"一站一策","cat2":"“三优”工作","area":"复合区","unit":"","name":"（2026年现场检查）效率瓶颈站优化。效率瓶颈站，未优化枪机罐及泵岛布局，未合理调整加油动线，未增加全品种加油机，致使高峰期现场通过率较低，每项扣1.5分。","short":"（2026年现场检查）效率瓶颈站优化。","desc":"效率瓶颈站，未优化枪机罐及泵岛布局，未合理调整加油动线，未增加全品种加油机，致使高峰期现场通过率较低，每项扣1.5分。","method":"","score_lo":1.5,"score_hi":9,"severity":"一般问题","haystack":"（2026年现场检查）效率瓶颈站优化。 效率瓶颈站，未优化枪机罐及泵岛布局，未合理调整加油动线，未增加全品种加油机，致使高峰期现场通过率较低，每项扣1.5分。","grams_short":["0","02","2","20","26","6","6年","优","优化","化","场","场检","年","年现","效","效率","查","查效","检","检查","率","率瓶","现","现场","瓶","瓶颈","站","站优","颈","颈站"],"grams_full":["0","02","1","15","2","20","26","5","5分","6","6年","优","优化","低","低每","使","使高","全","全品","分","加","加全","加油","动","动线","化","化效","化枪","及","及泵","合","合理","品","品种","场","场检","场通","增","增加","局","局未","岛","岛布","峰","峰期","布","布局","年","年现","扣","扣1","效","效率","整","整加","期","期现","未","未优","未合","未增","机","机罐","机致","枪","枪机","查","查效","检","检查","每","每项","油","油动","油机","泵","泵岛","率","率瓶","率较","现","现场","理","理调","瓶","瓶颈","种","种加","站","站优","站未","线","线未","罐","罐及","致","致使","调","调整","较","较低","过","过率","通","通过","项","项扣","颈","颈站","高","高峰"]},{"idx":50,"code":"SVI2026041300851","system":"省级检查体系","cat1":"一站一策","cat2":"统筹改造","area":"复合区","unit":"","name":"（2026年现场检查）节假日特征站优化。7月底前，对有必要改造的高速服务区和景区加能站，外侧泵岛未增补汽油品类，以提升节假日汽油高峰期现场通过率，每站扣1.5分。","short":"（2026年现场检查）节假日特征站优化。","desc":"7月底前，对有必要改造的高速服务区和景区加能站，外侧泵岛未增补汽油品类，以提升节假日汽油高峰期现场通过率，每站扣1.5分。","method":"","score_lo":1.5,"score_hi":3,"severity":"一般问题","haystack":"（2026年现场检查）节假日特征站优化。 7月底前，对有必要改造的高速服务区和景区加能站，外侧泵岛未增补汽油品类，以提升节假日汽油高峰期现场通过率，每站扣1.5分。","grams_short":["0","02","2","20","26","6","6年","优","优化","假","假日","化","场","场检","年","年现","征","征站","日","日特","查","查节","检","检查","特","特征","现","现场","站","站优","节","节假"],"grams_full":["0","02","1","15","2","20","26","5","5分","6","6年","7","7月","以","以提","优","优化","侧","侧泵","假","假日","分","前","前对","加","加能","务","务区","化","化7","区","区加","区和","升","升节","和","和景","品","品类","场","场检","场通","增","增补","外","外侧","对","对有","岛","岛未","峰","峰期","年","年现","底","底前","征","征站","必","必要","扣","扣1","提","提升","改","改造","日","日汽","日特","景","景区","月","月底","有","有必","服","服务","期","期现","未","未增","查","查节","检","检查","每","每站","汽","汽油","油","油品","油高","泵","泵岛","特","特征","率","率每","现","现场","的","的高","站","站优","站外","站扣","类","类以","能","能站","节","节假","补","补汽","要","要改","过","过率","通","通过","速","速服","造","造的","高","高峰","高速"]},{"idx":51,"code":"SVI2026041300807","system":"省级检查体系","cat1":"现场管理","cat2":"站容站貌","area":"复合区","unit":"环境卫生","name":"（2026年现场检查）清洁提升。1.加能区、油罐区、便利店、办公区、配电间、卫生间、洗车区、司机之家、仓库、员工宿舍、附属房、绿化带等区域卫生明显不符合要求的，每处扣0.2分。2.营业室外立面、罩棚立柱、围墙、罐区、洗车区等区域标识、标牌、海报、通知、二维码等张贴不规范的；在现场拉横幅或条幅；各类张贴物料破损、过期或严重褪色；各类物品摆放杂乱；标识标线不清晰不合理的，每处扣0.2分。","short":"（2026年现场检查）清洁提升。","desc":"1.加能区、油罐区、便利店、办公区、配电间、卫生间、洗车区、司机之家、仓库、员工宿舍、附属房、绿化带等区域卫生明显不符合要求的，每处扣0.2分。2.营业室外立面、罩棚立柱、围墙、罐区、洗车区等区域标识、标牌、海报、通知、二维码等张贴不规范的；在现场拉横幅或条幅；各类张贴物料破损、过期或严重褪色；各类物品摆放杂乱；标识标线不清晰不合理的，每处扣0.2分。","method":"暗查\n（含明查）","score_lo":0.2,"score_hi":3,"severity":"一般问题","haystack":"（2026年现场检查）清洁提升。 1.加能区、油罐区、便利店、办公区、配电间、卫生间、洗车区、司机之家、仓库、员工宿舍、附属房、绿化带等区域卫生明显不符合要求的，每处扣0.2分。2.营业室外立面、罩棚立柱、围墙、罐区、洗车区等区域标识、标牌、海报、通知、二维码等张贴不规范的；在现场拉横幅或条幅；各类张贴物料破损、过期或严重褪色；各类物品摆放杂乱；标识标线不清晰不合理的，每处扣0.2分。","grams_short":["0","02","2","20","26","6","6年","升","场","场检","年","年现","提","提升","查","查清","检","检查","洁","洁提","清","清洁","现","现场"],"grams_full":["0","02","1","1加","2","20","26","2分","2营","6","6年","不","不合","不清","不符","不规","业","业室","严","严重","之","之家","乱","乱标","二","二维","仓","仓库","便","便利","公","公区","分","分2","利","利店","办","办公","加","加能","化","化带","区","区便","区司","区域","区油","区洗","区等","区配","升","升1","卫","卫生","司","司机","各","各类","合","合理","合要","员","员工","品","品摆","围","围墙","在","在现","场","场拉","场检","域","域卫","域标","墙","墙罐","处","处扣","外","外立","室","室外","家","家仓","宿","宿舍","属","属房","工","工宿","带","带等","幅","幅各","幅或","年","年现","库","库员","店","店办","张","张贴","或","或严","或条","房","房绿","扣","扣0","报","报通","拉","拉横","损","损过","提","提升","摆","摆放","放","放杂","料","料破","明","明显","显","显不","晰","晰不","期","期或","机","机之","杂","杂乱","条","条幅","查","查清","柱","柱围","标","标牌","标线","标识","检","检查","棚","棚立","横","横幅","每","每处","求","求的","油","油罐","洁","洁提","洗","洗车","海","海报","清","清晰","清洁","牌","牌海","物","物品","物料","现","现场","理","理的","生","生明","生间","电","电间","的","的在","的每","知","知二","码","码等","破","破损","立","立柱","立面","符","符合","等","等区","等张","类","类张","类物","线","线不","维","维码","绿","绿化","罐","罐区","罩","罩棚","能","能区","舍","舍附","色","色各","范","范的","营","营业","褪","褪色","要","要求","规","规范","识","识标","贴","贴不","贴物","车","车区","过","过期","通","通知","配","配电","重","重褪","间","间卫","间洗","附","附属","面","面罩"]},{"idx":52,"code":"SVI2026041300830","system":"省级检查体系","cat1":"经营工作","cat2":"加油卡管理","area":"复合区","unit":"","name":"（2026年现场检查）石化钱包。石化钱包标签客户管理不规范，客户名称、活动内容、优惠形式等管理混乱的，享受优惠政策的钱包账户消费频次异常，每处扣2.7分。","short":"（2026年现场检查）石化钱包。","desc":"石化钱包标签客户管理不规范，客户名称、活动内容、优惠形式等管理混乱的，享受优惠政策的钱包账户消费频次异常，每处扣2.7分。","method":"明查","score_lo":2.7,"score_hi":45,"severity":"一般问题","haystack":"（2026年现场检查）石化钱包。 石化钱包标签客户管理不规范，客户名称、活动内容、优惠形式等管理混乱的，享受优惠政策的钱包账户消费频次异常，每处扣2.7分。","grams_short":["0","02","2","20","26","6","6年","包","化","化钱","场","场检","年","年现","查","查石","检","检查","现","现场","石","石化","钱","钱包"],"grams_full":["0","02","2","20","26","27","6","6年","7","7分","不","不规","乱","乱的","享","享受","优","优惠","内","内容","分","动","动内","包","包标","包石","包账","化","化钱","受","受优","名","名称","场","场检","处","处扣","客","客户","容","容优","常","常每","年","年现","异","异常","式","式等","形","形式","惠","惠形","惠政","户","户名","户消","户管","扣","扣2","政","政策","查","查石","标","标签","检","检查","次","次异","每","每处","活","活动","消","消费","混","混乱","现","现场","理","理不","理混","的","的享","的钱","石","石化","称","称活","等","等管","策","策的","签","签客","管","管理","范","范客","规","规范","账","账户","费","费频","钱","钱包","频","频次"]},{"idx":53,"code":"SVI2026041300821","system":"省级检查体系","cat1":"经营工作","cat2":"经营业务","area":"加油区","unit":"","name":"（2026年现场检查）高标号推广。1.爱跑98会员日（体验日）综合优惠后98号价格未高于95号0.2元/升以上的；除竞争激烈区域站点外，98号汽油常态化采取油机价格直降营销的；未统一制定高标号汽油推广话术的；每项扣5分。2.现场高标号汽油推广和爱跑98广告宣传位置不明显；广告宣传数量少氛围不足；加油机电子屏及站内音响（有相关设备的）未常态化宣传高标号及爱跑汽油，每项扣5分；现场加油员工未使用高标号汽油推广话术的；每人次扣2分。","short":"（2026年现场检查）高标号推广。","desc":"1.爱跑98会员日（体验日）综合优惠后98号价格未高于95号0.2元/升以上的；除竞争激烈区域站点外，98号汽油常态化采取油机价格直降营销的；未统一制定高标号汽油推广话术的；每项扣5分。2.现场高标号汽油推广和爱跑98广告宣传位置不明显；广告宣传数量少氛围不足；加油机电子屏及站内音响（有相关设备的）未常态化宣传高标号及爱跑汽油，每项扣5分；现场加油员工未使用高标号汽油推广话术的；每人次扣2分。","method":"明查","score_lo":2,"score_hi":60,"severity":"一般问题","haystack":"（2026年现场检查）高标号推广。 1.爱跑98会员日（体验日）综合优惠后98号价格未高于95号0.2元/升以上的；除竞争激烈区域站点外，98号汽油常态化采取油机价格直降营销的；未统一制定高标号汽油推广话术的；每项扣5分。2.现场高标号汽油推广和爱跑98广告宣传位置不明显；广告宣传数量少氛围不足；加油机电子屏及站内音响（有相关设备的）未常态化宣传高标号及爱跑汽油，每项扣5分；现场加油员工未使用高标号汽油推广话术的；每人次扣2分。","grams_short":["0","02","2","20","26","6","6年","号","号推","场","场检","年","年现","广","推","推广","查","查高","标","标号","检","检查","现","现场","高","高标"],"grams_full":["0","02","1","1爱","2","20","26","2元","2分","2现","5","5分","5号","6","6年","8","8会","8号","8广","9","95","98","一","一制","上","上的","不","不明","不足","争","争激","于","于9","人","人次","以","以上","价","价格","优","优惠","会","会员","传","传位","传数","传高","位","位置","体","体验","使","使用","元","元升","关","关设","内","内音","分","分2","分现","制","制定","加","加油","化","化宣","化采","区","区域","升","升以","及","及爱","及站","取","取油","号","号0","号价","号及","号推","号汽","合","合优","后","后9","告","告宣","员","员工","员日","和","和爱","响","响有","围","围不","场","场加","场检","场高","域","域站","备","备的","外","外9","子","子屏","定","定高","宣","宣传","少","少氛","屏","屏及","工","工未","常","常态","年","年现","广","广1","广告","广和","广话","态","态化","惠","惠后","扣","扣2","扣5","推","推广","数","数量","日","日体","日综","明","明显","显","显广","有","有相","未","未使","未常","未统","未高","术","术的","机","机价","机电","查","查高","标","标号","格","格未","格直","检","检查","次","次扣","每","每人","每项","氛","氛围","汽","汽油","油","油员","油常","油推","油机","油每","激","激烈","点","点外","烈","烈区","爱","爱跑","现","现场","用","用高","电","电子","的","的未","的每","的除","直","直降","相","相关","站","站内","站点","竞","竞争","统","统一","综","综合","置","置不","营","营销","设","设备","话","话术","足","足加","跑","跑9","跑汽","采","采取","量","量少","销","销的","降","降营","除","除竞","音","音响","项","项扣","验","验日","高","高于","高标"]},{"idx":54,"code":"SVI2026041300818","system":"省级检查体系","cat1":"经营工作","cat2":"营销管理","area":"复合区","unit":"","name":"（2026年现场检查）营销管控。1.宣传物料配置不及时；宣传物料过期未清理；现场员工未开展活动推介的，每项每人次扣3分。2.市州公司未依据市场环境科学决策，开展大水漫灌式营销活动，每项扣10分。3.油非互促未执行“谁发起、谁承担、谁核定”的，每项扣10分。","short":"（2026年现场检查）营销管控。","desc":"1.宣传物料配置不及时；宣传物料过期未清理；现场员工未开展活动推介的，每项每人次扣3分。2.市州公司未依据市场环境科学决策，开展大水漫灌式营销活动，每项扣10分。3.油非互促未执行“谁发起、谁承担、谁核定”的，每项扣10分。","method":"暗查\n（含明查）","score_lo":10,"score_hi":60,"severity":"一般问题","haystack":"（2026年现场检查）营销管控。 1.宣传物料配置不及时；宣传物料过期未清理；现场员工未开展活动推介的，每项每人次扣3分。2.市州公司未依据市场环境科学决策，开展大水漫灌式营销活动，每项扣10分。3.油非互促未执行“谁发起、谁承担、谁核定”的，每项扣10分。","grams_short":["0","02","2","20","26","6","6年","场","场检","年","年现","控","查","查营","检","检查","现","现场","管","管控","营","营销","销","销管"],"grams_full":["0","02","0分","1","10","1宣","2","20","26","2市","3","3分","3油","6","6年","不","不及","互","互促","人","人次","介","介的","传","传物","依","依据","促","促未","公","公司","决","决策","分","分2","分3","动","动推","动每","及","及时","发","发起","司","司未","员","员工","场","场员","场检","场环","境","境科","大","大水","学","学决","定","定的","宣","宣传","展","展大","展活","州","州公","工","工未","市","市场","市州","年","年现","开","开展","式","式营","扣","扣1","扣3","执","执行","承","承担","担","担谁","据","据市","控","控1","推","推介","料","料过","料配","时","时宣","期","期未","未","未依","未开","未执","未清","查","查营","核","核定","检","检查","次","次扣","每","每人","每项","水","水漫","油","油非","活","活动","清","清理","漫","漫灌","灌","灌式","物","物料","环","环境","现","现场","理","理现","的","的每","科","科学","策","策开","管","管控","置","置不","营","营销","行","行谁","谁","谁发","谁承","谁核","起","起谁","过","过期","配","配置","销","销活","销管","非","非互","项","项扣","项每"]},{"idx":55,"code":"SVI2026041300825","system":"省级检查体系","cat1":"经营工作","cat2":"线下营销","area":"复合区","unit":"","name":"（2026年现场检查）客户维护。市州公司未制定六进方案（计划），扣20分；未按方案要求有效推进开展六进工作的，每次扣5分。","short":"（2026年现场检查）客户维护。","desc":"市州公司未制定六进方案（计划），扣20分；未按方案要求有效推进开展六进工作的，每次扣5分。","method":"明查","score_lo":5,"score_hi":60,"severity":"一般问题","haystack":"（2026年现场检查）客户维护。 市州公司未制定六进方案（计划），扣20分；未按方案要求有效推进开展六进工作的，每次扣5分。","grams_short":["0","02","2","20","26","6","6年","场","场检","客","客户","年","年现","户","户维","护","查","查客","检","检查","现","现场","维","维护"],"grams_full":["0","02","0分","2","20","26","5","5分","6","6年","作","作的","公","公司","六","六进","分","分未","划","划扣","制","制定","司","司未","场","场检","定","定六","客","客户","展","展六","州","州公","工","工作","市","市州","年","年现","开","开展","户","户维","扣","扣2","扣5","护","护市","按","按方","推","推进","效","效推","方","方案","有","有效","未","未制","未按","查","查客","案","案要","案计","检","检查","次","次扣","每","每次","求","求有","现","现场","的","的每","维","维护","要","要求","计","计划","进","进工","进开","进方"]},{"idx":56,"code":"SVI2026041300835","system":"省级检查体系","cat1":"经营工作","cat2":"非油品管理","area":"复合区","unit":"","name":"（2026年现场检查）非油品。1.非油品销售未及时录入易服系统的，每笔扣4.5分；货架商品空置，每处扣1.8分。2.易捷服务销售“两个严禁”管理要求未执行到位，存在易捷服务销售任务层层加码，向加能站员工强行摊派销售任务的；强迫加能站员工个人采购和囤积易捷商品的，每人次扣4.5分。","short":"（2026年现场检查）非油品。","desc":"1.非油品销售未及时录入易服系统的，每笔扣4.5分；货架商品空置，每处扣1.8分。2.易捷服务销售“两个严禁”管理要求未执行到位，存在易捷服务销售任务层层加码，向加能站员工强行摊派销售任务的；强迫加能站员工个人采购和囤积易捷商品的，每人次扣4.5分。","method":"明查","score_lo":1.8,"score_hi":45,"severity":"一般问题","haystack":"（2026年现场检查）非油品。 1.非油品销售未及时录入易服系统的，每笔扣4.5分；货架商品空置，每处扣1.8分。2.易捷服务销售“两个严禁”管理要求未执行到位，存在易捷服务销售任务层层加码，向加能站员工强行摊派销售任务的；强迫加能站员工个人采购和囤积易捷商品的，每人次扣4.5分。","grams_short":["0","02","2","20","26","6","6年","品","场","场检","年","年现","查","查非","检","检查","油","油品","现","现场","非","非油"],"grams_full":["0","02","1","18","1非","2","20","26","2易","4","45","5","5分","6","6年","8","8分","两","两个","严","严禁","个","个严","个人","人","人次","人采","任","任务","位","位存","入","入易","分","分2","分货","到","到位","加","加码","加能","务","务层","务的","务销","及","及时","向","向加","员","员工","和","和囤","品","品1","品的","品空","品销","售","售两","售任","售未","商","商品","囤","囤积","在","在易","场","场检","处","处扣","存","存在","层","层加","层层","工","工个","工强","年","年现","强","强行","强迫","录","录入","扣","扣1","扣4","执","执行","捷","捷商","捷服","摊","摊派","时","时录","易","易捷","易服","服","服务","服系","未","未及","未执","架","架商","查","查非","检","检查","次","次扣","每","每人","每处","每笔","求","求未","油","油品","派","派销","现","现场","理","理要","的","的强","的每","码","码向","禁","禁管","积","积易","空","空置","站","站员","笔","笔扣","管","管理","系","系统","统","统的","置","置每","能","能站","行","行到","行摊","要","要求","货","货架","购","购和","迫","迫加","采","采购","销","销售","非","非油"]},{"idx":57,"code":"SVI2026041300832","system":"省级检查体系","cat1":"管理工作","cat2":"数质量管理","area":"复合区","unit":"","name":"（2026年现场检查）数质量。1.加油机出现提枪走字异常的；加油机计量器、编码器、主板等关键部位未有效施打职能部门及地市公司铅封，铅封号与电子台账记录不相符的；加油机电磁阀未安装防磁罩，并施打地市公司铅封的；加油机防作弊功能未开启的；加油机管线存在严重渗漏现象的；液位仪未设置加油站权限（仅查询）的；油罐操作井有大量水渍或较浓油气味；停用油罐未采取盲板封堵、注水等措施的，停用油枪未施打铅封三角法兰未断开，每项每处扣2.7分。2.加油机未强检且投入使用的，加油机强检证书未在有效期内的，每枪扣9分。加油机未规范张贴强检标识或标识破损无法识别的，每枪扣1.8分。3.按远程现场检查标准，对加能站油品、CNG、LNG接卸工作考核扣分。4.加油站水高超过50mm未及时排水的；未每月开展液位仪与手工比对；液位仪比对油高差异超过±2mm或水高差异±5mm；雨雪天气未及时增测水高的，每项扣4.5分。5.现场盘点油品损耗超标无原因分析扣4.5分；分析不全面，未从温度、付油、进货、日常管理等因素进行分析，每项扣1.8分。6.加油机未规范开展强检或自校的；加油站强检、自检无县区公司管理人员在现场监督的，每项扣4.5分。","short":"（2026年现场检查）数质量。","desc":"1.加油机出现提枪走字异常的；加油机计量器、编码器、主板等关键部位未有效施打职能部门及地市公司铅封，铅封号与电子台账记录不相符的；加油机电磁阀未安装防磁罩，并施打地市公司铅封的；加油机防作弊功能未开启的；加油机管线存在严重渗漏现象的；液位仪未设置加油站权限（仅查询）的；油罐操作井有大量水渍或较浓油气味；停用油罐未采取盲板封堵、注水等措施的，停用油枪未施打铅封三角法兰未断开，每项每处扣2.7分。2.加油机未强检且投入使用的，加油机强检证书未在有效期内的，每枪扣9分。加油机未规范张贴强检标识或标识破损无法识别的，每枪扣1.8分。3.按远程现场检查标准，对加能站油品、CNG、LNG接卸工作考核扣分。4.加油站水高超过50mm未及时排水的；未每月开展液位仪与手工比对；液位仪比对油高差异超过±2mm或水高差异±5mm；雨雪天气未及时增测水高的，每项扣4.5分。5.现场盘点油品损耗超标无原因分析扣4.5分；分析不全面，未从温度、付油、进货、日常管理等因素进行分析，每项扣1.8分。6.加油机未规范开展强检或自校的；加油站强检、自检无县区公司管理人员在现场监督的，每项扣4.5分。","method":"明查","score_lo":1.8,"score_hi":45,"severity":"一般问题","haystack":"（2026年现场检查）数质量。 1.加油机出现提枪走字异常的；加油机计量器、编码器、主板等关键部位未有效施打职能部门及地市公司铅封，铅封号与电子台账记录不相符的；加油机电磁阀未安装防磁罩，并施打地市公司铅封的；加油机防作弊功能未开启的；加油机管线存在严重渗漏现象的；液位仪未设置加油站权限（仅查询）的；油罐操作井有大量水渍或较浓油气味；停用油罐未采取盲板封堵、注水等措施的，停用油枪未施打铅封三角法兰未断开，每项每处扣2.7分。2.加油机未强检且投入使用的，加油机强检证书未在有效期内的，每枪扣9分。加油机未规范张贴强检标识或标识破损无法识别的，每枪扣1.8分。3.按远程现场检查标准，对加能站油品、CNG、LNG接卸工作考核扣分。4.加油站水高超过50mm未及时排水的；未每月开展液位仪与手工比对；液位仪比对油高差异超过±2mm或水高差异±5mm；雨雪天气未及时增测水高的，每项扣4.5分。5.现场盘点油品损耗超标无原因分析扣4.5分；分析不全面，未从温度、付油、进货、日常管理等因素进行分析，每项扣1.8分。6.加油机未规范开展强检或自校的；加油站强检、自检无县区公司管理人员在现场监督的，每项扣4.5分。","grams_short":["0","02","2","20","26","6","6年","场","场检","年","年现","数","数质","查","查数","检","检查","现","现场","质","质量","量"],"grams_full":["0","02","0m","1","18","1加","2","20","26","27","2m","2加","3","3按","4","45","4加","5","50","5m","5分","5现","6","6加","6年","7","7分","8","8分","9","9分","C","CN","G","GL","G接","L","LN","N","NG","m","mm","m或","m未","m雨","三","三角","不","不全","不相","与","与手","与电","且","且投","严","严重","主","主板","书","书未","井","井有","人","人员","仅","仅查","从","从温","付","付油","仪","仪与","仪未","仪比","位","位仪","位未","作","作井","作弊","作考","使","使用","停","停用","入","入使","全","全面","公","公司","兰","兰未","关","关键","内","内的","准","准对","出","出现","分","分2","分3","分4","分5","分6","分分","分加","分析","别","别的","功","功能","加","加油","加能","区","区公","卸","卸工","原","原因","县","县区","及","及地","及时","取","取盲","台","台账","号","号与","司","司管","司铅","启","启的","员","员在","味","味停","品","品C","品损","器","器主","器编","因","因分","因素","在","在严","在有","在现","地","地市","场","场检","场监","场盘","堵","堵注","增","增测","处","处扣","大","大量","天","天气","子","子台","字","字异","存","存在","安","安装","对","对加","对油","对液","封","封三","封号","封堵","封的","封铅","展","展强","展液","工","工作","工比","差","差异","市","市公","常","常的","常管","年","年现","并","并施","度","度付","开","开启","开展","开每","异","异5","异常","异超","弊","弊功","张","张贴","强","强检","录","录不","或","或标","或水","或自","或较","手","手工","打","打地","打职","打铅","扣","扣1","扣2","扣4","扣9","扣分","投","投入","按","按远","损","损无","损耗","排","排水","接","接卸","措","措施","提","提枪","操","操作","效","效施","效期","数","数质","断","断开","施","施打","施的","无","无原","无县","无法","日","日常","时","时增","时排","月","月开","有","有大","有效","期","期内","未","未从","未及","未在","未安","未开","未强","未断","未施","未有","未每","未规","未设","未采","机","机出","机强","机未","机电","机管","机计","机防","权","权限","板","板封","板等","析","析不","析扣","析每","枪","枪扣","枪未","枪走","查","查数","查标","查询","标","标准","标无","标识","校","校的","核","核扣","检","检且","检或","检无","检查","检标","检自","检证","每","每处","每月","每枪","每项","比","比对","气","气味","气未","水","水渍","水的","水等","水高","油","油品","油机","油枪","油气","油站","油罐","油进","油高","法","法兰","法识","注","注水","测","测水","浓","浓油","液","液位","渍","渍或","渗","渗漏","温","温度","漏","漏现","点","点油","现","现场","现提","现象","理","理人","理等","用","用油","用的","电","电子","电磁","的","的停","的加","的未","的每","的油","的液","监","监督","盘","盘点","盲","盲板","相","相符","督","督的","码","码器","破","破损","磁","磁罩","磁阀","程","程现","站","站强","站权","站水","站油","符","符的","等","等关","等因","等措","管","管理","管线","素","素进","线","线存","编","编码","罐","罐操","罐未","罩","罩并","置","置加","考","考核","耗","耗超","职","职能","能","能未","能站","能部","自","自校","自检","范","范开","范张","行","行分","装","装防","规","规范","角","角法","计","计量","记","记录","设","设置","证","证书","识","识别","识或","识破","询","询的","象","象的","账","账记","货","货日","质","质量","贴","贴强","走","走字","超","超标","超过","较","较浓","过","过2","过5","进","进行","进货","远","远程","部","部位","部门","采","采取","重","重渗","量","量1","量器","量水","铅","铅封","键","键部","门","门及","阀","阀未","防","防作","防磁","限","限仅","雨","雨雪","雪","雪天","面","面未","项","项扣","项每","高","高差","高的","高超"]},{"idx":58,"code":"SVI2026041300815","system":"省级检查体系","cat1":"管理工作","cat2":"汽服管理","area":"复合区","unit":"","name":"（2026年现场检查）洗车。洗车网点（冰冻天气除外）、司机之家、爱心驿站、自驾游驿站、洗衣店未对外开放使用的，每项扣10分。","short":"（2026年现场检查）洗车。","desc":"洗车网点（冰冻天气除外）、司机之家、爱心驿站、自驾游驿站、洗衣店未对外开放使用的，每项扣10分。","method":"暗查\n（含明查）","score_lo":10,"score_hi":20,"severity":"重要问题","haystack":"（2026年现场检查）洗车。 洗车网点（冰冻天气除外）、司机之家、爱心驿站、自驾游驿站、洗衣店未对外开放使用的，每项扣10分。","grams_short":["0","02","2","20","26","6","6年","场","场检","年","年现","查","查洗","检","检查","洗","洗车","现","现场","车"],"grams_full":["0","02","0分","1","10","2","20","26","6","6年","之","之家","使","使用","冰","冰冻","冻","冻天","分","司","司机","场","场检","外","外司","外开","天","天气","家","家爱","对","对外","年","年现","店","店未","开","开放","心","心驿","扣","扣1","放","放使","未","未对","机","机之","查","查洗","检","检查","每","每项","气","气除","洗","洗衣","洗车","游","游驿","点","点冰","爱","爱心","现","现场","用","用的","的","的每","站","站洗","站自","网","网点","自","自驾","衣","衣店","车","车洗","车网","除","除外","项","项扣","驾","驾游","驿","驿站"]},{"idx":59,"code":"SVI2026041300816","system":"省级检查体系","cat1":"管理工作","cat2":"汽服管理","area":"复合区","unit":"","name":"（2026年现场检查）司机之家。司机之家厨具、淋浴、洗衣、干衣、洗手间、休息室等设施无法正常使用，每处扣3分；送热餐站点未按要求赠送，扣5分。","short":"（2026年现场检查）司机之家。","desc":"司机之家厨具、淋浴、洗衣、干衣、洗手间、休息室等设施无法正常使用，每处扣3分；送热餐站点未按要求赠送，扣5分。","method":"暗查\n（含明查）","score_lo":5,"score_hi":20,"severity":"重要问题","haystack":"（2026年现场检查）司机之家。 司机之家厨具、淋浴、洗衣、干衣、洗手间、休息室等设施无法正常使用，每处扣3分；送热餐站点未按要求赠送，扣5分。","grams_short":["0","02","2","20","26","6","6年","之","之家","司","司机","场","场检","家","年","年现","机","机之","查","查司","检","检查","现","现场"],"grams_full":["0","02","2","20","26","3","3分","5","5分","6","6年","之","之家","休","休息","使","使用","具","具淋","分","分送","厨","厨具","司","司机","场","场检","处","处扣","室","室等","家","家厨","家司","常","常使","干","干衣","年","年现","息","息室","手","手间","扣","扣3","扣5","按","按要","施","施无","无","无法","未","未按","机","机之","查","查司","检","检查","正","正常","每","每处","求","求赠","法","法正","洗","洗手","洗衣","浴","浴洗","淋","淋浴","点","点未","热","热餐","现","现场","用","用每","站","站点","等","等设","衣","衣干","衣洗","要","要求","设","设施","赠","赠送","送","送扣","送热","间","间休","餐","餐站"]},{"idx":60,"code":"SVI2026041300817","system":"省级检查体系","cat1":"管理工作","cat2":"汽服管理","area":"复合区","unit":"","name":"（2026年现场检查）其他配套。爱心驿站/自驾游驿站/洗衣店等，未配齐对外公示的服务项目，每项扣2分。","short":"（2026年现场检查）其他配套。","desc":"爱心驿站/自驾游驿站/洗衣店等，未配齐对外公示的服务项目，每项扣2分。","method":"暗查\n（含明查）","score_lo":2,"score_hi":20,"severity":"一般问题","haystack":"（2026年现场检查）其他配套。 爱心驿站/自驾游驿站/洗衣店等，未配齐对外公示的服务项目，每项扣2分。","grams_short":["0","02","2","20","26","6","6年","他","他配","其","其他","场","场检","套","年","年现","查","查其","检","检查","现","现场","配","配套"],"grams_full":["0","02","2","20","26","2分","6","6年","他","他配","公","公示","其","其他","分","务","务项","场","场检","外","外公","套","套爱","对","对外","年","年现","店","店等","心","心驿","扣","扣2","服","服务","未","未配","查","查其","检","检查","每","每项","洗","洗衣","游","游驿","爱","爱心","现","现场","的","的服","目","目每","示","示的","站","站洗","站自","等","等未","自","自驾","衣","衣店","配","配套","配齐","项","项扣","项目","驾","驾游","驿","驿站","齐","齐对"]},{"idx":61,"code":"SVI2026041300834","system":"省级检查体系","cat1":"管理工作","cat2":"当期重点工作","area":"复合区","unit":"","name":"（2026年现场检查）委托管理。受托方未与地市公司规范签订委托合同或合同过期；委托站与员工未签订劳动合同或合同过期；委托站存在吃空饷员工；委托站代理手续费未按期兑现支付，每项每人次扣4.5分。","short":"（2026年现场检查）委托管理。","desc":"受托方未与地市公司规范签订委托合同或合同过期；委托站与员工未签订劳动合同或合同过期；委托站存在吃空饷员工；委托站代理手续费未按期兑现支付，每项每人次扣4.5分。","method":"明查","score_lo":4.5,"score_hi":45,"severity":"一般问题","haystack":"（2026年现场检查）委托管理。 受托方未与地市公司规范签订委托合同或合同过期；委托站与员工未签订劳动合同或合同过期；委托站存在吃空饷员工；委托站代理手续费未按期兑现支付，每项每人次扣4.5分。","grams_short":["0","02","2","20","26","6","6年","场","场检","委","委托","年","年现","托","托管","查","查委","检","检查","现","现场","理","管","管理"],"grams_full":["0","02","2","20","26","4","45","5","5分","6","6年","与","与员","与地","人","人次","付","付每","代","代理","兑","兑现","公","公司","分","动","动合","劳","劳动","受","受托","司","司规","吃","吃空","合","合同","同","同或","同过","员","员工","在","在吃","地","地市","场","场检","委","委托","存","存在","工","工委","工未","市","市公","年","年现","或","或合","手","手续","托","托合","托方","托站","托管","扣","扣4","按","按期","支","支付","方","方未","期","期兑","期委","未","未与","未按","未签","查","查委","检","检查","次","次扣","每","每人","每项","现","现场","现支","理","理受","理手","空","空饷","站","站与","站代","站存","签","签订","管","管理","续","续费","范","范签","规","规范","订","订劳","订委","费","费未","过","过期","项","项每","饷","饷员"]},{"idx":62,"code":"SVI2026041300828","system":"省级检查体系","cat1":"交接班","cat2":"交接班仪式","area":"复合区","unit":"","name":"（2026年现场检查）交接班。按远程现场检查标准，对加能站交接班考核扣分。","short":"（2026年现场检查）交接班。","desc":"按远程现场检查标准，对加能站交接班考核扣分。","method":"明查","score_lo":1,"score_hi":45,"severity":"一般问题","haystack":"（2026年现场检查）交接班。 按远程现场检查标准，对加能站交接班考核扣分。","grams_short":["0","02","2","20","26","6","6年","交","交接","场","场检","年","年现","接","接班","查","查交","检","检查","现","现场","班"],"grams_full":["0","02","2","20","26","6","6年","交","交接","准","准对","分","加","加能","场","场检","对","对加","年","年现","扣","扣分","按","按远","接","接班","查","查交","查标","标","标准","核","核扣","检","检查","现","现场","班","班按","班考","程","程现","站","站交","考","考核","能","能站","远","远程"]},{"idx":63,"code":"SVI2026041300869","system":"省级检查体系","cat1":"减分及否决项","cat2":"减分及否决项","area":"复合区","unit":"","name":"（2026年现场检查）“七套一盗”监管。1.对风控中心核查单开展检查及反馈比例低于90%；通过罐枪比对系统风险筛查，油罐覆盖率、异常报警处置率未达到100%，每项每低5个百分点扣0.8分（不足5个百分点按5个百分点计算，本项总扣分不超过8分）。2.加油卡、APP、电子钱包、电子券等，套现或套利，每起扣4分；偷盗油、置换油、私自进货、加油机作弊等，每起扣40分。3.异常卡未进行核实反馈的、核实存在异常未冻结的，每张卡扣1.2分；未有效制止系统外人员套现，套现卡至检查时未申请冻结；内部员工参与套现的，每起扣4分。","short":"（2026年现场检查）“七套一盗”监管。","desc":"1.对风控中心核查单开展检查及反馈比例低于90%；通过罐枪比对系统风险筛查，油罐覆盖率、异常报警处置率未达到100%，每项每低5个百分点扣0.8分（不足5个百分点按5个百分点计算，本项总扣分不超过8分）。2.加油卡、APP、电子钱包、电子券等，套现或套利，每起扣4分；偷盗油、置换油、私自进货、加油机作弊等，每起扣40分。3.异常卡未进行核实反馈的、核实存在异常未冻结的，每张卡扣1.2分；未有效制止系统外人员套现，套现卡至检查时未申请冻结；内部员工参与套现的，每起扣4分。","method":"","score_lo":40,"score_hi":444,"severity":"违纪问题","haystack":"（2026年现场检查）“七套一盗”监管。 1.对风控中心核查单开展检查及反馈比例低于90%；通过罐枪比对系统风险筛查，油罐覆盖率、异常报警处置率未达到100%，每项每低5个百分点扣0.8分（不足5个百分点按5个百分点计算，本项总扣分不超过8分）。2.加油卡、APP、电子钱包、电子券等，套现或套利，每起扣4分；偷盗油、置换油、私自进货、加油机作弊等，每起扣40分。3.异常卡未进行核实反馈的、核实存在异常未冻结的，每张卡扣1.2分；未有效制止系统外人员套现，套现卡至检查时未申请冻结；内部员工参与套现的，每起扣4分。","grams_short":["0","02","2","20","26","6","6年","一","一盗","七","七套","场","场检","套","套一","年","年现","查","查七","检","检查","现","现场","监","监管","盗","盗监","管"],"grams_full":["0","00","02","08","0分","0每","0通","1","10","12","1对","2","20","26","2分","2加","3","3异","4","40","4分","5","5个","6","6年","8","8分","9","90","A","AP","P","PP","P电","一","一盗","七","七套","不","不超","不足","与","与套","个","个百","中","中心","于","于9","人","人员","低","低5","低于","作","作弊","例","例低","偷","偷盗","内","内部","冻","冻结","分","分2","分3","分不","分偷","分未","分点","利","利每","到","到1","制","制止","券","券等","加","加油","包","包电","单","单开","卡","卡A","卡扣","卡未","卡至","参","参与","及","及反","反","反馈","员","员套","员工","在","在异","场","场检","处","处置","外","外人","套","套一","套利","套现","子","子券","子钱","存","存在","实","实反","实存","对","对系","对风","展","展检","工","工参","常","常卡","常报","常未","年","年现","开","开展","异","异常","弊","弊等","张","张卡","心","心核","总","总扣","或","或套","扣","扣0","扣1","扣4","扣分","报","报警","按","按5","换","换油","控","控中","效","效制","时","时未","有","有效","未","未冻","未有","未申","未达","未进","本","本项","机","机作","枪","枪比","查","查七","查单","查及","查时","查油","核","核实","核查","检","检查","止","止系","每","每低","每张","每起","每项","比","比例","比对","油","油卡","油机","油私","油罐","油置","点","点扣","点按","点计","率","率异","率未","现","现卡","现场","现套","现或","现的","申","申请","电","电子","百","百分","的","的核","的每","监","监管","盖","盖率","盗","盗油","盗监","私","私自","等","等套","等每","筛","筛查","算","算本","管","管1","系","系统","结","结内","结的","统","统外","统风","罐","罐枪","罐覆","置","置换","置率","自","自进","至","至检","行","行核","覆","覆盖","警","警处","计","计算","请","请冻","货","货加","起","起扣","超","超过","足","足5","达","达到","过","过8","过罐","进","进行","进货","通","通过","部","部员","钱","钱包","险","险筛","项","项总","项每","风","风控","风险","馈","馈比","馈的"]},{"idx":64,"code":"SVI2026041300870","system":"省级检查体系","cat1":"减分及否决项","cat2":"减分及否决项","area":"复合区","unit":"","name":"（2026年现场检查）库存管理。抽查盘点油品、加油卡、充值卡及易捷高库存、高价值商品，账实差异较大的；每项扣5分。","short":"（2026年现场检查）库存管理。","desc":"抽查盘点油品、加油卡、充值卡及易捷高库存、高价值商品，账实差异较大的；每项扣5分。","method":"","score_lo":5,"score_hi":15,"severity":"重要问题","haystack":"（2026年现场检查）库存管理。 抽查盘点油品、加油卡、充值卡及易捷高库存、高价值商品，账实差异较大的；每项扣5分。","grams_short":["0","02","2","20","26","6","6年","场","场检","存","存管","年","年现","库","库存","查","查库","检","检查","现","现场","理","管","管理"],"grams_full":["0","02","2","20","26","5","5分","6","6年","价","价值","值","值卡","值商","充","充值","分","加","加油","卡","卡充","卡及","及","及易","品","品加","品账","商","商品","场","场检","大","大的","存","存管","存高","实","实差","差","差异","年","年现","库","库存","异","异较","扣","扣5","抽","抽查","捷","捷高","易","易捷","查","查库","查盘","检","检查","每","每项","油","油卡","油品","点","点油","现","现场","理","理抽","的","的每","盘","盘点","管","管理","账","账实","较","较大","项","项扣","高","高价","高库"]},{"idx":65,"code":"SVI2026041300871","system":"省级检查体系","cat1":"减分及否决项","cat2":"减分及否决项","area":"复合区","unit":"","name":"（2026年现场检查）品牌合作站管理。抽查盘点油品、加油卡、充值卡及易捷高库存、高价值商品，账实差异较大的；每项扣5分。","short":"（2026年现场检查）品牌合作站管理。","desc":"抽查盘点油品、加油卡、充值卡及易捷高库存、高价值商品，账实差异较大的；每项扣5分。","method":"","score_lo":10,"score_hi":15,"severity":"重要问题","haystack":"（2026年现场检查）品牌合作站管理。 抽查盘点油品、加油卡、充值卡及易捷高库存、高价值商品，账实差异较大的；每项扣5分。","grams_short":["0","02","2","20","26","6","6年","作","作站","合","合作","品","品牌","场","场检","年","年现","查","查品","检","检查","牌","牌合","现","现场","理","站","站管","管","管理"],"grams_full":["0","02","2","20","26","5","5分","6","6年","价","价值","作","作站","值","值卡","值商","充","充值","分","加","加油","卡","卡充","卡及","及","及易","合","合作","品","品加","品牌","品账","商","商品","场","场检","大","大的","存","存高","实","实差","差","差异","年","年现","库","库存","异","异较","扣","扣5","抽","抽查","捷","捷高","易","易捷","查","查品","查盘","检","检查","每","每项","油","油卡","油品","点","点油","牌","牌合","现","现场","理","理抽","的","的每","盘","盘点","站","站管","管","管理","账","账实","较","较大","项","项扣","高","高价","高库"]}],"cat1_list":["HSE管理","一站一策","交接班","信息系统管理","其他问题","减分及否决项","加油卡管理","员工管理","岗位风险","形象管理","打非治违","服务管理","现场管理","督查管理","管理工作","经营工作","经营管理","考核激励","设备管理","队伍建设"],"cat2_list":["“三优”工作","交接班仪式","人员培训","人员更新","价格管理","其他","减分及否决项","加油卡管理","厕所管理","县（市）公司","发卡充值业务管理","发票管理","合规经营","员工关怀","客户管理","对手分析","当期重点工作","形象维护","征信审核","数质量管理","汽服管理","现场服务","现场管理","监测机制","站容站貌","线下营销","经营业务","统筹改造","网络管理","考核兑现","营销管理","设备管理及维护","进货管理","非油品管理"]};
+
+/* ===== 多检查标准模型 ===== */
+// 每个标准: { id, name, builtin, items:[...], cat1_list, cat2_list }
+// 内置标准来自 __INSPECTOR_DATA__；上传的标准由服务器 /api/standards 提供
+let STANDARDS = {};
+STANDARDS["builtin"] = {
+  id: "builtin",
+  name: (__INSPECTOR_DATA__.source_xlsx || "").split(/[\\/]/).pop() || "内置标准",
+  builtin: true,
+  items: __INSPECTOR_DATA__.items || [],
+  cat1_list: __INSPECTOR_DATA__.cat1_list || [],
+  cat2_list: __INSPECTOR_DATA__.cat2_list || [],
+};
+let activeStandardId = "builtin";   // 手动模式下使用的标准
+let matchMode = "manual";           // manual | smart | all
+let videoMode = false;              // 视频督导模式：随机补足仅 2 条且限「六步法/五步法」现场服务问题
+let serverOnline = false;
+
+/* ===== 阶段四：AI 语义匹配状态 ===== */
+let aiEnabled = false;       // 是否启用 AI 增强
+let aiConfigured = false;    // 后端是否已具备调用条件（演示/Ollama/已填 Key）
+let aiProvider = "deepseek";
+
+/* ===== 工具：字符 n-gram（与 Python 端保持一致） ===== */
+const _RE = /[\u4e00-\u9fa5A-Za-z0-9]/g;
+
+function charNgrams(text) {
+  const s = (text || "").match(_RE)?.join("") || "";
+  const grams = new Set();
+  for (const ch of s) grams.add(ch);
+  for (let i = 0; i < s.length - 1; i++) grams.add(s.slice(i, i + 2));
+  return grams;
+}
+
+function gramWeight(g) {
+  // IDF 降噪：在几乎所有条目里都出现的字（现场/检查/年/月/分/日…）几乎无区分度，
+  // 权重压到极低；罕见字（真正的问题特征）保持高权重。这样日期/机号/姓名等噪声不再主导排名。
+  const base = g.length === 2 ? 2.0 : 0.7;
+  const df = GRAM_DF.get(g) || 0;
+  if (df <= 3) return base;
+  const ratio = ITEM_COUNT ? df / ITEM_COUNT : 0;
+  if (ratio >= 0.5) return base * 0.05;
+  return base * Math.max(0.1, 1 - ratio);
+}
+
+// 同义词/口语 → 标准条目关键词 的桥接表。
+// 作用：① 用户写「未问候客户」这种标准里没有的字眼时，自动映射到「六步法/服务流程」，
+//      让正确的服务类条目浮上来；② 用户在「匹配关键词」里写「六步法」也走同一套加权。
+// 可在此自由扩充（覆盖你巡检条线的常用口语）。
+const SYNDICT = {
+  '问候': ['六步法', '五步法', '服务流程', '现场服务'],
+  '打招呼': ['六步法', '服务流程'],
+  '迎客': ['六步法', '服务流程'],
+  '送别': ['六步法', '服务流程'],
+  '引车': ['六步法', '服务流程'],
+  '双手': ['六步法'],
+  '微笑': ['服务流程'],
+  '唱收': ['五步法', '服务流程'],
+  '六步法': ['六步法', '服务流程'],
+  '五步法': ['五步法', '服务流程'],
+  '投诉': ['咨询投诉', '客服', '95105'],
+  '客服': ['咨询投诉', '客服'],
+  '热线': ['咨询投诉'],
+  '便民': ['便民', '增值'],
+  '增值': ['增值', '便民'],
+  '24小时': ['24小时', '营业'],
+  '延时': ['24小时', '营业'],
+  '营业时间': ['24小时', '营业'],
+  '卫生': ['清洁', '站容'],
+  '清洁': ['清洁', '站容'],
+  '脏': ['清洁', '站容'],
+  '静电': ['静电', '消防', '安全'],
+  '灭火器': ['消防'],
+  '消防': ['消防'],
+  '价格': ['价格'],
+  '调价': ['价格'],
+  '发票': ['发票'],
+  '非油': ['非油品', '易捷'],
+  '易捷': ['非油品', '易捷'],
+  '便利店': ['非油品'],
+  '加油卡': ['加油卡'],
+  '钱包': ['石化钱包', '加油卡'],
+  '石化钱包': ['石化钱包'],
+  '客户': ['客户'],
+  '大客户': ['客户'],
+  '流失': ['客户召回', '客户'],
+  '台账': ['台账', '记录'],
+  '记录': ['记录', '台账'],
+  '日志': ['记录'],
+  // 以下覆盖「标准文本里没有、但口语常用」的字眼，自动桥接到对应分类/条目
+  '安全帽': ['HSE', '安全', '现场管理'],
+  '头盔': ['HSE', '安全'],
+  '卸油': ['卸油', 'HSE', '安全', '现场管理'],
+  '卸油区': ['卸油', 'HSE', '安全', '现场管理'],
+  '卸油口': ['卸油', 'HSE', '安全'],
+  '卸油作业': ['卸油', 'HSE', '安全', '现场管理'],
+  '卸油胶管': ['卸油', 'HSE', '安全'],
+  '卸油操作规程': ['卸油', 'HSE', '安全'],
+  '油气回收': ['卸油', 'HSE', '安全'],
+  '溢油': ['卸油', 'HSE', '安全'],
+  '量油': ['卸油', 'HSE', '安全'],
+  '计量': ['卸油', 'HSE', '安全'],
+  '吸烟': ['HSE', '安全', '消防'],
+  '烟头': ['HSE', '安全', '消防'],
+  '动火': ['HSE', '安全', '消防'],
+  '预案': ['应急', 'HSE'],
+  '演练': ['应急', 'HSE'],
+  '罩棚': ['形象', '站容'],
+  '破损': ['形象', '站容'],
+  '卫生间': ['清洁', '站容'],
+  '厕所': ['清洁', '站容'],
+  '静电': ['静电', '消防', 'HSE', '安全', '卸油'],
+  '静电释放': ['静电', 'HSE', '安全', '卸油'],
+  '静电接地': ['静电', 'HSE', '安全', '卸油'],
+  '接地': ['静电', 'HSE', '安全'],
+  '防静电': ['静电', 'HSE', '安全'],
+};
+function autoSynonyms(text) {
+  const out = new Set();
+  if (!text) return [];
+  for (const k in SYNDICT) {
+    if (text.includes(k)) SYNDICT[k].forEach(v => out.add(v));
+  }
+  return [...out];
+}
+
+// 全局「匹配关键词」（用户在框里填的，逗号/空格分隔）
+let gKeywords = [];
+function effectiveKeywords(text) {
+  const set = new Set(gKeywords);
+  autoSynonyms(text).forEach(k => set.add(k));
+  return [...set].filter(k => k && k.length >= 2);
+}
+
+/* ===== 匹配算法 ===== */
+// 对给定 items 列表做匹配（替换原 matchOne，支持多标准）
+function _matchCore(query, items, cat1, cat2, keywords) {
+  const qGrams = charNgrams(query);
+  const qStr = (query || "").replace(/\s+/g, "");
+  const candidates = [];
+  for (const it of items) {
+    if (cat1 && it.cat1 !== cat1) continue;
+    if (cat2 && it.cat2 !== cat2) continue;
+
+    let sShort = 0, sFull = 0;
+    const shortSet = new Set(it.grams_short || []);
+    const fullSet = new Set(it.grams_full || []);
+    const hitShort = [], hitFull = [];
+    for (const g of qGrams) {
+      if (shortSet.has(g)) { sShort += gramWeight(g); hitShort.push(g); }
+      if (fullSet.has(g)) { sFull += gramWeight(g); hitFull.push(g); }
+    }
+
+    // 整词命中加分：手工描述的关键短语出现在条目中
+    const haystack = (it.short || "") + " " + (it.desc || "");
+    const cleanHay = haystack.replace(/[\s\u3000]/g, "");
+    let phraseBonus = 0;
+    if (qStr.length >= 3 && cleanHay.includes(qStr)) phraseBonus += 8;
+    else if (qStr.length >= 2 && cleanHay.includes(qStr)) phraseBonus += 4;
+
+    // 关键短语检测：query 中的连续 2-3 字在条目中频繁出现 → 主题词命中
+    let themeBonus = 0;
+    if (qStr.length >= 4) {
+      const q3 = new Set();
+      for (let i = 0; i <= qStr.length - 3; i++) q3.add(qStr.slice(i, i + 3));
+      let q3Hit = 0;
+      for (const g of q3) if (cleanHay.includes(g)) q3Hit++;
+      if (q3.size > 0 && q3Hit / q3.size >= 0.4) themeBonus += 4;
+    }
+
+    // 关键词/同义词加权：条目标准文本里包含关键词 → 强加权，确保正确的条目被顶上来
+    let kwBonus = 0;
+    if (keywords && keywords.length) {
+      const hayK = (it.short || "") + " " + (it.desc || "") + " " + (it.name || "") + " " + (it.cat1 || "") + " " + (it.cat2 || "");
+      for (const kw of keywords) {
+        if (kw && kw.length >= 2 && hayK.includes(kw)) kwBonus += 25;
+      }
+    }
+
+    const score = sShort * 3.2 + sFull * 1.0 + phraseBonus + themeBonus + kwBonus;
+    if (score <= 0) continue;
+
+    candidates.push({
+      item: it,
+      score,
+      hitShort: hitShort.slice(0, 8),
+      hitFull: hitFull.slice(0, 8),
+    });
+  }
+  candidates.sort((a, b) => b.score - a.score);
+  return candidates.slice(0, 5);
+}
+
+// 对给定 items 列表做匹配（替换原 matchOne，支持多标准）。
+// 若按 cat1/cat2 过滤后无候选，回退到全库匹配——避免「分类体系不一致」（例如随机补足条目的
+// 粗分类与标准库一级分类不同）导致补足条目永远 0 候选、无法选择匹配项。
+function matchOneAgainst(query, items, cat1, cat2, keywords) {
+  const r = _matchCore(query, items, cat1, cat2, keywords);
+  if (r.length) return r;
+  if (cat1 || cat2) return _matchCore(query, items, "", "", keywords);
+  return r;
+}
+
+// 合并所有已加载标准 -> 单一 items 数组
+function allItems() {
+  const out = [];
+  for (const id in STANDARDS) out.push(...STANDARDS[id].items);
+  return out;
+}
+
+// IDF 词频表：记录每个 n-gram 出现在多少个条目里，用于降噪
+let GRAM_DF = new Map();
+let ITEM_COUNT = 0;
+function buildGramDf() {
+  const items = allItems();
+  ITEM_COUNT = items.length;
+  const df = new Map();
+  for (const it of items) {
+    const grams = new Set([...(it.grams_short || []), ...(it.grams_full || [])]);
+    for (const g of grams) df.set(g, (df.get(g) || 0) + 1);
+  }
+  GRAM_DF = df;
+}
+
+// 根据当前模式（手动/智能/全）对一条手工记录做匹配
+function matchFor(query, cat1, cat2, keywords) {
+  buildGramDf();
+  const kws = keywords || effectiveKeywords(query);
+  if (matchMode === "manual") {
+    const std = STANDARDS[activeStandardId] || STANDARDS["builtin"];
+    const cands = matchOneAgainst(query, std.items, cat1, cat2, kws);
+    cands.forEach(c => c.stdName = std.name);
+    return cands;
+  }
+  if (matchMode === "all") {
+    let merged = [];
+    for (const id in STANDARDS) {
+      const std = STANDARDS[id];
+      const cands = matchOneAgainst(query, std.items, cat1, cat2, kws);
+      cands.forEach(c => c.stdName = std.name);
+      merged.push(...cands);
+    }
+    merged.sort((a, b) => b.score - a.score);
+    return merged.slice(0, 5);
+  }
+  // smart：逐标准取 Top1，选分数最高的那个标准，再返回其 Top5
+  let bestStd = null, bestScore = -1, best = [];
+  for (const id in STANDARDS) {
+    const std = STANDARDS[id];
+    const cands = matchOneAgainst(query, std.items, cat1, cat2, kws);
+    if (cands.length && cands[0].score > bestScore) {
+      bestScore = cands[0].score; bestStd = std; best = cands;
+    }
+  }
+  if (!bestStd) return [];
+  best.forEach(c => c.stdName = bestStd.name);
+  return best;
+}
+
+// 当前模式下有效的「一级分类」集合（供下拉使用）
+function effectiveCat1List() {
+  if (matchMode === "manual") {
+    const std = STANDARDS[activeStandardId] || STANDARDS["builtin"];
+    return std.cat1_list || [];
+  }
+  const set = new Set();
+  for (const id in STANDARDS) (STANDARDS[id].cat1_list || []).forEach(c => set.add(c));
+  return [...set].sort();
+}
+
+// 把服务器返回的标准条目标准化（补全字段 + 计算 grams）
+function normalizeItems(items) {
+  return (items || []).map(it => {
+    const o = {
+      code: it.code || "",
+      system: it.system || "",
+      cat1: it.cat1 || "",
+      cat2: it.cat2 || "",
+      area: it.area || "",
+      unit: it.unit || "",
+      name: it.name || "",
+      short: it.short || (it.name || ""),
+      desc: it.desc || "",
+      method: it.method || "",
+      score_lo: it.score_lo,
+      score_hi: it.score_hi,
+      severity: it.severity || "",
+    };
+    o.grams_short = charNgrams(o.short);
+    o.grams_full = charNgrams(o.short + " " + o.desc);
+    return o;
+  });
+}
+
+/* ===== 应用状态 ===== */
+const state = {
+  records: [],   // { id, text, picked: idx|null, cat1, cat2, candidates, auto? }
+  nextId: 1,
+  supplements: [],   // 自动补足的记录 { id, text, cat1, ... auto:true }
+  timeRecords: [],   // 时间填写生成的固定整改记录 { id, text, cat1, picked, timeFixed:true }
+  fillSig: null,     // 手工文本签名，用于判断是否需要重新补足
+};
+
+// 随机补足参数
+const FILL_TARGET = 10;     // 手工不足该条数时自动补足到该数
+const FILL_MAX_CAT = 3;     // 同一「一级分类」最多补足条数（减少同类重复）
+// 视频督导模式下补足目标与单类上限（只补 2 条「六步法/五步法」现场服务问题）
+const VIDEO_FILL_TARGET = 2;
+const VIDEO_MAX_CAT = 2;
+function fillTarget() { return videoMode ? VIDEO_FILL_TARGET : FILL_TARGET; }
+function fillMaxCat() { return videoMode ? VIDEO_MAX_CAT : FILL_MAX_CAT; }
+
+function $(id) { return document.getElementById(id); }
+// 手工记录可能带「问题日期」后缀（r.text = 原始 + 日期）；匹配与 AI 语义识别应使用干净原始文本，避免日期噪声干扰
+function recQuery(r) { return (r && typeof r.raw === "string") ? r.raw : (r && r.text) || ""; }
+function el(tag, props = {}, ...children) {
+  const e = document.createElement(tag);
+  for (const k in props) {
+    if (k === "class") e.className = props[k];
+    else if (k === "html") e.innerHTML = props[k];
+    else if (k.startsWith("on")) e.addEventListener(k.slice(2).toLowerCase(), props[k]);
+    else e.setAttribute(k, props[k]);
+  }
+  for (const c of children) {
+    if (c == null) continue;
+    if (typeof c === "string") e.appendChild(document.createTextNode(c));
+    else e.appendChild(c);
+  }
+  return e;
+}
+
+function scoreColor(s) {
+  if (s >= 10) return "#16a34a";
+  if (s >= 6) return "#d97706";
+  if (s >= 3) return "#9ca3af";
+  return "#d1d5db";
+}
+
+function fmtScore(lo, hi) {
+  const a = (lo ?? "").toString(), b = (hi ?? "").toString();
+  if (!a && !b) return "-";
+  if (a === b) return a;
+  return `${a}~${b}`;
+}
+
+/* ===== 阶段四：AI 语义匹配（前端） ===== */
+function poolItem(it) {
+  return {
+    code: it.code, cat1: it.cat1, cat2: it.cat2,
+    short: it.short || it.name || "", desc: it.desc || "",
+  };
+}
+
+// 为一条记录构造发给 LLM 的候选池。
+// 开启 AI 时给一个更宽的池子：补齐「关键词/同义词命中的条目」+「全量（封顶 40）」，
+// 这样即便 n-gram 因词汇鸿沟没把正确条目排进前几名，LLM 仍能从完整标准里语义挑出正确项。
+function candidatePoolFor(r) {
+  const cands = matchFor(recQuery(r), r.cat1, r.cat2);
+  const best = cands.length ? cands[0].score : 0;
+  if (aiEnabled) {
+    const kws = effectiveKeywords(recQuery(r));
+    const seen = new Set(cands.map(c => c.item.code));
+    const merged = cands.slice();
+    for (const it of allItems()) {
+      if (r.cat1 && it.cat1 !== r.cat1) continue;
+      if (seen.has(it.code)) continue;
+      const hay = (it.short || "") + (it.desc || "") + (it.name || "");
+      if (kws.some(k => hay.includes(k))) {
+        seen.add(it.code);
+        merged.push({ item: it, score: 0, hitShort: [], hitFull: [] });
+      }
+    }
+    if (merged.length < 40) {
+      for (const it of allItems()) {
+        if (r.cat1 && it.cat1 !== r.cat1) continue;
+        if (seen.has(it.code)) continue;
+        seen.add(it.code);
+        merged.push({ item: it, score: 0, hitShort: [], hitFull: [] });
+        if (merged.length >= 40) break;
+      }
+    }
+    return merged.slice(0, 40).map(c => poolItem(c.item));
+  }
+  if (best < 3) {
+    const items = allItems().filter(it =>
+      (!r.cat1 || it.cat1 === r.cat1) && (!r.cat2 || it.cat2 === r.cat2));
+    return items.slice(0, 25).map(poolItem);
+  }
+  return cands.slice(0, 12).map(c => poolItem(c.item));
+}
+
+function findItemByCode(code) {
+  if (!code) return null;
+  for (const id in STANDARDS) {
+    const it = STANDARDS[id].items.find(x => x.code === code);
+    if (it) return it;
+  }
+  return null;
+}
+
+// 调用本地服务 /api/ai/match，把 AI 推荐作为候选 #1 置顶
+async function aiMatchRecords(records) {
+  const list = (records || []).filter(r => r && r.picked == null && r.text);
+  if (!list.length) return;
+  if (!serverOnline) {
+    flashStatus("⚠ AI 需要本地服务在线（先运行 start.bat）");
+    return;
+  }
+  if (!aiConfigured) {
+    alert("AI 后端尚未配置，请点「⚙️ AI 设置」选择后端并填写 Key（或用演示模式）。");
+    openAiModal();
+    return;
+  }
+  const payload = list.map(r => ({
+    id: String(r.id), text: recQuery(r), candidates: candidatePoolFor(r),
+  }));
+  flashStatus("🤖 AI 语义识别中…");
+  let res;
+  try {
+    const r = await fetch(API_BASE + "/api/ai/match", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ records: payload }),
+    });
+    res = await r.json();
+  } catch (e) {
+    flashStatus("⚠ AI 调用失败：" + e.message);
+    return;
+  }
+  if (!res || !res.ok) {
+    flashStatus("⚠ AI 未启用/未配置：" + (res && res.error ? res.error : "未知错误"));
+    return;
+  }
+  const results = res.results || {};
+  for (const r of list) {
+    const hit = results[String(r.id)];
+    if (!hit || !hit.code) continue;
+    const item = findItemByCode(hit.code);
+    if (!item) continue;
+    r.candidates = (r.candidates || []).filter(c => !c.ai);   // 去掉上一次的 AI 候选
+    r.candidates.unshift({
+      item, score: 100, ai: true,
+      aiReason: hit.reason || "", aiConfidence: hit.confidence || 0,
+      hitShort: [], hitFull: [],
+    });
+  }
+  renderResults();
+  renderPicked();
+  renderStatus();
+  flashStatus("✓ AI 识别完成（推荐已置顶为候选 #1）");
+}
+
+/* ===== AI 设置弹窗 ===== */
+function openAiModal() {
+  $("ai-modal").style.display = "flex";
+  updateAiHint();   // 打开即按当前后端显示填写范例与 Key 获取指引
+  apiGet("/api/ai/config").then(res => {
+    if (!res || !res.ok) return;
+    aiProvider = res.provider || "deepseek";
+    $("ai-provider").value = aiProvider;
+    $("ai-enabled").checked = !!res.enabled;
+    $("ai-key").value = "";
+    $("ai-key").placeholder = res.has_key ? "已保存（留空则保持不变）" : "粘贴你的 API Key";
+    $("ai-base").value = res.base_url || "";
+    $("ai-model").value = res.model || "";
+    updateAiHint();
+  });
+}
+function closeAiModal() { $("ai-modal").style.display = "none"; $("ai-msg").textContent = ""; }
+
+function updateAiHint() {
+  const H = {
+    deepseek: {
+      note: "DeepSeek：注册即送免费额度，最易上手。本任务只是「短句→选标准编号」的简单语义分类，用 deepseek-chat 足够且便宜，别用 reasoner（贵且没必要）。",
+      key: '获取 Key：登录 <a href="https://platform.deepseek.com/api_keys" target="_blank" rel="noopener">platform.deepseek.com → API Keys</a> → 创建密钥并复制（形如 sk-xxxx）。',
+      base: "示例：https://api.deepseek.com/v1",
+      model: "示例：deepseek-chat（深度思考用 deepseek-reasoner，但本场景不推荐）",
+    },
+    doubao: {
+      note: "豆包 / 火山方舟：按量计费极便宜（百万 tokens 仅几毛），很适合这种批量短文本分类。",
+      key: '获取 Key：登录 <a href="https://console.volcengine.com/ark" target="_blank" rel="noopener">console.volcengine.com → 火山方舟</a> → 开通服务 →「API Key 管理」创建密钥；再到「模型推理」创建接入点，拿到 Endpoint ID。',
+      base: "示例：https://ark.cn-beijing.volces.com/api/v3",
+      model: "示例：填你的接入点 ID（形如 ep-2024xxxx），如 doubao-seed-1-6-250615，便宜又好用",
+    },
+    ollama: {
+      note: "本地 Ollama：完全免费、数据不出本机、零网络费，最省钱。中文语义用小模型 qwen2.5:3b 就够，追求准确率用 7b。",
+      key: '无需 Key。先安装 <a href="https://ollama.com" target="_blank" rel="noopener">Ollama</a> 并拉取中文模型：<code style="font:inherit">ollama pull qwen2.5:7b</code>（或 <code style="font:inherit">qwen2.5:3b</code> 更轻），确保本地服务已启动（默认 http://localhost:11434）。',
+      base: "示例：http://localhost:11434/v1",
+      model: "示例：qwen2.5:7b（省资源用 qwen2.5:3b）",
+    },
+    custom: {
+      note: "自定义 / 套壳：任意 OpenAI 兼容端点（base_url + model + key）。",
+      key: "填写你自己的套壳 / 自建服务后台提供的 Key（各平台获取位置不同，一般在「API 密钥」页面）。",
+      base: "示例：https://你的域名/v1",
+      model: "示例：填该端点支持的模型名（参考其文档）",
+    },
+    mock: {
+      note: "演示模式：不联网、不耗额度，用于验证整条链路。",
+      key: "无需 Key，API Key 留空即可。",
+      base: "（演示模式忽略，可留空）",
+      model: "（演示模式忽略，可留空）",
+    },
+  };
+  const p = $("ai-provider").value;
+  const h = H[p] || H.deepseek;
+  $("ai-hint").textContent = h.note;
+  $("ai-key-hint").innerHTML = h.key;          // 含获取链接，用 innerHTML
+  $("ai-base-hint").textContent = h.base;
+  $("ai-model-hint").textContent = h.model;
+  // 占位符也跟随provider给示例
+  $("ai-base").placeholder = (h.base.startsWith("示例：") ? h.base.slice(3) : "https://...");
+  $("ai-model").placeholder = (h.model.startsWith("示例：") ? h.model.slice(3) : "模型名");
+}
+
+async function saveAiConfig() {
+  const body = {
+    provider: $("ai-provider").value,
+    base_url: $("ai-base").value.trim(),
+    model: $("ai-model").value.trim(),
+    enabled: $("ai-enabled").checked,
+    api_key: $("ai-key").value ? $("ai-key").value : null,  // 空 => 保留原值
+  };
+  try {
+    const r = await fetch(API_BASE + "/api/ai/config", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    const res = await r.json();
+    if (!res.ok) { $("ai-msg").style.color = "#dc2626"; $("ai-msg").textContent = "保存失败：" + (res.error || ""); return; }
+    aiProvider = res.provider; aiEnabled = !!res.enabled; aiConfigured = !!res.configured;
+    $("ai-enhance").checked = aiEnabled;
+    $("ai-msg").style.color = "#16a34a";
+    $("ai-msg").textContent = "✓ 已保存" + (aiConfigured ? "" : "（后端暂未具备调用条件，请填写 Key 或改用演示）");
+  } catch (e) {
+    $("ai-msg").style.color = "#dc2626"; $("ai-msg").textContent = "保存失败：" + e.message;
+  }
+}
+
+async function testAiConnection() {
+  const body = {
+    provider: $("ai-provider").value,
+    base_url: $("ai-base").value.trim(),
+    model: $("ai-model").value.trim(),
+    enabled: true,
+    api_key: $("ai-key").value ? $("ai-key").value : null,
+  };
+  const probe = { records: [{ id: "probe", text: "测试：灭火器压力不足",
+    candidates: [{ code: "X1", cat1: "消防", cat2: "灭火器", short: "灭火器压力正常", desc: "压力表在绿区" }] }] };
+  $("ai-msg").style.color = "#7c3aed"; $("ai-msg").textContent = "测试中…";
+  try {
+    await fetch(API_BASE + "/api/ai/config", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    const r = await fetch(API_BASE + "/api/ai/match", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(probe) });
+    const res = await r.json();
+    if (!res.ok) { $("ai-msg").style.color = "#dc2626"; $("ai-msg").textContent = "测试失败：" + (res.error || ""); return; }
+    const hit = (res.results || {}).probe;
+    $("ai-msg").style.color = "#16a34a";
+    if (hit && hit.code) {
+      $("ai-msg").textContent = "✓ 连通成功，模型返回：code=" + hit.code + (hit.reason ? "（" + hit.reason + "）" : "");
+    } else {
+      // 模型连通了但没返回有效匹配：多半是模型名/端点不对，或该模型不遵循 JSON 输出
+      const reason = (hit && hit.reason) ? hit.reason : "null（无匹配）";
+      $("ai-msg").style.color = "#dc2626";
+      $("ai-msg").textContent = "⚠ 模型返回「无匹配」：" + reason +
+        " —— 请确认模型名称正确（DeepSeek 官方仅支持 deepseek-chat / deepseek-reasoner；" +
+        "若用第三方代理请填该代理真实的模型 ID，工具会把模型名原样发给 /chat/completions）";
+    }
+    aiConfigured = true; aiEnabled = true; $("ai-enhance").checked = true;
+  } catch (e) {
+    $("ai-msg").style.color = "#dc2626"; $("ai-msg").textContent = "测试失败：" + e.message;
+  }
+}
+
+async function loadAiConfig() {
+  try {
+    const res = await apiGet("/api/ai/config");
+    if (!res || !res.ok) return;
+    aiProvider = res.provider || "deepseek";
+    aiEnabled = !!res.enabled;
+    aiConfigured = !!res.configured;
+    $("ai-enhance").checked = aiEnabled;
+  } catch (e) { /* 忽略 */ }
+}
+
+/* ===== UI 渲染 ===== */
+function render() {
+  renderInputs();
+  renderResults();
+  renderPicked();
+  renderStatus();
+}
+
+function renderInputs() {
+  // 分类下拉
+  const cat1Sel = $("filter-cat1");
+  const cur1 = cat1Sel.value;
+  const cat1List = effectiveCat1List();
+  cat1Sel.innerHTML = '<option value="">全部一级分类</option>' +
+    cat1List.map(c => `<option value="${c}">${c}</option>`).join("");
+  if (cur1 && cat1List.includes(cur1)) cat1Sel.value = cur1;
+}
+
+function renderResults() {
+  const box = $("results");
+  box.innerHTML = "";
+  if (state.records.length === 0) {
+    box.appendChild(el("div", { class: "empty" }, "👆 先在左侧输入框粘贴手工问题，每行一条"));
+    return;
+  }
+
+  state.records.forEach((r, i) => {
+    const card = el("div", { class: "card" + (r.picked != null ? " picked" : "") + (r.auto ? " auto" : "") + (r.fixed ? " fixed" : "") });
+    // 头部：序号 + 描述 + 操作
+    const headKids = [
+      el("span", { class: "num" }, "#" + (i + 1)),
+      el("span", { class: "desc" }, r.text || "(空)"),
+    ];
+    if (r.auto) {
+      headKids.push(el("span", { class: "auto-badge", title: "随机自动补足的条目，可单独删除；点 📍 可固定以免被随机换掉" }, "🤖补充"));
+      if (r.fixed) {
+        headKids.push(el("span", { class: "fixed-badge", title: "已固定：再次随机补足时不会被换掉" }, "📌已固定"));
+      }
+    }
+    if (r.timeFixed) {
+      headKids.push(el("span", { class: "auto-badge", title: "时间填写生成的固定整改记录（归入「（2026年现场检查）问题整改」）" }, "⏰整改"));
+    }
+    headKids.push(
+      el("div", { class: "head-right" },
+        el("select", {
+          onchange: (e) => { r.cat1 = e.target.value; renderResults(); },
+          title: "一级分类筛选",
+        },
+          el("option", { value: "" }, "全部"),
+          ...effectiveCat1List().map(c =>
+            el("option", { value: c, ...(r.cat1 === c ? { selected: "selected" } : {}) }, c)
+          )
+        ),
+        (r.picked == null && r.text) ? el("button", {
+          class: "btn-mini",
+          title: "用 AI 单独识别这条",
+          onclick: (e) => { e.stopPropagation(); aiMatchRecords([r]); },
+        }, "🤖") : null,
+        r.auto ? el("button", {
+          class: "btn-mini" + (r.fixed ? " pin-on" : ""),
+          title: r.fixed ? "取消固定（允许被下次随机补足替换）" : "固定此条（确定匹配项后，再次补足不会被随机换掉）",
+          onclick: (e) => { e.stopPropagation(); r.fixed = !r.fixed; renderResults(); renderFillStatus(); },
+        }, r.fixed ? "📌" : "📍") : null,
+        el("button", {
+          class: "btn-mini",
+          title: r.timeFixed ? "删除（移出时间整改记录）" : (r.auto ? "删除（并移出自动补足）" : "删除"),
+          onclick: () => {
+            if (r.timeFixed) {
+              state.timeRecords = state.timeRecords.filter(s => s.id !== r.id);
+              addRecordsFromText(); render(); return;
+            }
+            if (r.auto) {
+              state.supplements = state.supplements.filter(s => s.id !== r.id);
+              addRecordsFromText(); render(); return;
+            }
+            state.records.splice(i, 1); render();
+          },
+        }, "✕"),
+      )
+    );
+    const head = el("div", { class: "card-head" }, ...headKids);
+    card.appendChild(head);
+
+    // 候选区
+    if (r.picked != null) {
+      const it = r.picked;
+      if (it) {
+        const chosen = el("div", { class: "chosen" },
+          el("div", { class: "ch-line" },
+            el("span", { class: "ch-label" }, "✓ 已选用"),
+            el("span", { class: "ch-code" }, it.code),
+            el("span", { class: "ch-cat" }, `${it.cat1} / ${it.cat2}`),
+            it.stdName ? el("span", { class: "cand-std" }, it.stdName) : null,
+          ),
+          el("div", { class: "ch-name" }, it.short || it.name),
+          el("div", { class: "ch-meta" },
+            el("span", {}, `分数 ${fmtScore(it.score_lo, it.score_hi)}`),
+            el("span", {}, it.severity || ""),
+            el("span", {}, it.method || ""),
+          ),
+          el("button", {
+            class: "btn-link",
+            onclick: () => { r.picked = null; renderResults(); renderPicked(); renderStatus(); },
+          }, "更换"),
+        );
+        card.appendChild(chosen);
+      }
+    } else {
+      // 没匹配 / 还没匹配
+      if (!r.candidates || r.candidates.length === 0) {
+        card.appendChild(el("div", { class: "empty" }, "🔍 点击「开始匹配」生成候选"));
+      } else {
+        const list = el("div", { class: "cand-list" });
+        r.candidates.forEach((c, k) => {
+          const it = c.item;
+          const headKids = [
+            el("span", { class: "cand-rank" }, "#" + (k + 1)),
+          ];
+          if (c.ai) {
+            headKids.push(el("span", { class: "cand-ai-badge" }, "🤖 AI 推荐"));
+            headKids.push(el("span", { class: "cand-ai-conf" }, "置信 " + Math.round((c.aiConfidence || 0) * 100) + "%"));
+          } else {
+            headKids.push(el("span", { class: "cand-score", style: `color:${scoreColor(c.score)}` }, c.score.toFixed(1)));
+          }
+          headKids.push(el("span", { class: "cand-code" }, it.code));
+          headKids.push(el("span", { class: "cand-cat" }, `${it.cat1} / ${it.cat2}`));
+          headKids.push(el("span", { class: "cand-sev" }, it.severity || ""));
+          if (c.stdName) headKids.push(el("span", { class: "cand-std" }, c.stdName));
+
+          const row = el("div", {
+            class: "cand" + (c.ai ? " ai" : ""),
+            onclick: () => {
+              r.picked = it;              // 直接存条目对象引用
+              r.candidates = null;  // 选完后清掉候选
+              if (r.auto) r.fixed = true;   // 自动补足条目一旦确定匹配项即自动固定，避免被随机换掉
+              renderResults(); renderPicked(); renderStatus();
+            },
+          },
+            el("div", { class: "cand-head" }, ...headKids),
+            el("div", { class: "cand-name" }, it.short || it.name),
+            c.ai && c.aiReason ? el("div", { class: "cand-ai-reason" }, "理由：" + c.aiReason) : null,
+            el("div", { class: "cand-desc" }, (it.desc || "").slice(0, 160) + ((it.desc || "").length > 160 ? "..." : "")),
+            el("div", { class: "cand-meta" },
+              el("span", {}, `分数 ${fmtScore(it.score_lo, it.score_hi)}`),
+              el("span", {}, it.method || ""),
+              c.ai ? null : el("span", { class: "cand-hit" },
+                "命中：",
+                c.hitShort.slice(0, 4).join("·"),
+                (c.hitShort.length && c.hitFull.length) ? " | " : "",
+                c.hitFull.slice(0, 4).join("·"),
+              ),
+            ),
+          );
+          list.appendChild(row);
+        });
+        card.appendChild(list);
+      }
+    }
+    box.appendChild(card);
+  });
+}
+
+function renderPicked() {
+  const box = $("picked");
+  box.innerHTML = "";
+  const pickedItems = state.records
+    .filter(r => r.picked != null)
+    .map(r => ({ rec: r, item: r.picked }))
+    .filter(p => p.item);
+
+  if (pickedItems.length === 0) {
+    box.appendChild(el("div", { class: "empty" }, "还没有选用的条目"));
+    return;
+  }
+
+  pickedItems.forEach((p, i) => {
+    const it = p.item;
+    const inQueue = queueCodes.has(it.code);
+    const row = el("div", { class: "picked-row" },
+      el("span", { class: "picked-num" }, (i + 1) + "."),
+      el("div", { class: "picked-info" },
+        el("div", { class: "picked-line1" },
+          el("span", { class: "picked-code" }, it.code),
+          el("span", { class: "picked-cat" }, `${it.cat1} / ${it.cat2}`),
+          it.stdName ? el("span", { class: "cand-std" }, it.stdName) : null,
+        ),
+        el("div", { class: "picked-name" }, it.short || it.name),
+        el("div", { class: "picked-orig" }, "原始：", p.rec.text),
+      ),
+      el("button", {
+        class: "btn-mini" + (inQueue ? " pushed" : ""),
+        title: inQueue ? "已在待录入队列，点击移除" : "加入待录入队列（在网页一键录入）",
+        "data-code": it.code,
+        onclick: () => togglePush(it, p.rec.text),
+      }, inQueue ? "✓" : "✚"),
+    );
+    box.appendChild(row);
+  });
+}
+
+function renderStatus() {
+  const total = state.records.length;
+  const picked = state.records.filter(r => r.picked != null).length;
+  $("status").textContent = `共 ${total} 条 · 已匹配 ${picked} 条 · 待匹配 ${total - picked} 条`;
+}
+
+/* ===== 操作 ===== */
+function getProblemDateTag() {
+  const v = ($("problem-date") && $("problem-date").value || "").trim();
+  return v || "";
+}
+
+// 把问题时间附加到自动补足条目：raw 保持干净原文（用于匹配），text 附加日期用于展示；
+// 直接复用 state.supplements 中的对象引用，picked/candidates 不会被重建覆盖。
+function tagSupplements(dateTag) {
+  return state.supplements.map(s => {
+    if (typeof s.raw !== "string") s.raw = s.text;
+    s.text = dateTag ? dateTag + " " + s.raw : s.raw;
+    return s;
+  });
+}
+
+function addRecordsFromText() {
+  const dateTag = getProblemDateTag();
+  const lines = $("input-text").value.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+  // 手工条目（按行同步）：raw=原始文本（用于匹配），text=raw+问题日期（用于展示/去重）
+  const base = lines.map((t, i) => {
+    const exist = state.records[i];
+    if (exist && !exist.auto && !exist.timeFixed && exist.raw === t) {
+      exist.text = dateTag ? dateTag + " " + t : t;   // 仅刷新带日期的展示文本，保留已选用
+      return exist;
+    }
+    const text = dateTag ? dateTag + " " + t : t;
+    return { id: state.nextId++, raw: t, text, picked: null, cat1: "", cat2: "", candidates: null, auto: false };
+  });
+  // 追加自动补足的条目（auto 标记，方便单独移除）+ 时间填写的固定整改记录
+  state.records = base.concat(tagSupplements(dateTag)).concat(state.timeRecords);
+}
+
+// 计算当前手工条数（不含自动补足）
+function manualCount() {
+  return $("input-text").value.split(/\r?\n/).map(s => s.trim()).filter(Boolean).length;
+}
+
+// 手工文本签名，用于判断是否需要重新补足（手工没变则保留上一批补足，避免每次重排）
+function manualSig() {
+  return $("input-text").value.split(/\r?\n/).map(s => s.trim()).filter(Boolean).join("\n");
+}
+
+// 调 /api/random_fill：根据当前手工内容随机补足到 FILL_TARGET 条
+// 已「固定（📌）」的自动补足条目会被保留，再次补足只补未固定的空缺（不会被随机换掉）
+async function fetchFill(force) {
+  const sig = manualSig();
+  const locked = state.supplements.filter(s => s.fixed);
+  const lockedSig = locked.map(s => s.id + ":" + (s.raw || s.text)).join("|");
+  // 已补足、手工未变、且无锁定变化 → 不重复请求，保持结果稳定
+  if (!force && state.supplements.length && state.fillSig === (sig + "#" + lockedSig)) {
+    return;
+  }
+  const manualLines = sig ? sig.split("\n") : [];
+  const target = fillTarget();
+  // 手工 + 已固定 已达标 → 仅保留固定项，多余未固定的补足清掉
+  if (manualLines.length + locked.length >= target) {
+    state.supplements = locked.slice();
+    state.fillSig = sig + "#" + lockedSig;
+    renderFillStatus();
+    return;
+  }
+  try {
+    // 把已固定的条目也当作「已确定内容」传给后端：既计入目标数，又避免后端重复建议同一类
+    const manualAll = manualLines.concat(locked.map(s => s.raw || s.text));
+    const resp = await fetch("/api/random_fill", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ manual: manualAll, target: target, max_per_cat: fillMaxCat(), video_mode: videoMode }),
+    });
+    const data = await resp.json();
+    if (data && data.ok) {
+      const fresh = (data.filled || []).map(f => ({
+        id: state.nextId++, raw: f.text, text: f.text, cat1: f.cat1 || "", cat2: "", candidates: null, picked: null, auto: true, fixed: false,
+      }));
+      state.supplements = locked.concat(fresh);   // 固定项在前，新补足在后
+      state.fillSig = sig + "#" + lockedSig;
+      renderFillStatus(data);
+    } else {
+      // 后端无结果：保留已固定项，不强行清空
+      state.supplements = locked.slice();
+      state.fillSig = sig + "#" + lockedSig;
+      renderFillStatus();
+    }
+  } catch (e) {
+    // 本地服务不可用时（以文件方式打开）静默跳过，已固定项仍保留
+    state.supplements = locked.slice();
+    state.fillSig = sig + "#" + lockedSig;
+    renderFillStatus();
+  }
+}
+
+function renderFillStatus(data) {
+  const elx = $("fill-status");
+  if (!elx) return;
+  const prefix = videoMode ? "🎥 视频督导：" : "🤖 ";
+  const fixedN = state.supplements.filter(s => s.fixed).length;
+  const fixedTip = fixedN ? "（📌已固定 " + fixedN + " 条不会被替换）" : "";
+  if (data && data.filled && data.filled.length) {
+    elx.textContent = prefix + "已自动补足 " + data.filled.length + " 条（手工 " + data.manual +
+      " + 补充 " + state.supplements.length + " = 共 " + data.total + " 条）" + fixedTip;
+  } else if (state.supplements.length) {
+    elx.textContent = prefix + "已补足 " + state.supplements.length + " 条" + fixedTip;
+  } else if (manualCount() >= fillTarget()) {
+    elx.textContent = "";
+  } else if ($("chk-fill") && $("chk-fill").checked) {
+    elx.textContent = data && data.note ? data.note : "（随机清单不可用或未找到可补足条目）";
+  } else {
+    elx.textContent = "";
+  }
+}
+
+// ===== 时间填写（问题整改）固定记录 =====
+// 固定归入「（2026年现场检查）问题整改」标准条目（一级分类：其他问题）
+const PROBLEM_FIX_CODE = "SVI2026041300836";
+
+function findProblemFix() {
+  for (const id in STANDARDS) {
+    const it = STANDARDS[id].items.find(x => x.code === PROBLEM_FIX_CODE);
+    if (it) return { item: it, stdName: STANDARDS[id].name };
+  }
+  return null;
+}
+
+function renderTimeStatus() {
+  const elx = $("time-status");
+  if (!elx) return;
+  if (state.timeRecords.length) {
+    elx.textContent = "⏰ 已添加 " + state.timeRecords.length + " 条整改记录（固定归入「（2026年现场检查）问题整改」）";
+  } else {
+    elx.textContent = "";
+  }
+}
+
+// 添加一条时间整改记录：时间（不处理格式）+ 附加「站内现场管理良好」，固定选用问题整改标准
+function addTimeRecord() {
+  const raw = ($("time-input").value || "").trim();
+  const time = raw || (function () {
+    const d = new Date();
+    const p = n => String(n).padStart(2, "0");
+    return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate());
+  })();
+  const found = findProblemFix();
+  if (!found) {
+    flashStatus("⚠ 未找到「（2026年现场检查）问题整改」标准条目，无法固定归入");
+    return;
+  }
+  const rec = {
+    id: state.nextId++,
+    text: time + " 站内现场管理良好",
+    cat1: "其他问题",
+    cat2: "其他",
+    picked: found.item,
+    candidates: null,
+    auto: false,
+    timeFixed: true,
+  };
+  rec.picked.stdName = found.stdName;
+  state.timeRecords.push(rec);
+  addRecordsFromText();
+  renderResults(); renderPicked(); renderStatus(); renderTimeStatus();
+  $("time-input").value = "";
+  flashStatus("✅ 已添加整改记录：" + rec.text);
+}
+
+// 上传补充到随机问题清单：支持文件(xlsx/csv/txt)或文本粘贴，append/replace 模式
+async function loadRandomList() {
+  const box = $("rlist");
+  box.innerHTML = "加载中…";
+  try {
+    const resp = await fetch("/api/random_list");
+    const d = await resp.json();
+    if (!d || !d.ok) { box.textContent = "加载失败：" + ((d && d.error) || ""); return; }
+    const items = d.items || [];
+    box.innerHTML = "";
+    if (!items.length) { box.textContent = "清单为空"; return; }
+    items.forEach(it => {
+      const lab = document.createElement("label");
+      lab.style.cssText = "display:flex; gap:6px; align-items:flex-start; padding:3px 4px; border-bottom:1px solid #f0f0f0; cursor:pointer;";
+      const cb = document.createElement("input");
+      cb.type = "checkbox"; cb.className = "rchk"; cb.dataset.norm = it.norm;
+      if (it.excluded) cb.checked = true;
+      const span = document.createElement("span");
+      span.innerHTML = '<span style="color:#92400e;font-size:11px;margin-right:4px;">[' + escapeHtml(it.cat1 || "其他") + ']</span>' + escapeHtml(it.text);
+      lab.appendChild(cb); lab.appendChild(span);
+      box.appendChild(lab);
+    });
+    $("rlist-count").textContent = "共 " + items.length + " 条，已剔除 " + (d.excluded_count || 0) + " 条";
+    $("rlist-status").textContent = "勾选要剔除的条目，点「保存剔除」即生效（下次补足不再抽到）";
+  } catch (e) {
+    box.textContent = "加载失败：" + e;
+  }
+}
+
+async function saveExclude() {
+  const norms = [...document.querySelectorAll("#rlist .rchk:checked")].map(cb => cb.dataset.norm);
+  try {
+    const resp = await fetch("/api/random_exclude", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ texts: norms }),
+    });
+    const d = await resp.json();
+    if (d && d.ok) {
+      $("rlist-status").textContent = d.message || ("已保存，共剔除 " + norms.length + " 条");
+      $("rlist-count").textContent = "已剔除 " + (d.excluded || norms.length) + " 条";
+    } else {
+      $("rlist-status").textContent = "保存失败：" + ((d && d.error) || "未知");
+    }
+  } catch (e) {
+    $("rlist-status").textContent = "保存失败：" + e;
+  }
+}
+
+async function uploadRandom() {
+  const fileInput = $("upload-file");
+  const text = ($("upload-text").value || "").trim();
+  const mode = $("upload-mode").value;
+  if (!fileInput.files.length && !text) {
+    showUploadStatus("请选择文件，或直接粘贴文本", true);
+    return;
+  }
+  const fd = new FormData();
+  fd.append("mode", mode);
+  if (fileInput.files.length) fd.append("file", fileInput.files[0]);
+  if (text) fd.append("text", text);
+  try {
+    showUploadStatus("上传中…", false);
+    const resp = await fetch("/api/random_upload", { method: "POST", body: fd });
+    const data = await resp.json();
+    if (data && data.ok) {
+      showUploadStatus(data.message || ("已追加 " + data.added + " 条"), false);
+      $("upload-text").value = "";
+      fileInput.value = "";
+    } else {
+      showUploadStatus((data && data.error) ? data.error : "上传失败", true);
+    }
+  } catch (e) {
+    showUploadStatus("上传失败：" + e.message, true);
+  }
+}
+
+function showUploadStatus(msg, isErr) {
+  const elx = $("upload-status");
+  if (!elx) return;
+  elx.textContent = msg || "";
+  elx.style.color = isErr ? "#dc2626" : "#16a34a";
+}
+
+function readKeywords() {
+  const raw = ($("match-keywords") && $("match-keywords").value || "").trim();
+  gKeywords = raw ? raw.split(/[,，\s]+/).map(s => s.trim()).filter(Boolean) : [];
+  return gKeywords;
+}
+
+async function runMatch() {
+  readKeywords();
+  // 手工不足时自动随机补足（勾选且未达目标）
+  if ($("chk-fill") && $("chk-fill").checked && manualCount() < fillTarget()) {
+    await fetchFill(false);
+  }
+  addRecordsFromText();
+  for (const r of state.records) {
+    if (r.picked == null) {
+      r.candidates = matchFor(recQuery(r), r.cat1, r.cat2);
+    }
+  }
+  renderResults();
+  renderPicked();
+  renderStatus();
+  // 阶段四：开启 AI 增强时，自动对未匹配记录做语义识别，把推荐置顶
+  if (aiEnabled && aiConfigured) {
+    await aiMatchRecords(state.records.filter(r => r.picked == null && r.text));
+  }
+}
+
+// 切换标准/模式后，对未选用的记录重新生成候选（不破坏已选用）
+function rematchExisting() {
+  readKeywords();
+  for (const r of state.records) {
+    if (r.picked == null) r.candidates = matchFor(recQuery(r), r.cat1, r.cat2);
+  }
+  renderResults();
+  renderPicked();
+  renderStatus();
+}
+
+function clearAll() {
+  if (state.records.length && !confirm("确认清空所有手工记录？已选用的条目也会一并清除。")) return;
+  state.records = [];
+  state.supplements = [];
+  state.timeRecords = [];
+  state.fillSig = null;
+  $("input-text").value = "";
+  renderFillStatus();
+  renderTimeStatus();
+  render();
+}
+
+function copyPicked() {
+  const pickedItems = state.records
+    .filter(r => r.picked != null)
+    .map(r => r.picked)
+    .filter(Boolean);
+  if (pickedItems.length === 0) { alert("还没有选用任何条目"); return; }
+
+  // TSV 格式：方便粘贴到 Excel 或网页
+  const head = ["序号", "条目编码", "督导体系", "一级分类", "二级分项", "检查区域", "检查单元", "条目名称", "问题描述", "检查方法", "标准分数下限", "标准分数上限", "问题重要级别"];
+  const rows = pickedItems.map((it, i) => [
+    i + 1, it.code, it.system, it.cat1, it.cat2, it.area, it.unit,
+    it.short || it.name, it.desc, it.method, it.score_lo, it.score_hi, it.severity,
+  ]);
+  const tsv = [head, ...rows].map(r => r.map(v => (v == null ? "" : String(v).replace(/\t/g, " "))).join("\t")).join("\n");
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(tsv).then(
+      () => flashStatus("✓ 已复制到剪贴板（TSV，可直接粘贴到 Excel / 网页）"),
+      () => prompt("自动复制失败，请手动复制：", tsv)
+    );
+  } else {
+    prompt("请手动复制：", tsv);
+  }
+}
+
+function exportExcel() {
+  const pickedItems = state.records
+    .filter(r => r.picked != null)
+    .map(r => r.picked)
+    .filter(Boolean);
+  if (pickedItems.length === 0) { alert("还没有选用任何条目"); return; }
+
+  // 用 CSV（带 BOM）让 Excel 直接识别中文
+  const head = ["序号", "条目编码", "督导体系", "一级分类", "二级分项", "检查区域", "检查单元", "条目名称", "问题描述", "检查方法", "标准分数下限", "标准分数上限", "问题重要级别"];
+  const esc = (v) => {
+    if (v == null) return "";
+    const s = String(v).replace(/"/g, '""');
+    return /[",\n]/.test(s) ? `"${s}"` : s;
+  };
+  const rows = pickedItems.map((it, i) => [
+    i + 1, it.code, it.system, it.cat1, it.cat2, it.area, it.unit,
+    it.short || it.name, it.desc, it.method, it.score_lo, it.score_hi, it.severity,
+  ].map(esc).join(","));
+  const csv = "\uFEFF" + head.map(esc).join(",") + "\n" + rows.join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  const now = new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-");
+  a.href = url; a.download = `现场检查条目_已选用_${now}.csv`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  flashStatus(`✓ 已导出 CSV（${pickedItems.length} 条）`);
+}
+
+function flashStatus(msg) {
+  const s = $("status");
+  const old = s.textContent;
+  s.textContent = msg;
+  s.style.color = "#16a34a";
+  setTimeout(() => { s.style.color = ""; renderStatus(); }, 2200);
+}
+
+/* ===== 第二阶段：待录入队列（连接本地 server.py） ===== */
+// 接口基址跟随「当前访问页面的实际地址」：server 在 8721 被占用时会自动改用
+// 8722/8723…，若把端口写死成 8721，页面发出的所有请求都会打到一个没有服务的端口，
+// 导致整页功能失效、看起来像白屏。file:// 离线打开时回退到 8721。
+const API_BASE = (location.protocol === 'file:')
+  ? "http://127.0.0.1:8721"
+  : (location.origin || "http://127.0.0.1:8721");
+let queueCodes = new Set();   // 当前已在待录入队列的 code 集合
+
+async function apiGet(path) {
+  const r = await fetch(API_BASE + path, { cache: "no-store" });
+  return r.ok ? r.json() : null;
+}
+async function apiPost(path, body) {
+  const r = await fetch(API_BASE + path, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body || {}),
+  });
+  return r.ok ? r.json() : null;
+}
+
+async function apiDelete(path) {
+  const r = await fetch(API_BASE + path, { method: "DELETE" });
+  return r.ok ? r.json() : null;
+}
+
+function escapeHtml(s) {
+  return String(s == null ? "" : s).replace(/[&<>"']/g, c =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+// ArrayBuffer -> base64（兼容二进制）
+function base64FromArrayBuffer(buf) {
+  const bytes = new Uint8Array(buf);
+  let bin = "";
+  const chunk = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunk) {
+    bin += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
+  }
+  return btoa(bin);
+}
+
+/* ===== 检查标准管理 ===== */
+function rebuildStdSelect() {
+  const sel = $("std-select");
+  const cur = sel.value;
+  sel.innerHTML = Object.values(STANDARDS).map(s =>
+    `<option value="${escapeHtml(s.id)}">${escapeHtml(s.name)}（${s.items.length}）</option>`
+  ).join("");
+  sel.value = (cur && STANDARDS[cur]) ? cur : activeStandardId;
+}
+
+function renderStdChips() {
+  const box = $("std-chips");
+  box.innerHTML = "";
+  Object.values(STANDARDS).forEach(s => {
+    const chip = el("span", { class: "chip" + (s.builtin ? " builtin" : "") },
+      s.name + " · " + s.items.length);
+    if (!s.builtin) {
+      chip.appendChild(el("span", {
+        class: "x", title: "删除该检查标准",
+        onclick: () => deleteStandard(s.id),
+      }, "×"));
+    }
+    // 下载该标准(xlsx)：导出后台自动转换后的规范文件
+    chip.appendChild(el("span", {
+      class: "dl", title: "下载该标准的 xlsx（自动转换后的规范格式）",
+      onclick: (e) => { e.stopPropagation(); downloadStandardXlsx(s.id, s.name); },
+    }, "⬇xlsx"));
+    box.appendChild(chip);
+  });
+}
+
+function updateMeta() {
+  const nStd = Object.keys(STANDARDS).length;
+  const total = Object.values(STANDARDS).reduce((a, s) => a + s.items.length, 0);
+  $("meta-info").innerHTML =
+    `<span class="pill">${nStd} 个检查标准</span>` +
+    `<span class="pill">${total} 条条目</span>`;
+}
+
+// 从服务器拉取已上传的标准并合并进 STANDARDS
+async function loadStandards() {
+  try {
+    const res = await apiGet("/api/standards");
+    if (!res || !res.ok) return;
+    for (const meta of res.standards) {
+      if (STANDARDS[meta.id]) continue;  // 已加载
+      const detail = await apiGet("/api/standards/" + meta.id);
+      if (detail && detail.ok && detail.items) {
+        STANDARDS[meta.id] = {
+          id: meta.id, name: meta.name, builtin: false,
+          items: normalizeItems(detail.items),
+          cat1_list: detail.cat1_list || [], cat2_list: detail.cat2_list || [],
+        };
+      }
+    }
+    rebuildStdSelect();
+    renderStdChips();
+    updateMeta();
+    renderInputs();
+  } catch (e) {
+    // 本地服务未启动（file:// 或没开 server）时不报错，内置标准仍可用
+    if (location.protocol === 'file:') showFileModeHint();
+  }
+}
+
+async function uploadStandard(file) {
+  if (!serverOnline) {
+    alert("需先启动本地服务（双击 start.bat 或 server.exe），才能上传检查标准。");
+    return;
+  }
+  try {
+    const name = prompt("请输入该检查标准的名称（便于区分）：", file.name.replace(/\.xlsx?$/i, ""));
+    if (name === null) return;
+    const buf = await file.arrayBuffer();
+    const b64 = base64FromArrayBuffer(buf);
+    const r = await fetch(API_BASE + "/api/standards/upload", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: (name.trim() || file.name), data: b64 }),
+    });
+    const res = await r.json();
+    if (!res.ok) throw new Error(res.error || "上传失败");
+    await loadStandards();
+    // 导入成功后自动切换为该标准，后台已自动转换，可直接用于匹配
+    if (res.id) {
+      activeStandardId = res.id;
+      const sel = $("std-select");
+      if (sel) sel.value = res.id;
+    }
+    flashStatus("✓ 已导入并自动转换：" + res.name + "（" + res.n + " 条，已设为当前标准）");
+  } catch (e) {
+    alert("导入失败：" + e.message + "\n请确认文件为 .xlsx，且列格式与「下载导入模板」一致。");
+  }
+}
+
+async function downloadTemplate() {
+  if (!serverOnline) {
+    alert("需先启动本地服务（双击 start.bat 或 server.exe），才能下载导入模板。");
+    return;
+  }
+  try {
+    const r = await fetch(API_BASE + "/api/standards/template");
+    if (!r.ok) throw new Error("下载失败");
+    const blob = await r.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = "检查标准导入模板.xlsx";
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    flashStatus("✓ 已下载导入模板");
+  } catch (e) {
+    alert("下载模板失败：" + e.message);
+  }
+}
+
+async function downloadStandardXlsx(id, name) {
+  if (!serverOnline) {
+    alert("需先启动本地服务（双击 start.bat 或 server.exe），才能下载标准。");
+    return;
+  }
+  try {
+    const r = await fetch(API_BASE + "/api/standards/" + encodeURIComponent(id) + "/xlsx");
+    if (!r.ok) {
+      const j = await r.json().catch(() => ({}));
+      throw new Error(j.error || ("下载失败 " + r.status));
+    }
+    const blob = await r.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = (name ? name : "检查标准") + ".xlsx";
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    flashStatus("✓ 已下载标准：" + (name || id));
+  } catch (e) {
+    alert("下载标准失败：" + e.message);
+  }
+}
+
+async function downloadUserscript() {
+  if (!serverOnline) {
+    alert("需先启动本地服务（start.bat 或 server.exe），才能下载油猴脚本。");
+    return;
+  }
+  try {
+    const r = await fetch(API_BASE + "/static/ddgl_autofill.user.js");
+    if (!r.ok) throw new Error("下载失败（HTTP " + r.status + "）");
+    const blob = await r.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = "ddgl_autofill.user.js";
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    flashStatus("✓ 已下载油猴脚本：把 ddgl_autofill.user.js 拖到 360极速X 即可安装");
+  } catch (e) {
+    alert("下载油猴脚本失败：" + e.message + "\n确认本地服务已启动，且 ddgl_autofill.user.js 与 server.exe 同目录。");
+  }
+}
+
+function quitService() {
+  if (!serverOnline && location.protocol !== 'file:') {
+    if (!confirm("本地服务可能未连接，确定退出吗？")) return;
+  }
+  if (location.protocol === 'file:') {
+    alert("当前以文件方式打开，没有后台服务可退出。\n若你是双击 server.exe 运行的，请直接关闭浏览器标签页即可。");
+    return;
+  }
+  if (!confirm("确定停止本地服务并退出？\n（之后需重新双击 server.exe / start.bat 才能再次使用）")) return;
+  fetch(API_BASE + "/api/shutdown", { method: "POST" })
+    .then(() => { document.body.innerHTML = '<div style="padding:40px;font:14px/1.8 sans-serif;">本地服务已停止。您可以关闭此页面。</div>'; })
+    .catch(() => { alert("发送退出指令失败，请在任务管理器结束 server.exe 进程。"); });
+}
+
+function showHelp() {
+  const html = `
+<div style="line-height:1.7;font-size:13px;">
+  <h3 style="margin:0 0 10px;">🛢️ 现场检查条目 · 智能匹配工具 · 使用流程</h3>
+  <ol style="margin:0 0 10px 18px;padding:0;">
+    <li><b>启动本地服务</b>：双击 <code>start.bat</code>（或 <code>server.exe</code>），系统托盘会出现蓝色图标，浏览器会自动打开本页面。
+        <br/><span style="color:#6b7280;">关闭服务：在托盘图标上 <b>右键 → 退出服务</b>。</span></li>
+    <li><b>安装油猴脚本</b>：点右上角 <b>📥 油猴脚本</b> 按钮，把下载的 <code>ddgl_autofill.user.js</code> 拖到 360极速X 即可安装。
+        <br/><span style="color:#6b7280;">首次安装：360极速X → 扩展 → 搜索「Tampermonkey」安装。</span></li>
+    <li><b>在「待录入」面板手动填入或粘贴</b>每行一条的检查记录，点 <b>⚡ 智能匹配</b>。</li>
+    <li><b>点「🚀 一键录入」</b>：把候选条目推送到本地服务。</li>
+    <li><b>到 360极速X 打开督导系统</b>：点击页面左下角浮动按钮 <b>📋 待录入</b> → <b>🚀 一键录入</b>，脚本会自动搜索 + 打开抽屉 + 填字段，你只需最后点「确定」。</li>
+  </ol>
+  <hr style="border:0;border-top:1px solid #e5e7eb;margin:12px 0;"/>
+  <p style="margin:0 0 6px;"><b>常见问题：</b></p>
+  <ul style="margin:0 0 0 18px;padding:0;font-size:12px;color:#374151;">
+    <li>浏览器没自动打开？→ 直接访问 <a href="http://127.0.0.1:8721" target="_blank">http://127.0.0.1:8721</a></li>
+    <li>右上角"本地服务"显示离线？→ 检查 server.exe / start.bat 是否在运行、是否被防火墙拦截</li>
+    <li>油猴脚本浮动按钮不出现？→ 确认只在 <code>https://ddgl.sinopec.com/pc/*</code> 下显示，刷新页面</li>
+    <li>想用 AI 增强？→ 勾选 <b>🤖 AI 增强</b> 并点 <b>⚙️ AI 设置</b> 填 API Key（仅本机保存）</li>
+  </ul>
+</div>`;
+  // 简单弹窗（无依赖，复用现有 alert 风格→ 改为一个浮动 modal）
+  let modal = document.getElementById("help-modal");
+  if (modal) { modal.remove(); }
+  modal = document.createElement("div");
+  modal.id = "help-modal";
+  modal.style.cssText = "position:fixed;inset:0;background:rgba(15,23,42,.5);z-index:100;display:flex;align-items:center;justify-content:center;";
+  modal.innerHTML = `
+    <div style="background:#fff;border-radius:10px;width:min(620px,92vw);max-height:88vh;overflow:auto;box-shadow:0 10px 40px rgba(0,0,0,.2);">
+      <div style="padding:14px 18px;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;justify-content:space-between;">
+        <h3 style="margin:0;font-size:15px;">使用帮助</h3>
+        <button id="help-close" class="btn-mini">✕</button>
+      </div>
+      <div style="padding:14px 18px;">${html}</div>
+    </div>`;
+  document.body.appendChild(modal);
+  modal.addEventListener("click", (e) => { if (e.target === modal) modal.remove(); });
+  modal.querySelector("#help-close").addEventListener("click", () => modal.remove());
+}
+
+async function deleteStandard(id) {
+  if (!confirm("确认删除该检查标准？此操作不可恢复。")) return;
+  await apiDelete("/api/standards/" + id);
+  delete STANDARDS[id];
+  if (activeStandardId === id) activeStandardId = "builtin";
+  rebuildStdSelect();
+  renderStdChips();
+  updateMeta();
+  render();
+}
+
+function itemToPayload(it, orig) {
+  return {
+    id: it.code,
+    code: it.code,
+    system: it.system,
+    cat1: it.cat1,
+    cat2: it.cat2,
+    area: it.area,
+    unit: it.unit,
+    name: it.name,
+    short: it.short,
+    desc: it.desc,
+    method: it.method,
+    score_lo: it.score_lo,
+    score_hi: it.score_hi,
+    severity: it.severity,
+    // 原始手写记录：实际填进"问题描述"的内容（匹配只用于定位对应条目）
+    orig: orig != null ? String(orig) : (it.orig != null ? String(it.orig) : ""),
+  };
+}
+
+// 连不上本地服务时的醒目横幅（不再静默白屏，给出可操作提示）
+function showServerOfflineHint(show) {
+  var d = document.getElementById('srv-offline-hint');
+  if (show) {
+    if (!d) {
+      d = document.createElement('div');
+      d.id = 'srv-offline-hint';
+      d.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99997;background:#b45309;color:#fff;font:14px/1.8 system-ui,"Microsoft YaHei",sans-serif;padding:10px 14px;box-shadow:0 2px 8px rgba(0,0,0,.3);';
+      (document.body || document.documentElement).appendChild(d);
+    }
+    d.innerHTML = '⚠️ 暂时连不上本地服务（' + API_BASE + '）。程序正在每 5 秒自动重试连接，请稍候；若长时间仍空白：' +
+      '① 确认本目录下 <b>server.exe</b> 已双击启动且未退出（看任务栏托盘图标）；' +
+      '② 浏览器地址栏应为 <b>http://127.0.0.1:8721</b>（服务固定用此端口）；' +
+      '③ 临时关闭杀毒/防火墙后重试。' +
+      '<b id="srv-retry" style="text-decoration:underline;cursor:pointer;margin-left:6px;">立即重试</b>';
+    var rb = d.querySelector('#srv-retry');
+    if (rb) rb.onclick = function () { refreshQueue(); };
+  } else if (d) {
+    d.remove();
+  }
+}
+
+async function refreshQueue() {
+  try {
+    const data = await apiGet("/api/pending");
+    if (!data) throw new Error("no data");
+    serverOnline = true;
+    showServerOfflineHint(false);
+    queueCodes = new Set((data.items || []).map(x => x.code));
+    const n = (data.items || []).length;
+    const badge = $("queue-badge");
+    badge.textContent = "待录入 " + n;
+    const srv = $("srv-status");
+    srv.textContent = "本地服务：在线";
+    srv.style.background = "rgba(22,163,74,.35)";
+    renderPicked();
+    return true;
+  } catch (e) {
+    serverOnline = false;
+    // file:// 离线打开时给温和提示，不弹刺眼橙横幅
+    if (location.protocol === 'file:') { showFileModeHint(); }
+    else { showServerOfflineHint(true); }
+    const srv = $("srv-status");
+    srv.textContent = "本地服务：离线";
+    srv.style.background = "rgba(220,38,38,.35)";
+    return false;
+  }
+}
+
+function pickedItems() {
+  return state.records
+    .filter(r => r.picked != null)
+    .map(r => {
+      const tpl = r.picked;
+      // 用展开拷贝，避免把手写文本写回模板数据
+      return tpl ? { ...tpl, orig: r.text } : null;
+    })
+    .filter(Boolean);
+}
+
+async function pushAll() {
+  const items = pickedItems();
+  if (items.length === 0) { alert("还没有选用任何条目"); return; }
+  if (!await refreshQueue()) {
+    alert("本地服务未启动，请先运行 start.bat 启动服务。");
+    return;
+  }
+  const r = await apiPost("/api/push", { items: items.map(it => itemToPayload(it, it.orig)) });
+  if (r && r.ok) {
+    await refreshQueue();
+    flashStatus(`✓ 已推送 ${items.length} 条到待录入队列（共 ${r.n} 条）`);
+  } else {
+    alert("推送失败，请确认本地服务已启动。");
+  }
+}
+
+async function togglePush(it, orig) {
+  if (!await refreshQueue()) {
+    alert("本地服务未启动，请先运行 start.bat 启动服务。");
+    return;
+  }
+  if (queueCodes.has(it.code)) {
+    await apiPost("/api/remove", { id: it.code });
+    flashStatus("已从待录入队列移除：" + (it.short || it.name));
+  } else {
+    await apiPost("/api/push", { items: [itemToPayload(it, orig != null ? orig : it.orig)] });
+    flashStatus("已加入待录入队列：" + (it.short || it.name));
+  }
+  await refreshQueue();
+}
+
+async function clearQueue() {
+  if (!confirm("确认清空待录入队列？（仅清空本地队列，不影响已录入的数据）")) return;
+  await apiPost("/api/clear");
+  await refreshQueue();
+  flashStatus("已清空待录入队列");
+}
+
+function importFile(file) {
+  const fr = new FileReader();
+  fr.onload = () => {
+    const txt = fr.result;
+    let lines = [];
+    if (file.name.toLowerCase().endsWith(".csv")) {
+      // 简单 CSV 解析：只取第一列
+      lines = txt.split(/\r?\n/).map(line => {
+        const m = line.match(/^"?([^",\n]*)/);
+        return m ? m[1].trim() : "";
+      }).filter(Boolean);
+    } else if (file.name.match(/\.xlsx?$/i)) {
+      alert("xlsx 请先用 Excel 打开后复制内容到上方输入框，或另存为 CSV 再导入");
+      return;
+    } else {
+      lines = txt.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+    }
+    $("input-text").value = lines.join("\n");
+    addRecordsFromText();
+    renderResults();
+    renderPicked();
+    renderStatus();
+  };
+  fr.readAsText(file, "utf-8");
+}
+
+/* ===== 启动 ===== */
+document.addEventListener("DOMContentLoaded", () => {
+  updateMeta();
+
+  $("input-text").addEventListener("input", () => {  // 实时同步但避免破坏焦点
+    if (document.activeElement === $("input-text")) {
+      const dateTag = getProblemDateTag();
+      const lines = $("input-text").value.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+      // 同步数量，不破坏已有 picked；同时保留自动补足与时间填写的固定整改记录
+      const base = lines.map((t, i) => {
+        const exist = state.records[i];
+        if (exist && !exist.auto && !exist.timeFixed && exist.raw === t) {
+          exist.text = dateTag ? dateTag + " " + t : t;   // 仅刷新带日期的展示文本，保留已选用
+          return exist;
+        }
+        const text = dateTag ? dateTag + " " + t : t;
+        return { id: state.nextId++, raw: t, text, picked: null, cat1: "", cat2: "", candidates: null };
+      });
+      state.records = base.concat(tagSupplements(dateTag)).concat(state.timeRecords);
+      renderResults();
+      renderPicked();
+      renderStatus();
+    }
+  });
+
+  $("btn-match").addEventListener("click", runMatch);
+  $("btn-fill").addEventListener("click", async () => {
+    await fetchFill(true);
+    addRecordsFromText();
+    // 重新生成候选（手工 + 补足）
+    for (const r of state.records) {
+      if (r.picked == null) r.candidates = matchFor(recQuery(r), r.cat1, r.cat2);
+    }
+    renderResults(); renderPicked(); renderStatus();
+  });
+  $("chk-fill").addEventListener("change", () => { if (!$("chk-fill").checked) { state.supplements = []; state.fillSig = null; addRecordsFromText(); renderResults(); renderPicked(); renderStatus(); renderFillStatus(); } });
+  // 视频督导模式：切换时强制重新补足（目标/候选池随之变化）
+  $("chk-video").addEventListener("change", (e) => {
+    videoMode = e.target.checked;
+    state.supplements = [];
+    state.fillSig = null;
+    if ($("chk-fill") && $("chk-fill").checked) {
+      fetchFill(true).then(() => { addRecordsFromText(); renderResults(); renderPicked(); renderStatus(); });
+    } else {
+      addRecordsFromText(); renderResults(); renderPicked(); renderStatus(); renderFillStatus();
+    }
+  });
+  $("btn-clear").addEventListener("click", clearAll);
+  $("btn-copy").addEventListener("click", copyPicked);
+  $("btn-export").addEventListener("click", exportExcel);
+  $("btn-push-all").addEventListener("click", pushAll);
+  $("queue-badge").addEventListener("click", clearQueue);
+  $("file-import").addEventListener("change", (e) => {
+    if (e.target.files[0]) importFile(e.target.files[0]);
+    e.target.value = "";
+  });
+  $("btn-upload").addEventListener("click", uploadRandom);
+
+  // 时间填写（问题整改）固定记录
+  $("btn-time-add").addEventListener("click", addTimeRecord);
+  $("time-input").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") { e.preventDefault(); addTimeRecord(); }
+  });
+  // 问题时间变化：刷新每条手工记录的展示文本并重算候选（保留已选用）
+  $("problem-date").addEventListener("input", () => {
+    addRecordsFromText();
+    rematchExisting();
+  });
+
+  // 随机清单手动管理：加载清单 / 保存剔除 / 全选
+  $("btn-rlist-load").addEventListener("click", loadRandomList);
+  $("btn-rexclude").addEventListener("click", saveExclude);
+  $("rlist-checkall").addEventListener("change", (e) => {
+    document.querySelectorAll("#rlist .rchk").forEach(cb => { cb.checked = e.target.checked; });
+  });
+
+  // 检查标准工具栏
+  rebuildStdSelect();
+  renderStdChips();
+  $("std-select").style.display = (matchMode === "manual") ? "" : "none";
+  $("std-mode").addEventListener("change", (e) => {
+    matchMode = e.target.value;
+    $("std-select").style.display = (matchMode === "manual") ? "" : "none";
+    rematchExisting();
+  });
+  $("std-select").addEventListener("change", (e) => {
+    activeStandardId = e.target.value;
+    rematchExisting();
+  });
+  $("btn-upload").addEventListener("click", () => $("file-std").click());
+  $("file-std").addEventListener("change", (e) => {
+    if (e.target.files[0]) uploadStandard(e.target.files[0]);
+    e.target.value = "";
+  });
+  $("btn-template").addEventListener("click", downloadTemplate);
+  $("btn-userscript").addEventListener("click", downloadUserscript);
+  $("btn-help").addEventListener("click", showHelp);
+  $("btn-quit").addEventListener("click", quitService);
+
+  // 阶段四：AI 语义匹配工具栏
+  $("ai-enhance").addEventListener("change", (e) => {
+    aiEnabled = e.target.checked;
+    if (aiEnabled && !aiConfigured) {
+      alert("AI 后端尚未配置，请点「⚙️ AI 设置」选择后端并填写 Key（或用演示模式）。");
+      openAiModal();
+    }
+  });
+  $("btn-ai-run").addEventListener("click", () => aiMatchRecords(state.records));
+  $("btn-ai-settings").addEventListener("click", openAiModal);
+  $("ai-modal-close").addEventListener("click", closeAiModal);
+  $("ai-modal").addEventListener("click", (e) => { if (e.target === $("ai-modal")) closeAiModal(); });
+  $("ai-provider").addEventListener("change", updateAiHint);
+  $("ai-save").addEventListener("click", saveAiConfig);
+  $("ai-test").addEventListener("click", testAiConnection);
+
+  // 填一些示例
+  $("input-text").value =
+    "安全帽过期\n" +
+    "卸油作业，拆除管线时，未按顺序先关闭卸油口阀门再拆除\n" +
+    "便利店货架商品空缺\n" +
+    "卫生间有脚印\n" +
+    "卸油区静电释放器接地线断裂";
+
+  render();
+
+  // 第二阶段：连接本地服务，刷新待录入队列状态，并拉取已上传的检查标准
+  refreshQueue();
+  setInterval(refreshQueue, 5000);
+  loadStandards().catch(function(){});
+  loadAiConfig();   // 阶段四：载入 AI 后端配置（启用状态 / 是否已具备调用条件）
+});
+</script>
+
+</body>
+</html>

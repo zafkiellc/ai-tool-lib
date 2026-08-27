@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>加油站强检证书下载工具</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: "Microsoft YaHei", "PingFang SC", sans-serif; background: #f0f2f5; color: #333; padding: 20px; }
+  .card { background: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,.08); padding: 20px; margin-bottom: 16px; }
+  h1 { font-size: 20px; margin-bottom: 4px; color: #1a1a1a; }
+  .sub { color: #888; font-size: 13px; margin-bottom: 14px; }
+  .row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  label { font-size: 14px; font-weight: 600; white-space: nowrap; }
+  input[type=text] { flex: 1; min-width: 260px; padding: 8px 12px; border: 1px solid #d9d9d9; border-radius: 6px; font-size: 14px; }
+  button { padding: 8px 18px; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; transition: .2s; }
+  .btn-primary { background: #1677ff; color: #fff; }
+  .btn-primary:hover { background: #4096ff; }
+  .btn-primary:disabled { background: #a0cfff; cursor: not-allowed; }
+  .btn-default { background: #f5f5f5; color: #333; border: 1px solid #d9d9d9; }
+  .btn-default:hover { background: #e6e6e6; }
+  .btn-danger { background: #ff4d4f; color: #fff; }
+  .btn-danger:hover { background: #ff7875; }
+  #stationList { max-height: 220px; overflow-y: auto; border: 1px solid #eee; border-radius: 6px; padding: 10px; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px; }
+  #stationList label { display: flex; align-items: center; gap: 6px; font-weight: 400; font-size: 13px; cursor: pointer; }
+  .count { color: #999; font-size: 12px; }
+  #logBox { background: #1e1e1e; color: #d4d4d4; border-radius: 6px; padding: 12px; height: 300px; overflow-y: auto; font-family: Consolas, monospace; font-size: 12px; line-height: 1.7; white-space: pre-wrap; }
+  .progress { margin-top: 8px; font-size: 13px; color: #555; }
+  .footer { font-size: 12px; color: #aaa; text-align: center; margin-top: 10px; }
+  /* 进度卡片 */
+  .progress-card { margin-top: 14px; background: #f7f9fc; border: 1px solid #e3e8f0; border-radius: 8px; padding: 14px; }
+  .p-item { display: inline-block; margin-right: 28px; }
+  .p-label { font-size: 12px; color: #888; display: block; }
+  .p-value { font-size: 18px; font-weight: 700; color: #1a1a1a; }
+  .p-bar { height: 8px; background: #e5e9f0; border-radius: 4px; margin-top: 10px; overflow: hidden; }
+  .p-bar-inner { height: 100%; background: linear-gradient(90deg, #1677ff, #36cfc9); border-radius: 4px; transition: width .4s; }
+  .log-line { display: block; }
+  .log-line.ok { color: #7ee787; }
+  .log-line.err { color: #ff7b72; }
+  .log-line.warn { color: #d29922; }
+  .log-line.info { color: #79c0ff; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h1>加油站强检证书批量下载工具</h1>
+  <div class="sub">自动登录湖北省强制检定计量器具管理信息系统，按站点下载每把加油枪的强检证书</div>
+
+  <div class="row">
+    <label>账号密码本</label>
+    <input type="text" id="excelPath" placeholder="选择账号密码本 Excel">
+    <button class="btn-default" onclick="pickExcel()">选择文件</button>
+    <button class="btn-default" onclick="loadExcel()">加载站点</button>
+  </div>
+
+  <div class="row">
+    <label>输出目录</label>
+    <input type="text" id="outDir" value="D:/加油机强检证书">
+  </div>
+</div>
+
+<div class="card">
+  <div class="row">
+    <label>选择站点</label>
+    <button class="btn-default" onclick="selectAll(true)">全选</button>
+    <button class="btn-default" onclick="selectAll(false)">清空</button>
+    <span class="count" id="countInfo"></span>
+  </div>
+  <div id="stationList"></div>
+
+  <div class="row" style="margin-top:14px;">
+    <button class="btn-primary" id="startBtn" onclick="startDownload()">▶ 开始下载</button>
+    <button class="btn-danger" id="stopBtn" onclick="stopDownload()" disabled>■ 停止</button>
+  </div>
+
+  <!-- 进度卡片 -->
+  <div id="progressCard" class="progress-card" style="display:none;">
+    <div class="p-item"><span class="p-label">站点进度</span><span class="p-value" id="pStations">0/0</span></div>
+    <div class="p-item"><span class="p-label">当前站点</span><span class="p-value" id="pCurrent">-</span></div>
+    <div class="p-item"><span class="p-label">证书总数</span><span class="p-value" id="pCerts">0</span></div>
+    <div class="p-bar"><div class="p-bar-inner" id="pBar" style="width:0%"></div></div>
+  </div>
+</div>
+
+<div class="card">
+  <label>运行日志</label>
+  <div id="logBox"></div>
+</div>
+
+<div class="footer">本工具仅在本机运行，账号密码仅用于登录政府系统，不会上传。</div>
+
+<script>
+let stationData = [];
+
+async function api(url, method='GET', body=null) {
+  const opt = { method, headers: {'Content-Type':'application/json'} };
+  if (body) opt.body = JSON.stringify(body);
+  const r = await fetch(url, opt);
+  return r.json();
+}
+
+function pickExcel() {
+  // 真正的文件选择：弹出系统文件对话框，选中后上传解析
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.xlsx,.xls';
+  input.onchange = async () => {
+    if (input.files && input.files[0]) {
+      const fd = new FormData();
+      fd.append('file', input.files[0]);
+      try {
+        const r = await fetch('/api/upload_excel', { method: 'POST', body: fd });
+        const data = await r.json();
+        if (data.ok) {
+          document.getElementById('excelPath').value = data.excel;
+          renderStations(data.stations);
+          log(`已加载密码本: ${data.filename}（${data.stations.length} 个站点）`);
+        } else {
+          alert('加载失败: ' + (data.msg || '未知错误'));
+        }
+      } catch (e) {
+        alert('上传失败: ' + e.message);
+      }
+    }
+  };
+  input.click();
+}
+
+async function loadExcel() {
+  const excel = document.getElementById('excelPath').value.trim();
+  if (!excel) { alert('请输入账号密码本路径'); return; }
+  const r = await api('/api/load', 'POST', { excel });
+  if (r.ok) { renderStations(r.stations); log('已加载站点'); }
+}
+
+function renderStations(stations) {
+  stationData = stations;
+  const box = document.getElementById('stationList');
+  box.innerHTML = '';
+  stations.forEach((s, i) => {
+    const l = document.createElement('label');
+    const cb = document.createElement('input');
+    cb.type = 'checkbox'; cb.checked = true; cb.dataset.idx = i;
+    cb.onchange = updateChecked;
+    l.appendChild(cb);
+    const span = document.createElement('span');
+    span.textContent = `${s.name}（${s.guns||'?'}枪）`;
+    l.appendChild(span);
+    box.appendChild(l);
+  });
+  updateCount();
+}
+
+function updateChecked() {
+  const cbs = document.querySelectorAll('#stationList input[type=checkbox]');
+  const checked = Array.from(cbs).map(c => c.checked);
+  api('/api/set', 'POST', { checked, output_dir: document.getElementById('outDir').value.trim() });
+  updateCount();
+}
+
+function selectAll(v) {
+  document.querySelectorAll('#stationList input[type=checkbox]').forEach(c => c.checked = v);
+  updateChecked();
+}
+
+function updateCount() {
+  const total = document.querySelectorAll('#stationList input[type=checkbox]').length;
+  const sel = document.querySelectorAll('#stationList input[type=checkbox]:checked').length;
+  document.getElementById('countInfo').textContent = `已选 ${sel} / ${total}`;
+}
+
+async function startDownload() {
+  const out = document.getElementById('outDir').value.trim();
+  await api('/api/set', 'POST', { checked: currentChecked(), output_dir: out });
+  const r = await api('/api/start', 'POST', {});
+  if (!r.ok) { alert(r.msg || '启动失败'); return; }
+  document.getElementById('startBtn').disabled = true;
+  document.getElementById('stopBtn').disabled = false;
+  log('任务已启动...');
+  poll();
+}
+
+function currentChecked() {
+  return Array.from(document.querySelectorAll('#stationList input[type=checkbox]')).map(c => c.checked);
+}
+
+async function stopDownload() {
+  const btn = document.getElementById('stopBtn');
+  btn.disabled = true;
+  btn.textContent = '正在停止…';
+  await api('/api/stop', 'POST', {});
+  log('已发送停止请求，正在强制结束任务并清理进程...');
+}
+
+async function poll() {
+  try {
+    const s = await api('/api/status');
+    const logBox = document.getElementById('logBox');
+    if (s.logs && s.logs.length) {
+      // 日志着色渲染（避免整块重绘闪烁，仅当行数变化时）
+      const total = s.logs.length;
+      if (total !== logBox.dataset.n) {
+        logBox.dataset.n = total;
+        logBox.innerHTML = s.logs.map(renderLine).join('');
+      }
+      logBox.scrollTop = logBox.scrollHeight;
+    }
+    // 进度卡片
+    const pc = document.getElementById('progressCard');
+    if (s.running || (s.progress && s.progress.total > 0)) {
+      pc.style.display = 'block';
+      const p = s.progress || { total: 0, done: 0, current: '', downloaded: 0 };
+      document.getElementById('pStations').textContent = `${p.done}/${p.total}`;
+      document.getElementById('pCurrent').textContent = p.current || '-';
+      document.getElementById('pCerts').textContent = p.downloaded;
+      const pct = p.total > 0 ? Math.round(p.done / p.total * 100) : 0;
+      document.getElementById('pBar').style.width = pct + '%';
+    }
+    if (s.running) {
+      setTimeout(poll, 1500);
+    } else {
+      document.getElementById('startBtn').disabled = false;
+      const sb = document.getElementById('stopBtn');
+      sb.disabled = true;
+      sb.textContent = '■ 停止';
+      document.getElementById('pCurrent').textContent = '任务结束';
+    }
+  } catch (e) {
+    setTimeout(poll, 3000);
+  }
+}
+
+// 日志行着色：按内容关键词分类
+function renderLine(line) {
+  let cls = 'info';
+  if (/✓|成功|完成/.test(line)) cls = 'ok';
+  else if (/✗|失败|异常|错误|超时/.test(line)) cls = 'err';
+  else if (/⚠|等待|重试|不可用|跳过/.test(line)) cls = 'warn';
+  else if (/══|站点|开始|全部/.test(line)) cls = 'info';
+  const esc = line.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return `<span class="log-line ${cls}">${esc}</span>`;
+}
+
+function log(msg) {
+  const box = document.getElementById('logBox');
+  const t = new Date().toLocaleTimeString();
+  box.insertAdjacentHTML('beforeend', `<span class="log-line info">[${t}] ${msg.replace(/&/g,'&amp;').replace(/</g,'&lt;')}</span>`);
+  box.scrollTop = box.scrollHeight;
+}
+
+// 初始化：获取当前状态
+(async function init() {
+  const s = await api('/api/status');
+  if (s.excel) document.getElementById('excelPath').value = s.excel;
+  if (s.output_dir) document.getElementById('outDir').value = s.output_dir;
+  if (s.stations && s.stations.length) renderStations(s.stations);
+  if (s.logs && s.logs.length) {
+    document.getElementById('logBox').innerHTML = s.logs.map(renderLine).join('');
+    document.getElementById('logBox').dataset.n = s.logs.length;
+  }
+  if (s.running) poll();
+})();
+</script>
+</body>
+</html>

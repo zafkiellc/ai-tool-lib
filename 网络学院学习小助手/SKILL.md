@@ -29,10 +29,11 @@ permalink: main/工作/项目/资产/ai-工具库/网络学院学习小助手/sk
 - 长期运行需自己双击 start.bat（WorkBuddy 会话结束后台服务会停）。
 - 同事电脑若装 Chrome 可手动指定「系统 Chrome」通道。
 
-## ⚠️ 源码位置（重要）
-**源码当前不在本工具库，而在各端本机路径**：
-`C:\Users\zafki\OneDrive\工作\工作工具\网络学院学习小助手`（原作 WorkBuddy 端 OneDrive）。
-本库只收纳文档与统一入口。若要各端可继续优化代码，需把源码目录纳入本库 `scripts/`（由源端复制进来），或在本端改完同步回源。
+## ⚠️ 源码位置（已入册，2026-08-28）
+源码已由 **单位端 WorkBuddy(win__workbuddy)** 从 `C:\Users\zafki\OneDrive\工作\工作工具\网络学院学习小助手` 复制进本库 `scripts/`（Node 源码 + 启动脚本；`node_modules`/`outputs` 未入库，运行前需 `npm install`）。
+- **启动**：`scripts\start.bat`（自动开 `http://127.0.0.1:3000`）；异常先 `check-env.bat` → `smoke-test.cmd`。
+- **依赖**：Node.js 20 + `npm install`（Express + Playwright）；浏览器走系统 Edge / 内置 Chromium。
+- 本机 OneDrive 副本保留为日常运行副本。
 
 ## 改造记录
 见 `MANIFEST.json` 的 `changelog`。完整历史与改进思路见 `references/原笔记.md`。

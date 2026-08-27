@@ -1,0 +1,7 @@
+{
+  "provider": "deepseek",
+  "enabled": true,
+  "base_url": "https://api.deepseek.com/v1",
+  "api_key": "sk-ab6600781e444101afda3225fbe86377",
+  "model": "deepseek-v4-flash"
+}
