@@ -44,7 +44,7 @@ AI工具库/
 1. 复制 `_template` 为 `AI工具库/<新工具名>/`。
 2. 填好 `SKILL.md` 与 `MANIFEST.json`（`created_by` 写清是哪个 AI / 哪个会话）。
 3. 在 `MANIFEST.json` 设 `"status": "beta"`。
-4. `git add . && git commit -m "add <工具名>: ..."`（见协议里的 git 约定）。
+4. `git add <新工具名>/ && git commit -m "add <工具名>: ..."`（只 add 新工具目录，不要 `git add .` 误带其他端改动；详见 [[统一工具库接入指南]] 第6节「push 边界」）。
 
 ## 改造流程（已有工具）
 见 [[协作协议]]。
