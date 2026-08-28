@@ -1,0 +1,22 @@
+{
+  "name": "Thaw（macOS 菜单栏工具 / Ice fork）",
+  "version": "2.0.0-rc.1",
+  "status": "beta",
+  "created_by": "mac/Codex（源码物理迁入自 ~/WorkBuddy/2026-07-21-11-46-05/Thaw/）",
+  "created_at": "2026-08-28",
+  "purpose": "macOS 菜单栏管理工具（Ice fork），本地抓取 macOS 27 预览版源码并构建发布版；本机已构建安装 Thaw Preview.app",
+  "entrypoint": "scripts/Thaw/Thaw.xcodeproj（Xcode 打开构建）或 scripts/Thaw/scripts/build-preview.sh（未签名本地构建 + DMG + 自动安装）",
+  "lock": null,
+  "changelog": [
+    {
+      "date": "2026-08-20",
+      "by": "WorkBuddy(吕晨)",
+      "change": "从 Ice fork 抓取 macOS 27 预览版源码，本地构建稳定版并安装（Build 47）"
+    },
+    {
+      "date": "2026-08-28",
+      "by": "mac/Codex",
+      "change": "整目录物理迁入源码（12MB，排除 Build/ 1.5G 构建产物与嵌套 .git）至 AI工具库/Thaw/scripts/Thaw/，由壳升级为完整可构建工具；补 SKILL.md + MANIFEST.json"
+    }
+  ]
+}

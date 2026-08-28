@@ -1,0 +1,158 @@
+name: CI
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/ci.yml"
+      - "Package.swift"
+      - "sonar-project.properties"
+      - "**/*.swift"
+      - "**/*.xcstrings"
+  push:
+    branches:
+      - main
+      - development
+    paths:
+      - ".github/workflows/ci.yml"
+      - "Package.swift"
+      - "sonar-project.properties"
+      - "**/*.swift"
+      - "**/*.xcstrings"
+  workflow_dispatch:
+
+jobs:
+  static_analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Validate XCStrings
+        if: github.event_name == 'pull_request'
+        shell: bash
+        run: |
+          set -euo pipefail
+          changed_files=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep '\.xcstrings$' || true)
+          if [ -z "$changed_files" ]; then
+            echo "No modified .xcstrings files."
+            exit 0
+          fi
+          for file in $changed_files; do
+            echo "Validating $file"
+            python3 -m json.tool "$file" > /dev/null
+          done
+
+      - name: Verify SwiftLint input file list
+        run: |
+          set -euo pipefail
+          chmod +x scripts/generate-swiftlint-inputs.sh
+          scripts/generate-swiftlint-inputs.sh /tmp/swiftlint-inputs.xcfilelist
+          diff -u scripts/swiftlint-inputs.xcfilelist /tmp/swiftlint-inputs.xcfilelist
+
+      - name: Run SwiftLint
+        run: |
+          docker run --rm -v "$PWD:/work" -w /work \
+            ghcr.io/realm/swiftlint:0.63.3 \
+            swiftlint --strict
+
+  build:
+    runs-on: macos-26
+    needs: static_analysis
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: 1
+    steps:
+      - uses: actions/checkout@v7
+      - run: sudo xcode-select -s /Applications/Xcode_26.5.app/Contents/Developer
+
+      - name: Cache SwiftPM
+        uses: actions/cache@v5
+        with:
+          path: |
+            Build/SourcePackages
+            ~/Library/Caches/org.swift.swiftpm
+          key: spm-${{ runner.os }}-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: |
+            spm-${{ runner.os }}-
+
+      - name: Compute cache week
+        id: cache-week
+        run: echo "week=$(date +%Y-%U)" >> "$GITHUB_OUTPUT"
+
+      # COMPILATION_CACHE_ENABLE_CACHING = YES writes a content-addressed cache to
+      # Build/CompilationCache.noindex (the default CAS path under -derivedDataPath).
+      # Persisting it across runs turns most of the build into cache hits instead of
+      # a full recompile. Keyed by week so the cache periodically rotates rather than
+      # growing unbounded; restore-keys still reuses the prior week's cache as a base.
+      - name: Cache Swift compilation cache
+        uses: actions/cache@v5
+        with:
+          path: Build/CompilationCache.noindex
+          key: compilation-cache-${{ runner.os }}-${{ github.ref_name }}-${{ steps.cache-week.outputs.week }}
+          restore-keys: |
+            compilation-cache-${{ runner.os }}-${{ github.ref_name }}-
+            compilation-cache-${{ runner.os }}-
+
+      - name: Build and Test
+        run: |
+          xcodebuild test \
+            -project Thaw.xcodeproj \
+            -scheme Thaw \
+            -derivedDataPath Build/ \
+            -destination 'platform=macOS' \
+            -enableCodeCoverage YES \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Convert coverage to XML
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          XCRESULTPARSER_VERSION: "2.0.1"
+        run: |
+          set -euo pipefail
+          curl -fsSL -o xcresultparser.zip \
+            "https://github.com/a7ex/xcresultparser/releases/download/${XCRESULTPARSER_VERSION}/xcresultparser.zip"
+          unzip -oq xcresultparser.zip
+          NEWEST_BUNDLE=$(ls -td Build/Logs/Test/*.xcresult 2>/dev/null | head -n1)
+          ./product/xcresultparser -c -o xml "$NEWEST_BUNDLE" > coverage.xml
+
+      - name: Upload Coverage XML
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-data
+          path: coverage.xml
+          retention-days: 1
+          if-no-files-found: error
+
+  sonarqube:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Download Coverage XML
+        uses: actions/download-artifact@v8
+        with:
+          name: coverage-data
+
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v8.2.0
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  # Dummy job that passes for forks (no access to SONAR_TOKEN secret)
+  sonarqube-skip-forks:
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
+    runs-on: ubuntu-slim
+    needs: build
+    steps:
+      - name: Skip SonarQube for fork PRs
+        run: |
+          echo "Skipping SonarQube analysis for PR from fork"
+          echo "Analysis will be performed after merge to main branch"
