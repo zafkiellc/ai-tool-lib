@@ -2,10 +2,10 @@
   "name": "wechat-cli 本地微信数据查询",
   "version": "0.2.4",
   "status": "stable",
-  "created_by": "WorkBuddy(吕晨) / 收口 Hermes(软路由)",
+  "created_by": "WorkBuddy(吕晨) / 收口 Hermes(软路由) / 源码迁入 mac/WorkBuddy",
   "created_at": "2026-08-20",
-  "purpose": "macOS 本地微信数据 CLI 查询(聊天记录检索), 工作核查",
-  "entrypoint": "wechat-cli (pip 包, 装于 Mac venv, 非本库)",
+  "purpose": "macOS 本地微信数据 CLI 查询(聊天记录/联系人/会话/收藏/未读等), 工作核查",
+  "entrypoint": "scripts/wechat-cli/bin/wechat-cli.js (Node版 @canghe_ai/wechat-cli v0.2.4, 原生二进制已固化 scripts/wechat-cli/node_modules/@canghe_ai/wechat-cli-darwin-arm64)",
   "lock": null,
   "changelog": [
     {
@@ -17,6 +17,11 @@
       "date": "2026-08-27",
       "by": "Hermes(软路由)",
       "change": "收口进统一工具库：建 SKILL.md+MANIFEST，第三方包说明，原笔记转 references"
+    },
+    {
+      "date": "2026-08-28",
+      "by": "mac/WorkBuddy",
+      "change": "纠正为 Node版 @canghe_ai/wechat-cli v0.2.4（非 pip Python 包）；整目录物理迁入源码+darwin-arm64 原生二进制至 scripts/，升级为完整可运行工具；补子命令速查"
     }
   ]
 }
