@@ -1,3 +1,9 @@
+---
+title: FREQUENT_ISSUES
+type: note
+permalink: main/工作/项目/资产/ai-工具库/thaw/scripts/thaw/frequent-issues
+---
+
 # Frequent Issues <!-- omit in toc -->
 
 Check here before [filing a bug](https://github.com/stonerl/Thaw/issues/new/choose). Your problem may already be known with a workaround available.

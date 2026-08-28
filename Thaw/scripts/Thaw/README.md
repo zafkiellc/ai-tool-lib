@@ -1,3 +1,9 @@
+---
+title: README
+type: note
+permalink: main/工作/项目/资产/ai-工具库/thaw/scripts/thaw/readme
+---
+
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" width="400" srcset="Resources/headers/Header_Dark.svg">
